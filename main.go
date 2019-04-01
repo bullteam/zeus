@@ -1,10 +1,10 @@
 package main
 
 import (
-	_ "github.com/bullteam/zeus/routers"
+	_ "github.com/bullteam/zeus/pkg/routers"
 	"github.com/astaxie/beego"
 	//_ "github.com/astaxie/beego/cache/redis"
-	pb "github.com/bullteam/zeus/grpc-server/proto"
+	pb "github.com/bullteam/zeus/cmd/grpc-linker/grpc-server/proto"
 	"flag"
 	"google.golang.org/grpc/reflection"
 	"net"
