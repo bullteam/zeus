@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.proto";
+option java_outer_classname = "ApiAuthProto";
+
+package proto;
+
+service Apiauth {
+    rpc CheckPerm (PermRequest) returns (PermResponse){}
+}
+
+message PermRequest {
+    int32 uid = 1;
+    string perm = 2;
+    string domain = 3;
+}
+message PermResponse {
+    bool pass = 1;
+}
