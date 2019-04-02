@@ -13,5 +13,4 @@
 api-auth
 api-server
 grpc-linker
-conf/app.conf
 .idea/
