@@ -10,7 +10,4 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
-api-auth
-api-server
-grpc-linker
 .idea/
