@@ -55,7 +55,7 @@ type User struct {
 	Status      int    `json:"status"`
 	Create_time time.Time `orm:"auto_now_add;type(datetime)" json:"create_time"`
 	Last_login_time time.Time `orm:"auto_now_add;type(datetime)" json:"-"`
-	Roles    []*Role    `orm:"rel(m2m);rel_through(github.com/bullteam/zeus/models.UserRole)"`
+	Roles    []*Role    `orm:"rel(m2m);rel_through(github.com/bullteam/zeus/pkg/models.UserRole)"`
 }
 
 type DeptModel struct {
