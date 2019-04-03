@@ -24,11 +24,18 @@ Zeus 宙斯权限后台，为企业提供统一后台权限管理服务。项目
 可参考 [Docker Documentation][2] 或者直接看[官方文档][1]
 # 架构
 ### 快速开始
--TODO
+````
+go mod tidy
+cd cmd/api-server
+go build -o zeus
+./zeus
+
+````
 #WebUI
 * [官方](https://github.com/bullteam/zeus-ui)
 #API文档
 *[POSTMAN](https://documenter.getpostman.com/view/159835/Rzfjk7Jh)
+
 [1]: https://docs.docker.com/ "Docker Documentation"
 [2]: https://github.com/yeasy/docker_practice "docker_practice"
 
