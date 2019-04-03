@@ -2,7 +2,7 @@ package tests
 import (
 	"testing"
 	"time"
-	"github.com/bullteam/zeus/pkg/components"
+	"zeus/pkg/components"
 	"github.com/dgrijalva/jwt-go"
 )
 var (

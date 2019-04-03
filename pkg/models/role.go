@@ -3,8 +3,8 @@ package models
 import (
 	"github.com/astaxie/beego/orm"
 	"database/sql"
-	"github.com/bullteam/zeus/pkg/utils"
-	"github.com/bullteam/zeus/pkg/dto"
+	"zeus/pkg/utils"
+	"zeus/pkg/dto"
 )
 
 func init() {

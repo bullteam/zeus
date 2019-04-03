@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	pb "github.com/bullteam/zeus/cmd/grpc-linker/grpc-server/proto"
-	"github.com/bullteam/zeus/pkg/service"
+	pb "zeus/cmd/grpc-linker/grpc-server/proto"
+	"zeus/pkg/service"
 )
 
 type ApiAuthServer struct{}

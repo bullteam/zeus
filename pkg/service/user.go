@@ -1,10 +1,10 @@
 package service
 
 import (
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/models"
 	"github.com/astaxie/beego/orm"
 	"strconv"
-	"github.com/bullteam/zeus/pkg/dto"
+	"zeus/pkg/dto"
 )
 
 type UserService struct{

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/bullteam/zeus/pkg/models"
-	"github.com/bullteam/zeus/pkg/components"
+	"zeus/pkg/models"
+	"zeus/pkg/components"
 )
 
 

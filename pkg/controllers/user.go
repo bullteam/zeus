@@ -1,15 +1,15 @@
 package controllers
 
 import (
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/models"
-	"github.com/bullteam/zeus/pkg/service"
-	"github.com/bullteam/zeus/pkg/utils"
+	"zeus/pkg/components"
+	"zeus/pkg/models"
+	"zeus/pkg/service"
+	"zeus/pkg/utils"
 	"github.com/astaxie/beego"
 	"github.com/dchest/captcha"
 	"strconv"
 	"strings"
-	"github.com/bullteam/zeus/pkg/dto"
+	"zeus/pkg/dto"
 	"crypto/md5"
 	"fmt"
 )

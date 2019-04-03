@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/bullteam/zeus/pkg/service"
+	"zeus/pkg/service"
 )
 
 

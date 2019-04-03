@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/bullteam/zeus/pkg/models"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/components"
+	"zeus/pkg/models"
+	"zeus/pkg/dto"
+	"zeus/pkg/components"
 	"strings"
 	"github.com/astaxie/beego/orm"
 	"strconv"

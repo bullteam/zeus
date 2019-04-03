@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"github.com/bullteam/zeus/pkg/controllers"
+	"zeus/pkg/controllers"
 	"github.com/astaxie/beego"
 	"github.com/dchest/captcha"
 	//"github.com/astaxie/beego/plugins/cors"

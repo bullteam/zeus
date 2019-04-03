@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/components"
+	"zeus/pkg/models"
 	"strconv"
 	"strings"
 )

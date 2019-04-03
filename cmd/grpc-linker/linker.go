@@ -2,7 +2,7 @@ package main
 
 import (
 	//_ "github.com/astaxie/beego/cache/redis"
-	pb "github.com/bullteam/zeus/cmd/grpc-linker/grpc-server/proto"
+	pb "zeus/cmd/grpc-linker/grpc-server/proto"
 	"flag"
 	"google.golang.org/grpc/reflection"
 	"net"

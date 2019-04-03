@@ -2,9 +2,9 @@ package controllers
 
 import (
 	//"fmt"
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/service"
-	"github.com/bullteam/zeus/pkg/dto"
+	"zeus/pkg/components"
+	"zeus/pkg/service"
+	"zeus/pkg/dto"
 	"strings"
 )
 
