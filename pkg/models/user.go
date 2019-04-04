@@ -3,7 +3,7 @@ package models
 import (
 	"crypto/rand"
 	"fmt"
-	"zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/components"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
@@ -11,8 +11,8 @@ import (
 	"io"
 	"strconv"
 	"time"
-	"zeus/pkg/utils"
-	"zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/utils"
+	"github.com/bullteam/zeus/pkg/dto"
 	_ "github.com/astaxie/beego/cache/redis"
 )
 
@@ -55,7 +55,7 @@ type User struct {
 	Status      int    `json:"status"`
 	Create_time time.Time `orm:"auto_now_add;type(datetime)" json:"create_time"`
 	Last_login_time time.Time `orm:"auto_now_add;type(datetime)" json:"-"`
-	Roles    []*Role    `orm:"rel(m2m);rel_through(zeus/models.UserRole)"`
+	Roles    []*Role    `orm:"rel(m2m);rel_through(github.com/bullteam/zeus/pkg/models.UserRole)"`
 }
 
 type DeptModel struct {

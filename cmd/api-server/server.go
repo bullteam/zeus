@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "zeus/pkg/routers"
 	"github.com/astaxie/beego"
+	_ "github.com/bullteam/zeus/pkg/routers"
 )
 func main() {
 	if beego.BConfig.RunMode == "dev" {

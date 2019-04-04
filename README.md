@@ -1,33 +1,42 @@
-# api-auth
-
+# zeus 宙斯权限后台
+<img src="./docs/images/logo.png" height=145></img>
 #### 项目介绍
-后台接口，使用golang beego框架开发，用jwt+casbin做权限管理。
+Zeus 宙斯权限后台，为企业提供统一后台权限管理服务。项目使用golang beego框架开发，用jwt+casbin做权限管理,提供OAuth2.0 的Restful api 接口，为企业后台系统提供
+统一菜单管理、权限管理、员工管理、配置中心，同步企业微信、钉钉，同步企业组织架构，打通jenkis、jira、gitlab、企业邮箱、OA、财务软件等内外部系统，解决企业多个
+软件和平台账号不同步的痛点。
 
-#### 功能模块
-##### 登录
-```
-curl -d "username=xxx&password=yyy" /login
-```
-返回
-```
-{
-  code : 0,
-  msg :　"success",
-  data : {
-    access_token : "xxxxxxxxxxxxxxx"
-  }
-}
-```
+## Features
+- 登录/登出
+- 权限管理
+    - 用户管理
+    - 角色管理
+    - 部门管理
+    - 项目管理
+    - 菜单管理
+## Roadmap
+- 支持企业微信/钉钉登陆
+- 同步企业组织架构和用户
+- 风控
+- 操作日志监控
+- 配置中心
+- 应用中心
+#Docker 部署
+可参考 [Docker Documentation][2] 或者直接看[官方文档][1]
+# 架构
+### 快速开始
+````
+go mod tidy
+cd cmd/api-server
+go build -o zeus
+./zeus
 
-##### 请求带令牌
-请求带上Authorization头
-```
-curl -H "Authorization: Bearer [登录获取的令牌]" /changepwd
-```
+````
+#WebUI
+* [官方](https://github.com/bullteam/zeus-ui)
+#API文档
+*[POSTMAN](https://documenter.getpostman.com/view/159835/Rzfjk7Jh)
 
-> ps : beego项目的具体controller如果需要jwt验证，只需`继承`TokenCheckController即可,如
-```
-type ChangepasswdController struct {
-	TokenCheckController
-}
-```
+[1]: https://docs.docker.com/ "Docker Documentation"
+[2]: https://github.com/yeasy/docker_practice "docker_practice"
+
+
