@@ -1,6 +1,6 @@
 package service
 
-import "zeus/pkg/models"
+import "github.com/bullteam/zeus/pkg/models"
 
 type DomainService struct {
 

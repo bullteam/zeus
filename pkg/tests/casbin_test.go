@@ -4,7 +4,7 @@ import (
 	"testing"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/astaxie/beego/validation"
-	"zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/components"
 )
 //func TestRawCasbin(t *testing.T){
 //	//orm.RegisterDriver("mysql", orm.DRMySQL)

@@ -30,12 +30,16 @@ Zeus 宙斯权限后台，为企业提供统一后台权限管理服务。项目
 <img src="./docs/images/arch.png" height=920></img>
 ### 快速开始
 ````
+export GOPROXY=https://goproxy.io
+export GO111MODULE=on
 go mod tidy
 cd cmd/api-server
 go build -o zeus
 ./zeus
 
 ````
+# Demo
+* [demo](http://admin.bullteam.cn)
 # WebUI
 * [官方](https://github.com/bullteam/zeus-ui)
 # API文档

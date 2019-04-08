@@ -1,9 +1,9 @@
 package service
 
 import (
-	"zeus/pkg/models"
+	"github.com/bullteam/zeus/pkg/models"
 	"fmt"
-	"zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/dto"
 )
 
 type DepartmentService struct {

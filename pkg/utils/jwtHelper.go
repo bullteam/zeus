@@ -2,7 +2,7 @@ package utils
 
 import (
 	"time"
-	"zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/components"
 	"github.com/astaxie/beego"
 	"crypto/rsa"
 	"io/ioutil"

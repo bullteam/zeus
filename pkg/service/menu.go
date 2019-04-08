@@ -1,7 +1,7 @@
 package service
 
 import (
-	"zeus/pkg/models"
+	"github.com/bullteam/zeus/pkg/models"
 	"github.com/astaxie/beego/orm"
 )
 

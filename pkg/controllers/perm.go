@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"zeus/pkg/service"
+	"github.com/bullteam/zeus/pkg/service"
 	"strings"
 	"strconv"
-	"zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/components"
 )
 
 type PermController struct{

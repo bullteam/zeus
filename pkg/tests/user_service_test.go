@@ -2,8 +2,8 @@ package tests
 
 import (
 	"testing"
-	"zeus/pkg/service"
-	"zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/service"
+	"github.com/bullteam/zeus/pkg/dto"
     "github.com/astaxie/beego/validation"
 )
 var userService = service.UserService{}

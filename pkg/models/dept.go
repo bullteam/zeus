@@ -3,8 +3,8 @@ package models
 import (
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
-	"zeus/pkg/utils"
-	"zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/utils"
+	"github.com/bullteam/zeus/pkg/dto"
 )
 
 type DeptaddForm struct {

@@ -5,8 +5,8 @@ import (
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
-	"zeus/pkg/utils"
-	"zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/utils"
+	"github.com/bullteam/zeus/pkg/dto"
 )
 
 type DomainaddForm struct {

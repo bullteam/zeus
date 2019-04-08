@@ -2,10 +2,10 @@ package controllers
 
 import(
 	"github.com/astaxie/beego"
-	"zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/components"
 	"strings"
 	"github.com/astaxie/beego/validation"
-	"zeus/pkg/utils"
+	"github.com/bullteam/zeus/pkg/utils"
 )
 
 const LIST_ROWS_PERPAGE  =  20
