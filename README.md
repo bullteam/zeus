@@ -28,7 +28,7 @@ Zeus 宙斯权限后台，为企业提供统一后台权限管理服务。项目
 # Docker 部署
 可参考 [Docker Documentation][2] 或者直接看[官方文档][1]
 
-本项目参考，可以一键部署该项目 [docker-composer 部署脚本](http://github.com/bullteam/delopy)
+本项目参考，可以一键部署该项目 [docker-composer 部署脚本](http://github.com/bullteam/deploy)
 
 # 架构
 <img src="./docs/images/arch.png" height=920></img>
@@ -59,8 +59,14 @@ mysql> source ./install/casbin.sql;
 
 # openssl jwt 密钥生成
 [openssl jwt 密钥](docs/GenrsaKey.md)
-# Demo
+# 演示 Demo
 * [demo](http://admin.bullteam.cn)
+  
+# 接入权限系统 client demo
+* [python-client](https://github.com/bullteam/zeusclient-python)
+* [php-client](https://github.com/bullteam/zeusclient-php)
+* [java-client](https://github.com/bullteam/zeusclient-java)
+* [go-client](https://github.com/bullteam/zeusclient-go)
 # WebUI
 * [官方](https://github.com/bullteam/zeus-ui)
 # API文档
