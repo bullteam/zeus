@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego/validation"
 	"github.com/bullteam/zeus/pkg/components"
 	"github.com/bullteam/zeus/pkg/utils"
+	"path/filepath"
 	"strings"
 )
 
@@ -59,8 +60,13 @@ func (c *TokenCheckController) Prepare() {
 		c.Fail(components.ErrChkJwt)
 		return
 	}
+	jwt_public_key, err := filepath.Abs(components.Args.ConfigFile+ "/keys/jwt_public.pem")
+	if err != nil {
+		c.Fail(components.ErrChkJwt)
+		return
+	}
 	jh := components.NewJwtHandler()
-	jh.SetPublicKey(utils.LoadRSAPublicKeyFromDisk(beego.AppPath + "/keys/jwt_public.pem"))
+	jh.SetPublicKey(utils.LoadRSAPublicKeyFromDisk(jwt_public_key))
 	defer jh.Release()
 	claims, err := jh.Validate(tokenString)
 	if err != nil {

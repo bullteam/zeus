@@ -24,14 +24,9 @@ func NewPerm() *perm {
 		confFilePath := beego.AppPath
 		//if beego.AppConfig.String("mysqlurls") == "" {
 		if strings.Index(confFilePath, "/tmp") == 0 {
-			//confFilePath = "../.."
 			_, file, _, _ := runtime.Caller(0)
 			//beego.Warning(file)
 			confFilePath = filepath.Dir(filepath.Join(file, ".."+string(filepath.Separator)))
-			//err := beego.LoadAppConfig("ini", confFilePath+"/conf/app.conf")
-			//if err != nil{
-			//	beego.Error(err.Error())
-			//}
 		}
 		mysqluser := beego.AppConfig.String("mysqluser")
 		mysqlpass := beego.AppConfig.String("mysqlpass")

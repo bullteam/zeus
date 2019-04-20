@@ -1,12 +1,14 @@
 package components
 
 import (
-	"crypto/md5"
-	"encoding/base64"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"time"
 )
+
+var Args args
+type args struct {
+	ConfigFile     string
+}
 
 type ControllerError struct {
 	Code     int    `json:"code"`
@@ -56,48 +58,6 @@ var (
 type Claims struct {
 	Appid string `json:"appid"`
 	jwt.StandardClaims
-}
-
-func base64Encode(src []byte) []byte {
-	return []byte(base64.StdEncoding.EncodeToString(src))
-}
-func To_md5(encode string) (decode string) {
-	md5Ctx := md5.New()
-	md5Ctx.Write([]byte(encode))
-	cipherStr := md5Ctx.Sum(nil)
-	return string(base64Encode(cipherStr))
-}
-
-func Create_token(appid string, secret string) (string, int64) {
-	expireToken := time.Now().Add(time.Hour * 1).Unix()
-	claims := Claims{
-		appid,
-		jwt.StandardClaims{
-			ExpiresAt: expireToken,
-			Issuer:    appid,
-		},
-	}
-
-	// Create the token using your claims
-	c_token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	// Signs the token with a secret.
-	signedToken, _ := c_token.SignedString([]byte("secret"))
-
-	return signedToken, expireToken
-}
-
-func Token_auth(signedToken, secret string) (string, error) {
-	token, err := jwt.ParseWithClaims(signedToken, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret), nil
-	})
-	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
-		//fmt.Printf("%v %v", claims.Username, claims.StandardClaims.ExpiresAt)
-		//fmt.Println(reflect.TypeOf(claims.StandardClaims.ExpiresAt))
-		//return claims.Appid, err
-		return claims.Appid, err
-	}
-	return "", err
 }
 
 func Init()  {

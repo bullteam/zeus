@@ -6,6 +6,7 @@ import (
 	"github.com/bullteam/zeus/pkg/components"
 	"github.com/dgrijalva/jwt-go"
 	"io/ioutil"
+	"path/filepath"
 	"sync"
 	"time"
 )
@@ -14,7 +15,11 @@ var keyMap sync.Map
 
 func GenerateJwtWithUserInfo(uid string, uname string) (string, error) {
 	jwtToken := components.NewJwtHandler()
-	jwtToken.SetPrivateKey(LoadRSAPrivateKeyFromDisk(beego.AppPath + "/keys/jwt_private.pem"))
+	jwt_private_key, err := filepath.Abs(components.Args.ConfigFile+ "/keys/jwt_private.pem")
+	if err != nil {
+		return "",err
+	}
+	jwtToken.SetPrivateKey(LoadRSAPrivateKeyFromDisk(jwt_private_key))
 	defer jwtToken.Release()
 	claims := components.JwtClaims{Uid: uid, Uname: uname}
 	//token with 1 day expired
@@ -23,7 +28,11 @@ func GenerateJwtWithUserInfo(uid string, uname string) (string, error) {
 }
 func GenerateRefreshJwtWithToken(token string) (string, error) {
 	jwtToken := components.NewJwtHandler()
-	jwtToken.SetPrivateKey(LoadRSAPrivateKeyFromDisk(beego.AppPath + "/keys/jwt_private.pem"))
+	jwt_private_key, err := filepath.Abs(components.Args.ConfigFile+ "/keys/jwt_private.pem")
+	if err != nil {
+		return "",err
+	}
+	jwtToken.SetPrivateKey(LoadRSAPrivateKeyFromDisk(jwt_private_key))
 	defer jwtToken.Release()
 	claims := components.JwtRefreshClaims{Token: token}
 	//token with 1 day expired
