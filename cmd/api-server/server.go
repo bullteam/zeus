@@ -5,6 +5,7 @@ import (
 	"github.com/astaxie/beego"
 	_ "github.com/bullteam/zeus/pkg/routers"
 )
+
 func main() {
 	usage()
 	if beego.BConfig.RunMode == "dev" {
@@ -17,6 +18,7 @@ func main() {
 func usage() {
 	fmt.Printf("%s\n", usageStr)
 }
+
 var usageStr = `
   ______              
  |___  /              

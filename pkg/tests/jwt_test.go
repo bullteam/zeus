@@ -1,10 +1,12 @@
 package tests
+
 import (
-	"testing"
-	"time"
 	"github.com/bullteam/zeus/pkg/components"
 	"github.com/dgrijalva/jwt-go"
+	"testing"
+	"time"
 )
+
 var (
 	privateKey = `-----BEGIN RSA PRIVATE KEY-----
 MIICWwIBAAKBgQC/TYKuXsgYdoICfEZOiy1L12CbyPdudhrCjrjwVcIrhGNn6Udq
@@ -28,62 +30,62 @@ mQwfJkV/QfhaPsNjU4nCEHFMtrsYCcLYJs9uX0tJdAtE6sg/VSulg1aMqCNWvtVt
 jrrVXSbu4zbyWzVkxQIDAQAB
 -----END PUBLIC KEY-----`
 )
-func tokenGenerate(t *testing.T) string{
+
+func tokenGenerate(t *testing.T) string {
 	jh := components.NewJwtHandler()
 	//jh.privateKey = loadRSAPrivateKeyFromDisk("../keys/jwt_private.pem")
 	//jh.SetPrivateKey("../keys/jwt_private.pem")
-	key,err := jwt.ParseRSAPrivateKeyFromPEM([]byte(privateKey))
-	if err != nil{
+	key, err := jwt.ParseRSAPrivateKeyFromPEM([]byte(privateKey))
+	if err != nil {
 		t.Error(err.Error())
 	}
 	jh.SetPrivateKey(key)
 	defer jh.Release()
-	claims := components.JwtClaims{Uid:"123456",Uname:"tester"}
+	claims := components.JwtClaims{Uid: "123456", Uname: "tester"}
 	claims.ExpiresAt = time.Now().Unix() + 1
-	token,err := jh.Generate(claims)
-	if err != nil{
+	token, err := jh.Generate(claims)
+	if err != nil {
 		t.Error(err.Error())
 	}
 	return token
 }
-func TestJwtHandler_Generate(t *testing.T)  {
-	t.Logf("Generated token : %s",tokenGenerate(t))
+func TestJwtHandler_Generate(t *testing.T) {
+	t.Logf("Generated token : %s", tokenGenerate(t))
 }
 
 func TestJwtHandler_Validate(t *testing.T) {
 	token := tokenGenerate(t)
 	jh := components.NewJwtHandler()
-	key,err := jwt.ParseRSAPublicKeyFromPEM([]byte(publicKey))
-	if err != nil{
+	key, err := jwt.ParseRSAPublicKeyFromPEM([]byte(publicKey))
+	if err != nil {
 		t.Error(err.Error())
 	}
 	//jh.publicKey = loadRSAPublicKeyFromDisk("../keys/jwt_public.pem")
 	jh.SetPublicKey(key)
 	defer jh.Release()
-	claims , err:= jh.Validate(token)
-	if err != nil{
-		t.Errorf("Validate error : %s",err.Error())
-	}else {
-		t.Logf("Extra user : %s,%s",claims.Uid,claims.Uname)
+	claims, err := jh.Validate(token)
+	if err != nil {
+		t.Errorf("Validate error : %s", err.Error())
+	} else {
+		t.Logf("Extra user : %s,%s", claims.Uid, claims.Uname)
 	}
 }
 
-func TestJwtHandler_Expired(t *testing.T){
+func TestJwtHandler_Expired(t *testing.T) {
 	token := tokenGenerate(t)
 	time.Sleep(time.Second * 2)
 	jh := components.NewJwtHandler()
-	key,err := jwt.ParseRSAPublicKeyFromPEM([]byte(publicKey))
-	if err != nil{
+	key, err := jwt.ParseRSAPublicKeyFromPEM([]byte(publicKey))
+	if err != nil {
 		t.Error(err.Error())
 	}
 	//jh.publicKey = loadRSAPublicKeyFromDisk("../keys/jwt_public.pem")
 	jh.SetPublicKey(key)
 	defer jh.Release()
-	v , err := jh.Validate(token)
-	if err == nil{
+	v, err := jh.Validate(token)
+	if err == nil {
 		t.Errorf("Expired validate error ")
-	}else {
-		t.Logf("Expired check successful,claims should be null like %x",v)
+	} else {
+		t.Logf("Expired check successful,claims should be null like %x", v)
 	}
 }
-

@@ -3,17 +3,17 @@ package models
 import (
 	"crypto/rand"
 	"fmt"
-	"github.com/bullteam/zeus/pkg/components"
 	"github.com/astaxie/beego"
+	_ "github.com/astaxie/beego/cache/redis"
 	"github.com/astaxie/beego/orm"
+	"github.com/bullteam/zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/utils"
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/scrypt"
 	"io"
 	"strconv"
 	"time"
-	"github.com/bullteam/zeus/pkg/utils"
-	"github.com/bullteam/zeus/pkg/dto"
-	_ "github.com/astaxie/beego/cache/redis"
 )
 
 // RegisterForm definiton.
@@ -25,15 +25,15 @@ type RegisterForm struct {
 
 // LoginForm definiton.
 type LoginForm struct {
-	Username string `form:"username"`
-	Password string `form:"password" valid:"Required"`
+	Username   string `form:"username"`
+	Password   string `form:"password" valid:"Required"`
 	CaptchaId  string `form:"captchaid" valid:"Required"`
 	CaptchaVal string `form:"captchaval" valid:"Required"`
 }
 type LoginInfo struct {
-	Code     int   `json:"code"`
-	Msg      string `json:"msg"`
-	Data  	 map[string]interface{} `json:"data"`
+	Code int                    `json:"code"`
+	Msg  string                 `json:"msg"`
+	Data map[string]interface{} `json:"data"`
 }
 type ChangeuserroleForm struct {
 	Id       string `form:"id"`
@@ -41,41 +41,41 @@ type ChangeuserroleForm struct {
 }
 
 type User struct {
-	Id          int  `json:"id"`
-	Username    string `json:"username"`
-	Mobile      string `json:"mobile"`
-	Sex         int 	`json:"sex"`
-	Realname    string `json:"realname"`
-	Password    string `json:"-"`
-	Salt        string `json:"-"`
-	Department  *Department `orm:"rel(fk)";json:"department"`
-	Faceicon    string 	`json:"faceicon"`
-	Email       string  `json:"email"`
-	Title 		string `json:"title"`
-	Status      int    `json:"status"`
-	Create_time time.Time `orm:"auto_now_add;type(datetime)" json:"create_time"`
-	Last_login_time time.Time `orm:"auto_now_add;type(datetime)" json:"-"`
-	Roles    []*Role    `orm:"rel(m2m);rel_through(github.com/bullteam/zeus/pkg/models.UserRole)"`
+	Id              int         `json:"id"`
+	Username        string      `json:"username"`
+	Mobile          string      `json:"mobile"`
+	Sex             int         `json:"sex"`
+	Realname        string      `json:"realname"`
+	Password        string      `json:"-"`
+	Salt            string      `json:"-"`
+	Department      *Department `orm:"rel(fk)";json:"department"`
+	Faceicon        string      `json:"faceicon"`
+	Email           string      `json:"email"`
+	Title           string      `json:"title"`
+	Status          int         `json:"status"`
+	Create_time     time.Time   `orm:"auto_now_add;type(datetime)" json:"create_time"`
+	Last_login_time time.Time   `orm:"auto_now_add;type(datetime)" json:"-"`
+	Roles           []*Role     `orm:"rel(m2m);rel_through(github.com/bullteam/zeus/pkg/models.UserRole)"`
 }
 
 type DeptModel struct {
-	Id   int  `json:"id"`
+	Id   int    `json:"id"`
 	Name string `json:"name"`
 }
 
 const pwHashBytes = 64
 
-func init()  {
+func init() {
 	orm.RegisterModel(new(User))
 }
 func (u User) List(start int, limit int, q []string) ([]*User, int64) {
 	o := orm.NewOrm()
 	var users []*User
-	qs := o.QueryTable("user").Filter("status__gt",-1)
+	qs := o.QueryTable("user").Filter("status__gt", -1)
 	//qs.RelatedSel("domain","domain_id","id")
 	if len(q) > 0 {
 		for k, v := range utils.TransformFieldsCdt(q, dto.USER_SEARCH) {
-			qs = utils.TransformQset(qs,k,v.(string))
+			qs = utils.TransformQset(qs, k, v.(string))
 			//qs = qs.Filter(k, v)
 		}
 	}
@@ -104,11 +104,11 @@ func generatePassHash(password string, salt string) (hash string, err error) {
 }
 
 //10分钟内超过三次错误显示验证码
-func DisplayCapcha(username string) bool{
-	if components.Cache.IsExist("login:"+username){
-		times := components.Cache.Get("login:"+username)
-		cnt,err := strconv.ParseInt(string(times.([]byte)), 10, 64)
-		if err != nil{
+func DisplayCapcha(username string) bool {
+	if components.Cache.IsExist("login:" + username) {
+		times := components.Cache.Get("login:" + username)
+		cnt, err := strconv.ParseInt(string(times.([]byte)), 10, 64)
+		if err != nil {
 			return false
 		}
 		if cnt <= 3 {
@@ -121,15 +121,15 @@ func DisplayCapcha(username string) bool{
 }
 
 func SetCapcha(username string) bool {
-	if components.Cache.IsExist("login:"+username){
-		if err := components.Cache.Incr("login:"+username); err != nil{
+	if components.Cache.IsExist("login:" + username) {
+		if err := components.Cache.Incr("login:" + username); err != nil {
 			beego.Debug("incr err")
 		}
-	}else{
-		components.Cache.Put("login:"+username,1,1000*time.Second)
+	} else {
+		components.Cache.Put("login:"+username, 1, 1000*time.Second)
 		beego.Debug("put 1")
 	}
-	beego.Debug(components.Cache.Get("login:"+username))
+	beego.Debug(components.Cache.Get("login:" + username))
 	return true
 }
 
@@ -156,6 +156,7 @@ func (u *User) FindByID(name string) (result int, err error) {
 	}
 	return
 }
+
 //根据id取得用户信息
 func GetUser(id int) (userinfo *User, err error) {
 	o := orm.NewOrm()
@@ -168,32 +169,32 @@ func GetUser(id int) (userinfo *User, err error) {
 	return user, err
 }
 
-func NewUser(username string,password string,mobile string,sex int,realname string,
-	email string,status int,faceicon string,dept_id int,title string) (id int64,err error){
+func NewUser(username string, password string, mobile string, sex int, realname string,
+	email string, status int, faceicon string, dept_id int, title string) (id int64, err error) {
 	salt, err := generateSalt()
 	hash, err := generatePassHash(password, salt)
 	if err != nil {
 		return 0, err
 	}
-	var dept  Department
+	var dept Department
 	dept.Id = dept_id
 	newOrm := orm.NewOrm()
 	newOrm.Read(&dept, "id")
 
 	users := &User{
-		Username: username,
-		Password:hash,
-		Mobile:mobile,
-		Sex:sex,
-		Realname:realname,
-		Email:email,
-		Status:status,
-		Faceicon:faceicon,
-		Department:&dept,
-		Salt:salt,
-		Title:title,
-		Create_time:time.Now(),
-		Last_login_time:time.Now(),
+		Username:        username,
+		Password:        hash,
+		Mobile:          mobile,
+		Sex:             sex,
+		Realname:        realname,
+		Email:           email,
+		Status:          status,
+		Faceicon:        faceicon,
+		Department:      &dept,
+		Salt:            salt,
+		Title:           title,
+		Create_time:     time.Now(),
+		Last_login_time: time.Now(),
 	}
 	o := orm.NewOrm()
 	o.Using("default")
@@ -201,13 +202,13 @@ func NewUser(username string,password string,mobile string,sex int,realname stri
 	if err != nil {
 		return 0, err
 	}
-	return id,nil
+	return id, nil
 }
 
 //修改用户信息
-func UpdateUser(id int, username string,password string,mobile string,sex int,realname string,
-	email string,status int,faceicon string,dept_id int,title string) error {
-	var dept  Department
+func UpdateUser(id int, username string, password string, mobile string, sex int, realname string,
+	email string, status int, faceicon string, dept_id int, title string) error {
+	var dept Department
 	dept.Id = dept_id
 	newOrm := orm.NewOrm()
 	newOrm.Read(&dept, "id")
@@ -225,7 +226,7 @@ func UpdateUser(id int, username string,password string,mobile string,sex int,re
 		users.Department = &dept
 		users.Title = title
 		var err error
-		if password != "" {//判断密码是否为空，如果为空不更新
+		if password != "" { //判断密码是否为空，如果为空不更新
 			salt, err := generateSalt()
 			hash, err := generatePassHash(password, salt)
 			if err != nil {
@@ -233,9 +234,9 @@ func UpdateUser(id int, username string,password string,mobile string,sex int,re
 			}
 			users.Password = hash
 			users.Salt = salt
-			_, err = o.Update(users,"Username","Mobile","Sex","Realname","Email","Status","Faceicon","Department","Title","Password","Salt")
-		} else{
-			_, err = o.Update(users,"Username", "Mobile", "Sex", "Realname", "Email","Status", "Faceicon", "Department", "Title")
+			_, err = o.Update(users, "Username", "Mobile", "Sex", "Realname", "Email", "Status", "Faceicon", "Department", "Title", "Password", "Salt")
+		} else {
+			_, err = o.Update(users, "Username", "Mobile", "Sex", "Realname", "Email", "Status", "Faceicon", "Department", "Title")
 		}
 		if err != nil {
 			return err
@@ -257,7 +258,7 @@ func UpdateStatus(id int, status int) error {
 	}
 	return nil
 }
-func UpdatePassword(id int,newpwd string) error{
+func UpdatePassword(id int, newpwd string) error {
 	o := orm.NewOrm()
 	user := &User{Id: id}
 	err := o.Read(user)
@@ -273,17 +274,18 @@ func UpdatePassword(id int,newpwd string) error{
 		if err != nil {
 			return err
 		}
-	}else{
+	} else {
 		return err
 	}
 	return nil
 }
+
 //将一个用户或多个用户移到某个部门下
-func UpdateDepartment(uids []interface{},did int) (int64,error){
+func UpdateDepartment(uids []interface{}, did int) (int64, error) {
 	o := orm.NewOrm()
-	return o.QueryTable("user").Filter("id__in",uids...).Update(orm.Params{"department_id":did})
+	return o.QueryTable("user").Filter("id__in", uids...).Update(orm.Params{"department_id": did})
 }
-func User_list(page int,offset int) (user1 []*User,cnt int64){
+func User_list(page int, offset int) (user1 []*User, cnt int64) {
 	var user []*User
 	o := orm.NewOrm()
 	o.Using("default")
@@ -294,7 +296,7 @@ func User_list(page int,offset int) (user1 []*User,cnt int64){
 	for _, v := range user {
 		orm.NewOrm().LoadRelated(v, "Roles")
 	}
-	return user,counts
+	return user, counts
 }
 
 //删除
@@ -304,7 +306,7 @@ func DeleteUser(id int) error {
 	if o.Read(user) == nil {
 		user.Status = -1
 		//_, err := o.Delete(user)
-		_,err := o.Update(user)
+		_, err := o.Update(user)
 		if err != nil {
 			return err
 		}
@@ -315,11 +317,10 @@ func DeleteUser(id int) error {
 func GetUserByUid(uid int64) (user []orm.Params, err error) {
 	var users []orm.Params
 	o := orm.NewOrm()
-	_,err = o.Raw(`SELECT u.username,u.mobile,u.sex,u.realname,u.email,u.status,u.faceicon,d.name as dept_name,u.department_id FROM user u
+	_, err = o.Raw(`SELECT u.username,u.mobile,u.sex,u.realname,u.email,u.status,u.faceicon,d.name as dept_name,u.department_id FROM user u
 		   LEFT JOIN department d ON u.department_id = d.id  WHERE u.id = ?`, uid).Values(&users)
 	if err != nil {
 		return user, err
 	}
-	return users,err
+	return users, err
 }
-

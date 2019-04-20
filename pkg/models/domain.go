@@ -3,60 +3,60 @@ package models
 import (
 	"fmt"
 	"github.com/astaxie/beego/orm"
+	"github.com/bullteam/zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/utils"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
-	"github.com/bullteam/zeus/pkg/utils"
-	"github.com/bullteam/zeus/pkg/dto"
 )
 
 type DomainaddForm struct {
-	Name  string  `form:"name"`
-	Callbackurl  string `form:"callbackurl"`
-	Remark  string `form:"remark"`
-	Code string `form:"code"`
+	Name        string `form:"name"`
+	Callbackurl string `form:"callbackurl"`
+	Remark      string `form:"remark"`
+	Code        string `form:"code"`
 }
 
 type Domain struct {
-	Id           int `json:"id"`
-	Name         string `json:"name"`
-	Callbackurl  string `json:"callbackurl"`
-	Remark       string `json:"remark"`
-	Code 			string `json:"code"`
-	Create_time  time.Time `json:"created_time"`
+	Id               int       `json:"id"`
+	Name             string    `json:"name"`
+	Callbackurl      string    `json:"callbackurl"`
+	Remark           string    `json:"remark"`
+	Code             string    `json:"code"`
+	Create_time      time.Time `json:"created_time"`
 	Last_update_time time.Time `json:"updated_time"`
 }
 
-func init()  {
+func init() {
 	orm.RegisterModel(new(Domain))
 }
 
-func NewDomain(domainform *DomainaddForm) (d *Domain,err error){
+func NewDomain(domainform *DomainaddForm) (d *Domain, err error) {
 	domain := Domain{
-		Name: domainform.Name,
+		Name:        domainform.Name,
 		Callbackurl: domainform.Callbackurl,
-		Remark: domainform.Remark,
-		Code:domainform.Code,
+		Remark:      domainform.Remark,
+		Code:        domainform.Code,
 	}
-	return &domain,nil
+	return &domain, nil
 }
-func (d *Domain) Insert()  {
+func (d *Domain) Insert() {
 	o := orm.NewOrm()
 	o.Using("default")
-	_, err := o.Raw("insert into domain(name,callbackurl,remark,code) values (?,?,?,?)",d.Name,d.Callbackurl,d.Remark,d.Code).Exec()
+	_, err := o.Raw("insert into domain(name,callbackurl,remark,code) values (?,?,?,?)", d.Name, d.Callbackurl, d.Remark, d.Code).Exec()
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Println("insert ok")
 	}
 }
-func (d Domain) List(start int, limit int, q []string)([]*Domain,int64){
+func (d Domain) List(start int, limit int, q []string) ([]*Domain, int64) {
 	o := orm.NewOrm()
 	var dm []*Domain
 	qs := o.QueryTable("domain")
 	//qs.RelatedSel("domain","domain_id","id")
 	if len(q) > 0 {
 		for k, v := range utils.TransformFieldsCdt(q, dto.DOMAIN_SEARCH) {
-			qs = utils.TransformQset(qs,k,v.(string))
+			qs = utils.TransformQset(qs, k, v.(string))
 		}
 	}
 	//后期加入搜索条件可利用q参数
@@ -64,7 +64,7 @@ func (d Domain) List(start int, limit int, q []string)([]*Domain,int64){
 	c, _ := qs.Count()
 	return dm, c
 }
-func Domain_list(page int,offset int) (domainlist []*Domain,cnt int64){
+func Domain_list(page int, offset int) (domainlist []*Domain, cnt int64) {
 	var Domains []*Domain
 	o := orm.NewOrm()
 	o.Using("default")
@@ -72,12 +72,11 @@ func Domain_list(page int,offset int) (domainlist []*Domain,cnt int64){
 	counts, _ := qs.Count()
 	start := (page - 1) * offset
 	qs.Limit(offset, start).All(&Domains)
-	return Domains,counts
+	return Domains, counts
 }
 
-
 //修改
-func UpdateDomain(id int, name string,callbackurl string, remark string) error {
+func UpdateDomain(id int, name string, callbackurl string, remark string) error {
 	o := orm.NewOrm()
 	domain := &Domain{Id: id}
 	if o.Read(domain) == nil {
@@ -85,7 +84,7 @@ func UpdateDomain(id int, name string,callbackurl string, remark string) error {
 		domain.Callbackurl = callbackurl
 		domain.Remark = remark
 		//domain.Last_update_time = time.Now()
-		_, err := o.Update(domain,"Name","Callbackurl","Remark")
+		_, err := o.Update(domain, "Name", "Callbackurl", "Remark")
 		if err != nil {
 			return err
 		}
@@ -118,7 +117,7 @@ func GetDomain(id int) (Domains *Domain, err error) {
 	return domain, err
 }
 
-func (d Domain)GetDomainByCode(code string) (Domains *Domain, err error){
+func (d Domain) GetDomainByCode(code string) (Domains *Domain, err error) {
 	o := orm.NewOrm()
 	domain := new(Domain)
 	qs := o.QueryTable("domain")

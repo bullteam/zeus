@@ -1,11 +1,12 @@
 package tests
 
 import (
-	"testing"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/astaxie/beego/validation"
 	"github.com/bullteam/zeus/pkg/components"
+	_ "github.com/go-sql-driver/mysql"
+	"testing"
 )
+
 //func TestRawCasbin(t *testing.T){
 //	//orm.RegisterDriver("mysql", orm.DRMySQL)
 //	a := beegoormadapter.NewAdapter("mysql", "root:100200Lzy-mysql@tcp(120.24.83.114:3306)/auth",true)
@@ -16,14 +17,15 @@ import (
 //		t.Log("No permission")
 //	}
 //}
-func TestMyCasbin(t *testing.T){
+func TestMyCasbin(t *testing.T) {
 	perm := components.NewPerm()
-	if perm.Check("alice","v1:ssss","read","project1"){
+	if perm.Check("alice", "v1:ssss", "read", "project1") {
 		t.Log("有权限")
-	}else{
+	} else {
 		t.Log("无权限")
 	}
 }
+
 //func TestAddPermission(t *testing.T) {
 //	perm := NewPerm()
 //	if perm.AddPerm("liang.fu","menu1","view","project1"){
@@ -60,26 +62,26 @@ func TestMyCasbin(t *testing.T){
 //	perm.AddPerm("role_test","*","*","parking")
 //}
 
-func TestGetAllByRole(t *testing.T)  {
+func TestGetAllByRole(t *testing.T) {
 	perm := components.NewPerm()
-	for _,v := range perm.GetAllPermByRole("superadmin","root"){
+	for _, v := range perm.GetAllPermByRole("superadmin", "root") {
 		t.Log(v)
 	}
 }
 
-func TestDeletePerm(t *testing.T){
+func TestDeletePerm(t *testing.T) {
 	perm := components.NewPerm()
-	perm.DeleteRoleByDomain("role_test","parking")
+	perm.DeleteRoleByDomain("role_test", "parking")
 }
 
-func TestValidate(t *testing.T){
+func TestValidate(t *testing.T) {
 	type user struct {
 		Id     int
 		Name   string `form:"name" valid:"Required"` // Name 不能为空并且以 Bee 开头
-		Age    int    `valid:"Range(1, 140)"` // 1 <= Age <= 140，超出此范围即为不合法
-		Email  string `valid:"Email; MaxSize(100)"` // Email 字段需要符合邮箱格式，并且最大长度不能大于 100 个字符
-		Mobile string `valid:"Mobile"` // Mobile 必须为正确的手机号
-		IP     string `valid:"IP"` // IP 必须为一个正确的 IPv4 地址
+		Age    int    `valid:"Range(1, 140)"`        // 1 <= Age <= 140，超出此范围即为不合法
+		Email  string `valid:"Email; MaxSize(100)"`  // Email 字段需要符合邮箱格式，并且最大长度不能大于 100 个字符
+		Mobile string `valid:"Mobile"`               // Mobile 必须为正确的手机号
+		IP     string `valid:"IP"`                   // IP 必须为一个正确的 IPv4 地址
 	}
 	valid := validation.Validation{}
 	u := &user{Name: "", Age: 2, Email: "dev@beego.me"}
@@ -91,7 +93,7 @@ func TestValidate(t *testing.T){
 		// validation does not pass
 		// blabla...
 		for _, err := range valid.Errors {
-			t.Logf("key:%s,msg:%s",err.Key,err.Message)
+			t.Logf("key:%s,msg:%s", err.Key, err.Message)
 		}
 	}
 }

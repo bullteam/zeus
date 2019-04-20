@@ -1,10 +1,10 @@
 package models
 
 import (
-	"github.com/astaxie/beego/orm"
 	"database/sql"
-	"github.com/bullteam/zeus/pkg/utils"
+	"github.com/astaxie/beego/orm"
 	"github.com/bullteam/zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/utils"
 )
 
 func init() {
@@ -15,25 +15,27 @@ func init() {
 type Role struct {
 	Id int `json:"id"`
 	//DomainId    string `json:"domain_id"`
-	Name     string  `json:"name"`
-	Domain   *Domain `json:"domain" orm:"rel(one)"`
-	RoleName string  `json:"role_name"`
-	Remark   string  `json:"remark"`
-	Users    []*User `json:"users" orm:"reverse(many)"`
-	MenuIds  string  `json:"menu_ids"`
-	MenuIdsEle string `json:"menu_ids_ele"`
+	Name       string  `json:"name"`
+	Domain     *Domain `json:"domain" orm:"rel(one)"`
+	RoleName   string  `json:"role_name"`
+	Remark     string  `json:"remark"`
+	Users      []*User `json:"users" orm:"reverse(many)"`
+	MenuIds    string  `json:"menu_ids"`
+	MenuIdsEle string  `json:"menu_ids_ele"`
 }
+
 //for更新创建
 type RoleEntity struct {
 	Id int `json:"id"`
 	//DomainId    string `json:"domain_id"`
-	Name     string `json:"name"`
-	DomainId  int  `json:"domain_id"`
-	RoleName string `json:"role_name"`
-	Remark   string `json:"remark"`
-	MenuIds  string `json:"menu_ids"`
+	Name       string `json:"name"`
+	DomainId   int    `json:"domain_id"`
+	RoleName   string `json:"role_name"`
+	Remark     string `json:"remark"`
+	MenuIds    string `json:"menu_ids"`
 	MenuIdsEle string `json:"menu_ids_ele"`
 }
+
 func (r Role) List(start int, limit int, q []string) ([]Role, int64) {
 	o := orm.NewOrm()
 	var roles []Role
@@ -41,7 +43,7 @@ func (r Role) List(start int, limit int, q []string) ([]Role, int64) {
 	//qs.RelatedSel("domain","domain_id","id")
 	if len(q) > 0 {
 		for k, v := range utils.TransformFieldsCdt(q, dto.ROLE_SEARCH) {
-			qs = utils.TransformQset(qs,k,v.(string))
+			qs = utils.TransformQset(qs, k, v.(string))
 			//qs = qs.Filter(k, v)
 		}
 	}
@@ -58,10 +60,10 @@ func (r Role) GetRolesAndDomainByUid(uid string) []orm.Params {
 				inner join domain d on d.id=r.domain_id  where ur.user_id=?`, uid).Values(&roles)
 	return roles
 }
-func (r Role)GetRoleById(id int) (*Role, error) {
+func (r Role) GetRoleById(id int) (*Role, error) {
 	o := orm.NewOrm()
 	v := &Role{}
-	err1:= o.QueryTable("role").Filter("id",id).RelatedSel().One(v)
+	err1 := o.QueryTable("role").Filter("id", id).RelatedSel().One(v)
 	if err1 == nil {
 		return v, nil
 	}
@@ -75,31 +77,31 @@ func (r Role) GetRolesByUid(uid int) []orm.Params {
 		   INNER JOIN role r ON r.id =  ur.role_id WHERE ur.user_id = ?`, uid).Values(&roles)
 	return roles
 }
-func (r Role) GetRoleByDid(rid int,domain_id int) (*Role, error){
+func (r Role) GetRoleByDid(rid int, domain_id int) (*Role, error) {
 	o := orm.NewOrm()
 	v := &Role{}
-	err:= o.QueryTable("role").Filter("id",rid).Filter("domain_id",domain_id).RelatedSel().One(v)
+	err := o.QueryTable("role").Filter("id", rid).Filter("domain_id", domain_id).RelatedSel().One(v)
 	if err == nil {
 		return v, nil
 	}
 	return nil, err
 }
-func (r Role) Create(roleEntity RoleEntity)(sql.Result,error){
+func (r Role) Create(roleEntity RoleEntity) (sql.Result, error) {
 	o := orm.NewOrm()
-	qs,_ := o.Raw("insert into role (name,domain_id,role_name,remark,menu_ids,menu_ids_ele) values (?,?,?,?,?,?)").Prepare()
-	result,err := qs.Exec(roleEntity.Name,roleEntity.DomainId,roleEntity.RoleName,roleEntity.Remark,roleEntity.MenuIds,roleEntity.MenuIdsEle)
-	return result,err
+	qs, _ := o.Raw("insert into role (name,domain_id,role_name,remark,menu_ids,menu_ids_ele) values (?,?,?,?,?,?)").Prepare()
+	result, err := qs.Exec(roleEntity.Name, roleEntity.DomainId, roleEntity.RoleName, roleEntity.Remark, roleEntity.MenuIds, roleEntity.MenuIdsEle)
+	return result, err
 }
 
-func (r Role) Update(roleEntity RoleEntity) error{
+func (r Role) Update(roleEntity RoleEntity) error {
 	o := orm.NewOrm()
-	qs,_ := o.Raw("update role set name=?,domain_id=?,role_name=?,remark=?,menu_ids=?,menu_ids_ele=? where id=?").Prepare()
-	_,err := qs.Exec(roleEntity.Name,roleEntity.DomainId,roleEntity.RoleName,roleEntity.Remark,roleEntity.MenuIds,roleEntity.MenuIdsEle,roleEntity.Id)
+	qs, _ := o.Raw("update role set name=?,domain_id=?,role_name=?,remark=?,menu_ids=?,menu_ids_ele=? where id=?").Prepare()
+	_, err := qs.Exec(roleEntity.Name, roleEntity.DomainId, roleEntity.RoleName, roleEntity.Remark, roleEntity.MenuIds, roleEntity.MenuIdsEle, roleEntity.Id)
 	return err
 }
-func (r Role) Delete(roleEntity RoleEntity) error{
+func (r Role) Delete(roleEntity RoleEntity) error {
 	o := orm.NewOrm()
-	qs,_ := o.Raw("delete from role where id=? limit 1").Prepare()
-	_,err := qs.Exec(roleEntity.Id)
+	qs, _ := o.Raw("delete from role where id=? limit 1").Prepare()
+	_, err := qs.Exec(roleEntity.Id)
 	return err
 }

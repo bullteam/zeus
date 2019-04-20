@@ -1,22 +1,22 @@
 package controllers
 
 import (
+	"crypto/md5"
+	"fmt"
+	"github.com/astaxie/beego"
 	"github.com/bullteam/zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/dto"
 	"github.com/bullteam/zeus/pkg/models"
 	"github.com/bullteam/zeus/pkg/service"
 	"github.com/bullteam/zeus/pkg/utils"
-	"github.com/astaxie/beego"
 	"github.com/dchest/captcha"
 	"strconv"
 	"strings"
-	"github.com/bullteam/zeus/pkg/dto"
-	"crypto/md5"
-	"fmt"
 )
 
 type UserController struct {
 	TokenCheckController
-} 
+}
 type AccountController struct {
 	BaseController
 }
@@ -40,15 +40,15 @@ func (c *AccountController) Login() {
 		c.Fail(components.ErrInputData)
 		return
 	}
-    displayCapcha := models.DisplayCapcha(form.Username)//是否校验验证码
-    //beego.Debug(displayCapcha)
+	displayCapcha := models.DisplayCapcha(form.Username) //是否校验验证码
+	//beego.Debug(displayCapcha)
 	if displayCapcha && (form.CaptchaId == "" || form.CaptchaVal == "") {
-		beego.Debug("captcha:",form.CaptchaId+"-"+form.CaptchaVal)
+		beego.Debug("captcha:", form.CaptchaId+"-"+form.CaptchaVal)
 		c.Fail(components.ErrCaptchaEmpty)
 		return
 	}
 	if displayCapcha && (!captcha.VerifyString(form.CaptchaId, form.CaptchaVal)) {
-		beego.Debug("captcha:",form.CaptchaId+"-"+form.CaptchaVal)
+		beego.Debug("captcha:", form.CaptchaId+"-"+form.CaptchaVal)
 		c.Fail(components.ErrCaptcha)
 		return
 	}
@@ -61,7 +61,7 @@ func (c *AccountController) Login() {
 		return
 	}
 	if ok, err := user.CheckPass(form.Password); err != nil || !ok {
-		models.SetCapcha(form.Username)//错误三次设置显示验证码
+		models.SetCapcha(form.Username) //错误三次设置显示验证码
 		beego.Error("CheckUserPass:", err)
 		c.Fail(components.ErrPass)
 		return
@@ -70,27 +70,27 @@ func (c *AccountController) Login() {
 		return
 	}
 	//generate jwt with rsa private key
-	jwtoken,err := utils.GenerateJwtWithUserInfo(strconv.Itoa(user.Id),user.Username)
-	if err != nil{
+	jwtoken, err := utils.GenerateJwtWithUserInfo(strconv.Itoa(user.Id), user.Username)
+	if err != nil {
 		controllErr := components.ErrGenJwt
 		controllErr.Moreinfo = err.Error()
 		c.Fail(controllErr)
 		return
-	}else {
+	} else {
 		md5Ctx := md5.New()
 		md5Ctx.Write([]byte(jwtoken))
 		cipherStr := md5Ctx.Sum(nil)
-		refreshToken,_ := utils.GenerateRefreshJwtWithToken(fmt.Sprintf("auth%xsafe",cipherStr))
-		c.Resp(0,"success",map[string]interface{}{
-			"access_token":jwtoken,
-			"refresh_token":refreshToken,
-            "userid": user.Id,
-			"username" : user.Username,
+		refreshToken, _ := utils.GenerateRefreshJwtWithToken(fmt.Sprintf("auth%xsafe", cipherStr))
+		c.Resp(0, "success", map[string]interface{}{
+			"access_token":  jwtoken,
+			"refresh_token": refreshToken,
+			"userid":        user.Id,
+			"username":      user.Username,
 		})
 	}
 }
 
-func (c *UserController ) Add()  {
+func (c *UserController) Add() {
 	username := c.GetString("username")
 	password := c.GetString("password")
 	mobile := c.GetString("mobile")
@@ -103,34 +103,34 @@ func (c *UserController ) Add()  {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	sex,err := c.GetInt("sex")
-	if err != nil{
+	sex, err := c.GetInt("sex")
+	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	status,err := c.GetInt("status")
-	if err != nil{
+	status, err := c.GetInt("status")
+	if err != nil {
 		status = 1
 	}
-	dept_id,err := c.GetInt("dept_id")
-	if err != nil{
+	dept_id, err := c.GetInt("dept_id")
+	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
 	userCheck := models.User{}
 	if _, err := userCheck.FindByID(username); err == nil {
-		c.Fail(components.ErrDupRecord,"用户已存在")
+		c.Fail(components.ErrDupRecord, "用户已存在")
 		return
 	}
-	id,err := models.NewUser(username,password,mobile,sex,realname,email,status,faceicon,dept_id,title)
+	id, err := models.NewUser(username, password, mobile, sex, realname, email, status, faceicon, dept_id, title)
 	//用户，角色关联
 	if roles != "" {
 		sroles := strings.Split(roles, ",")
 		us := service.UserService{}
 		us.AddRoles(id, sroles)
 	}
-	c.Resp(0,"success",map[string]interface{}{
-		"id":id,
+	c.Resp(0, "success", map[string]interface{}{
+		"id": id,
 	})
 }
 
@@ -155,23 +155,23 @@ func (c *UserController) Edit() {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	id,err := c.GetInt("id")
-	if err != nil{
+	id, err := c.GetInt("id")
+	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	sex,err := c.GetInt("sex")
-	if err != nil{
+	sex, err := c.GetInt("sex")
+	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	status,err := c.GetInt("status")
-	if err != nil{
+	status, err := c.GetInt("status")
+	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	dept_id,err := c.GetInt("dept_id")
-	if err != nil{
+	dept_id, err := c.GetInt("dept_id")
+	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
@@ -179,29 +179,28 @@ func (c *UserController) Edit() {
 		c.Fail(components.ErrNoUser)
 		return
 	}
-	err = models.UpdateUser(id, username, password, mobile, sex, realname, email, status, faceicon, dept_id,title)
+	err = models.UpdateUser(id, username, password, mobile, sex, realname, email, status, faceicon, dept_id, title)
 	//用户，角色关联
 	//if roles != "" {
-		sroles := strings.Split(roles, ",")
-		us := service.UserService{}
-		us.AddRoles(int64(id), sroles)
-		if err != nil {
-			c.Fail(components.ErrNoUserChange)
-			return
-		}
+	sroles := strings.Split(roles, ",")
+	us := service.UserService{}
+	us.AddRoles(int64(id), sroles)
+	if err != nil {
+		c.Fail(components.ErrNoUserChange)
+		return
+	}
 	//}
-	c.Resp(0,"success",map[string]interface{}{
-	})
+	c.Resp(0, "success", map[string]interface{}{})
 }
 
-func (c *UserController)  Updatestatus(){
-	id,err := c.GetInt("id")
-	if err != nil{
+func (c *UserController) Updatestatus() {
+	id, err := c.GetInt("id")
+	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	status,err := c.GetInt("status")
-	if err != nil{
+	status, err := c.GetInt("status")
+	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
@@ -210,8 +209,7 @@ func (c *UserController)  Updatestatus(){
 		c.Fail(components.ErrNoUserChange)
 		return
 	}
-	c.Resp(0,"success",map[string]interface{}{
-	})
+	c.Resp(0, "success", map[string]interface{}{})
 }
 
 //func (c *UserController) List()  {
@@ -233,34 +231,34 @@ func (c *UserController) List() {
 	start, _ := c.GetInt("start", 0)
 	limit, _ := c.GetInt("limit", LIST_ROWS_PERPAGE)
 	q := c.GetString("q")
-	data, total := us.GetList(start, limit,strings.Split(q,","))
+	data, total := us.GetList(start, limit, strings.Split(q, ","))
 	c.Resp(0, "success", map[string]interface{}{
 		"result": data,
 		"total":  total,
 	})
 }
-func (c *UserController) Show()  {
-	id,err := c.GetInt("id")
+func (c *UserController) Show() {
+	id, err := c.GetInt("id")
 	if err != nil {
 		c.Fail(components.ErrIdData)
 		return
 	}
-	user,err := models.GetUserByUid(int64(id))
+	user, err := models.GetUserByUid(int64(id))
 	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
 	role := models.Role{}
 	roles := role.GetRolesByUid(id)
-	c.Resp(0,"success",map[string]interface{}{
-		"userinfo":user,
-		"role":roles,
+	c.Resp(0, "success", map[string]interface{}{
+		"userinfo": user,
+		"role":     roles,
 	})
 }
 
 /**删除用户**/
 func (c *UserController) Del() {
-	id,err := c.GetInt("id")
+	id, err := c.GetInt("id")
 	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
@@ -272,81 +270,81 @@ func (c *UserController) Del() {
 	}
 	c.Resp(0, "success", map[string]interface{}{})
 }
-func (c *UserController) GetMenu(){
+func (c *UserController) GetMenu() {
 	userService := service.UserService{}
 	code := c.GetString("code")
-	menus := userService.GetMenusByDomain(c.Uid,code)
-	c.Resp(0,code,menus)
+	menus := userService.GetMenusByDomain(c.Uid, code)
+	c.Resp(0, code, menus)
 }
 
-func (c *UserController) GetDomain(){
+func (c *UserController) GetDomain() {
 	userService := service.UserService{}
 	domains := userService.GetRelatedDomains(c.Uid)
-	c.Resp(0,"success",domains)
+	c.Resp(0, "success", domains)
 }
 
-func (c *UserController) ChangePwd(){
+func (c *UserController) ChangePwd() {
 	userService := service.UserService{}
 	pwdDto := &dto.PwdResetDto{}
 	c.ParseAndValidate(pwdDto)
-	uid,_ := strconv.Atoi(c.Uid)
-	if err := userService.ResetPassword(uid,pwdDto);err != nil{
-		c.Fail(components.ErrEditFail,err.Error())
+	uid, _ := strconv.Atoi(c.Uid)
+	if err := userService.ResetPassword(uid, pwdDto); err != nil {
+		c.Fail(components.ErrEditFail, err.Error())
 	}
-	c.Resp(0,"success")
+	c.Resp(0, "success")
 }
-func (c *UserController) ChangeUserPwd(){
+func (c *UserController) ChangeUserPwd() {
 	userService := service.UserService{}
 	pwdDto := &dto.PwdUserResetDto{}
 	c.ParseAndValidate(pwdDto)
 
-	if err := userService.ResetUserPassword(pwdDto.Uid,pwdDto);err != nil{
-		c.Fail(components.ErrEditFail,err.Error())
+	if err := userService.ResetUserPassword(pwdDto.Uid, pwdDto); err != nil {
+		c.Fail(components.ErrEditFail, err.Error())
 	}
-	c.Resp(0,"success")
+	c.Resp(0, "success")
 }
 
-func (c *UserController) MoveToNewDepartment(){
+func (c *UserController) MoveToNewDepartment() {
 	userService := service.UserService{}
 	deptDto := &dto.MoveDepartmentDto{}
 	c.ParseAndValidate(deptDto)
-	if _,err := userService.SwitchDepartment(strings.Split(deptDto.Uids,","),deptDto.Did);err != nil{
-		c.Fail(components.ErrEditFail,err.Error())
+	if _, err := userService.SwitchDepartment(strings.Split(deptDto.Uids, ","), deptDto.Did); err != nil {
+		c.Fail(components.ErrEditFail, err.Error())
 	}
-	c.Resp(0,"success")
+	c.Resp(0, "success")
 }
 
-func (c *UserController) RefreshToken(){
+func (c *UserController) RefreshToken() {
 	rt := c.GetString("refresh_token")
-	if rt == ""{
+	if rt == "" {
 		c.Fail(components.ErrWrongRefreshToken)
 		return
 	}
 	jwtHandler := components.NewJwtHandler()
-	if claims,err := jwtHandler.ValidateRefreshToken(rt);err == nil{
+	if claims, err := jwtHandler.ValidateRefreshToken(rt); err == nil {
 		vmd5 := md5.New()
 		vmd5.Write([]byte(c.RawToken))
 		cipherStr := vmd5.Sum(nil)
-		if claims.Token != fmt.Sprintf("auth%xsafe",cipherStr){
+		if claims.Token != fmt.Sprintf("auth%xsafe", cipherStr) {
 			c.Fail(components.ErrWrongRefreshToken)
 			return
 		}
-		jwtoken,err := utils.GenerateJwtWithUserInfo(c.Uid,c.Uname)
-		if err != nil{
+		jwtoken, err := utils.GenerateJwtWithUserInfo(c.Uid, c.Uname)
+		if err != nil {
 			controllErr := components.ErrGenJwt
 			controllErr.Moreinfo = err.Error()
 			c.Fail(controllErr)
 			return
-		}else {
+		} else {
 			md5Ctx := md5.New()
 			md5Ctx.Write([]byte(jwtoken))
 			cipherStr := md5Ctx.Sum(nil)
-			refreshToken,_ := utils.GenerateRefreshJwtWithToken(fmt.Sprintf("auth%xsafe",cipherStr))
-			c.Resp(0,"success",map[string]interface{}{
-				"access_token":jwtoken,
-				"refresh_token":refreshToken,
-				"userid": c.Uid,
-				"username" : c.Uname,
+			refreshToken, _ := utils.GenerateRefreshJwtWithToken(fmt.Sprintf("auth%xsafe", cipherStr))
+			c.Resp(0, "success", map[string]interface{}{
+				"access_token":  jwtoken,
+				"refresh_token": refreshToken,
+				"userid":        c.Uid,
+				"username":      c.Uname,
 			})
 		}
 	}

@@ -1,21 +1,22 @@
 package controllers
 
-import(
+import (
 	"github.com/astaxie/beego"
-	"github.com/bullteam/zeus/pkg/components"
-	"strings"
 	"github.com/astaxie/beego/validation"
+	"github.com/bullteam/zeus/pkg/components"
 	"github.com/bullteam/zeus/pkg/utils"
+	"strings"
 )
 
-const LIST_ROWS_PERPAGE  =  20
-type BaseController struct{
+const LIST_ROWS_PERPAGE = 20
+
+type BaseController struct {
 	beego.Controller
 }
 
-type TokenCheckController struct{
-	Uid string
-	Uname string
+type TokenCheckController struct {
+	Uid      string
+	Uname    string
 	RawToken string
 	BaseController
 }
@@ -24,7 +25,7 @@ type TokenCheckController struct{
 // code: 错误码
 // msg: 错误信息
 // data: 返回数据
-func (self *BaseController) Resp (code int, msg string, data ... interface{}){
+func (self *BaseController) Resp(code int, msg string, data ...interface{}) {
 	out := make(map[string]interface{})
 	out["code"] = code
 	out["msg"] = msg
@@ -38,16 +39,16 @@ func (self *BaseController) Resp (code int, msg string, data ... interface{}){
 	self.ServeJSON()
 }
 
-func (self *BaseController) Fail (errs *components.ControllerError,moreErrInfo ...string){
+func (self *BaseController) Fail(errs *components.ControllerError, moreErrInfo ...string) {
 	self.Data["json"] = errs
 	errs.Moreinfo = ""
-	for _,v := range moreErrInfo{
-		errs.Moreinfo += v+" // "
+	for _, v := range moreErrInfo {
+		errs.Moreinfo += v + " // "
 	}
 	self.ServeJSON()
 }
 
-func (c *TokenCheckController) Prepare(){
+func (c *TokenCheckController) Prepare() {
 	headAuth := c.Ctx.Input.Header("Authorization")
 	if headAuth == "" {
 		c.Fail(components.ErrChkJwt)
@@ -61,7 +62,7 @@ func (c *TokenCheckController) Prepare(){
 	jh := components.NewJwtHandler()
 	jh.SetPublicKey(utils.LoadRSAPublicKeyFromDisk(beego.AppPath + "/keys/jwt_public.pem"))
 	defer jh.Release()
-	claims,err := jh.Validate(tokenString)
+	claims, err := jh.Validate(tokenString)
 	if err != nil {
 		cerr := components.ErrChkJwt
 		cerr.Moreinfo = err.Error()
@@ -73,18 +74,18 @@ func (c *TokenCheckController) Prepare(){
 	c.RawToken = tokenString
 }
 
-func(b *BaseController)ParseAndValidate(obj interface{}){
-	if err := b.ParseForm(obj);err != nil {
-		b.Fail(components.ErrInvalidParams,err.Error())
+func (b *BaseController) ParseAndValidate(obj interface{}) {
+	if err := b.ParseForm(obj); err != nil {
+		b.Fail(components.ErrInvalidParams, err.Error())
 		return
 	}
 	valid := &validation.Validation{}
-	if v,_ := valid.Valid(obj);!v{
+	if v, _ := valid.Valid(obj); !v {
 		errs := ""
 		for _, err := range valid.Errors {
-			errs += err.Key + ":" + err.Message+" "
+			errs += err.Key + ":" + err.Message + " "
 		}
-		b.Fail(components.ErrInvalidParams,errs)
+		b.Fail(components.ErrInvalidParams, errs)
 		return
 	}
 }

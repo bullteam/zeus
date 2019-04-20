@@ -2,27 +2,27 @@ package models
 
 import (
 	"github.com/astaxie/beego/orm"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/bullteam/zeus/pkg/utils"
 	"github.com/bullteam/zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/utils"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type DeptaddForm struct {
-	Name  string  `form:"name"`
-	Parent_id  int `form:"parent_id"`
-	Order_num int `formn:"order_num"`
+	Name      string `form:"name"`
+	Parent_id int    `form:"parent_id"`
+	Order_num int    `formn:"order_num"`
 }
 
 type Department struct {
-	Id           int `json:"id"`
-	Name         string `json:"name"`
-	Order_num	int `json:"order_num"`
-	Parent_id  int `json:"parent_id"`
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Order_num int    `json:"order_num"`
+	Parent_id int    `json:"parent_id"`
 	//Create_time  time.Time `json:"create_time"`
 	//Update_time time.Time `json:"update_time"`
 }
 
-func init()  {
+func init() {
 	orm.RegisterModel(new(Department))
 }
 
@@ -33,7 +33,7 @@ func init()  {
 //	}
 //	return &dept,nil
 //}
-func (d *Department) Insert()  (int64,error){
+func (d *Department) Insert() (int64, error) {
 	o := orm.NewOrm()
 	o.Using("default")
 	return o.Insert(d)
@@ -44,19 +44,19 @@ func (d *Department) Insert()  (int64,error){
 	//	fmt.Println("insert ok")
 	//}
 }
-func (d *Department) Update()  (int64,error){
+func (d *Department) Update() (int64, error) {
 	o := orm.NewOrm()
 	o.Using("default")
 	return o.Update(d)
 }
-func (d Department) List(start int, limit int, q []string)([]*Department,int64){
+func (d Department) List(start int, limit int, q []string) ([]*Department, int64) {
 	o := orm.NewOrm()
 	var ds []*Department
 	qs := o.QueryTable("department").OrderBy("order_num")
 	//qs.RelatedSel("domain","domain_id","id")
 	if len(q) > 0 {
 		for k, v := range utils.TransformFieldsCdt(q, dto.DEPARTMENT_SEARCH) {
-			qs = utils.TransformQset(qs,k,v.(string))
+			qs = utils.TransformQset(qs, k, v.(string))
 		}
 	}
 	//后期加入搜索条件可利用q参数
@@ -64,7 +64,7 @@ func (d Department) List(start int, limit int, q []string)([]*Department,int64){
 	c, _ := qs.Count()
 	return ds, c
 }
-func Dept_list(page int,offset int) (deptlist []*Department,cnt int64){
+func Dept_list(page int, offset int) (deptlist []*Department, cnt int64) {
 	var Depts []*Department
 	o := orm.NewOrm()
 	o.Using("default")
@@ -72,12 +72,11 @@ func Dept_list(page int,offset int) (deptlist []*Department,cnt int64){
 	counts, _ := qs.Count()
 	start := (page - 1) * offset
 	qs.Limit(offset, start).All(&Depts)
-	return Depts,counts
+	return Depts, counts
 }
 
-
 //修改
-func UpdateDept(id int, name string,parent_id int) error {
+func UpdateDept(id int, name string, parent_id int) error {
 	o := orm.NewOrm()
 	dept := &Department{Id: id}
 	if o.Read(dept) == nil {
@@ -119,13 +118,13 @@ func (d Department) GetDeptByName(name string) (Department, error) {
 	o.Using("default")
 	var department Department
 	err := o.Raw("select * from department where name = ?", name).QueryRow(&department)
-	return department,err
+	return department, err
 }
 
-func (d Department) GetDeptByOtherName(id int,name string) (Department, error) {
+func (d Department) GetDeptByOtherName(id int, name string) (Department, error) {
 	o := orm.NewOrm()
 	o.Using("default")
 	var department Department
-	err := o.Raw("select * from department where name = ? and id <> ?", name,id).QueryRow(&department)
-	return department,err
+	err := o.Raw("select * from department where name = ? and id <> ?", name, id).QueryRow(&department)
+	return department, err
 }

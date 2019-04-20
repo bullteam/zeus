@@ -33,7 +33,7 @@ func (c *DomainController) List() {
 	start, _ := c.GetInt("start", 0)
 	limit, _ := c.GetInt("limit", LIST_ROWS_PERPAGE)
 	q := c.GetString("q")
-	data,_c := ds.GetList(start,limit,strings.Split(q,","))
+	data, _c := ds.GetList(start, limit, strings.Split(q, ","))
 	c.Resp(0, "success", map[string]interface{}{
 		"result": data,
 		"total":  _c,

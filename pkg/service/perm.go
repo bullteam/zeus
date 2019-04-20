@@ -7,34 +7,34 @@ import (
 	"strings"
 )
 
-type PermService struct{
-
+type PermService struct {
 }
-func (ps PermService) GetPermsByRoleAndDomain(role string , domain string) [][]string {
+
+func (ps PermService) GetPermsByRoleAndDomain(role string, domain string) [][]string {
 	perm := components.NewPerm()
-	return perm.GetAllPermByRole(role,domain)
+	return perm.GetAllPermByRole(role, domain)
 }
 
-func (ps PermService) CheckPermByUid(uid int,permission string,domain string) bool{
+func (ps PermService) CheckPermByUid(uid int, permission string, domain string) bool {
 	role := models.Role{}
 	perm := components.NewPerm()
 	roles := role.GetRolesByUid(uid)
-	for _,r := range roles {
-		rid,_ := strconv.Atoi(r["id"].(string))
-		roleData,err := role.GetRoleById(rid)
-		if err != nil || roleData == nil{
+	for _, r := range roles {
+		rid, _ := strconv.Atoi(r["id"].(string))
+		roleData, err := role.GetRoleById(rid)
+		if err != nil || roleData == nil {
 			return false
 		}
-		if perm.Check(roleData.RoleName,permission,"*",domain){
+		if perm.Check(roleData.RoleName, permission, "*", domain) {
 			return true
 		}
 	}
 	return false
 }
 
-func (ps PermService) TransformPerm(route string) string{
-	pos   := strings.LastIndex(route,"/")
-	new   := []rune(route)
+func (ps PermService) TransformPerm(route string) string {
+	pos := strings.LastIndex(route, "/")
+	new := []rune(route)
 	new[pos] = ':'
 	return string(new)
 }

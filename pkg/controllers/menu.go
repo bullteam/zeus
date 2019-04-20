@@ -1,27 +1,26 @@
 package controllers
 
 import (
-	"github.com/bullteam/zeus/pkg/models"
 	"github.com/bullteam/zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/models"
 )
-
 
 type MenuController struct {
 	TokenCheckController
 }
 
-func (c *MenuController) List()  {
+func (c *MenuController) List() {
 	domain_id, err := c.GetInt("domain_id")
 	if err != nil {
 		domain_id = 1
 	}
 	menu := models.Menu_list(domain_id)
-	c.Resp(0,"sucess",map[string]interface{}{
-        "result" : menu,
+	c.Resp(0, "sucess", map[string]interface{}{
+		"result": menu,
 	})
 }
 
-func (c *MenuController) Add()  {
+func (c *MenuController) Add() {
 	form := models.MenuaddForm{}
 	if err := c.ParseForm(&form); err != nil {
 		c.Fail(components.ErrInputData)
@@ -33,23 +32,21 @@ func (c *MenuController) Add()  {
 		return
 	}
 	Menu.Insert()
-	c.Resp(0,"success",map[string]interface{}{
-
-	})
+	c.Resp(0, "success", map[string]interface{}{})
 }
 
-func (c *MenuController) Edit()  {
-	id,err := c.GetInt("id")
+func (c *MenuController) Edit() {
+	id, err := c.GetInt("id")
 	if err != nil {
 		c.Fail(components.ErrIdData)
 		return
 	}
-	parent_id,err := c.GetInt("parent_id")
+	parent_id, err := c.GetInt("parent_id")
 	if err != nil {
 		c.Fail(components.ErrIdData)
 		return
 	}
-	domain_id,err := c.GetInt("domain_id")
+	domain_id, err := c.GetInt("domain_id")
 	if err != nil {
 		c.Fail(components.ErrIdData)
 		return
@@ -57,28 +54,28 @@ func (c *MenuController) Edit()  {
 	name := c.Input().Get("name")
 	url := c.Input().Get("url")
 	perms := c.Input().Get("perms")
-	menu_type,err := c.GetInt("menu_type")
+	menu_type, err := c.GetInt("menu_type")
 	if err != nil {
 		c.Fail(components.ErrIdData)
 		return
 	}
 	icon := c.Input().Get("icon")
-	order_num,err := c.GetInt("order_num")
+	order_num, err := c.GetInt("order_num")
 	if err != nil {
 		c.Fail(components.ErrIdData)
 		return
 	}
-	err = models.UpdateMenu(id,parent_id,domain_id,name,url,perms,menu_type,icon,order_num)
+	err = models.UpdateMenu(id, parent_id, domain_id, name, url, perms, menu_type, icon, order_num)
 	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	c.Resp(0,"success",map[string]interface{}{})
+	c.Resp(0, "success", map[string]interface{}{})
 }
 
 /**删除菜单**/
 func (c *MenuController) Del() {
-	id,err := c.GetInt("id")
+	id, err := c.GetInt("id")
 	if err != nil {
 		c.Fail(components.ErrInputData)
 		return

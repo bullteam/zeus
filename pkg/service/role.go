@@ -1,13 +1,13 @@
 package service
 
 import (
-	"github.com/bullteam/zeus/pkg/models"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/components"
-	"strings"
-	"github.com/astaxie/beego/orm"
-	"strconv"
 	"database/sql"
+	"github.com/astaxie/beego/orm"
+	"github.com/bullteam/zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/dto"
+	"github.com/bullteam/zeus/pkg/models"
+	"strconv"
+	"strings"
 )
 
 type RoleService struct {
@@ -20,86 +20,86 @@ func (r RoleService) GetList(start int, limit int, q []string) ([]models.Role, i
 }
 
 //Show
-func (r RoleService) GetRoleById(role_id int) (v *models.Role, perms [][]string,err error) {
+func (r RoleService) GetRoleById(role_id int) (v *models.Role, perms [][]string, err error) {
 	role := models.Role{}
 	perm := components.NewPerm()
-	roleRs,err := role.GetRoleById(role_id)
-	return roleRs,perm.GetAllPermByRole(roleRs.RoleName,roleRs.Domain.Code),err
+	roleRs, err := role.GetRoleById(role_id)
+	return roleRs, perm.GetAllPermByRole(roleRs.RoleName, roleRs.Domain.Code), err
 }
 
-func (r RoleService) GetRoleByDomainId(rid int,domain_id int)(*models.Role,error){
+func (r RoleService) GetRoleByDomainId(rid int, domain_id int) (*models.Role, error) {
 	role := models.Role{}
-	return role.GetRoleByDid(rid,domain_id)
+	return role.GetRoleByDid(rid, domain_id)
 }
 
-func (r RoleService) CreateRole(dto *dto.RoleDto) (sql.Result,error){
+func (r RoleService) CreateRole(dto *dto.RoleDto) (sql.Result, error) {
 	role := models.Role{}
 	return role.Create(models.RoleEntity{
-		Name:dto.Name,
-		DomainId:dto.DomainId,
-		RoleName:dto.RoleName,
-		Remark:dto.Remark,
-		MenuIds:dto.MenusIds,
-		MenuIdsEle:dto.MenusIdsEle,
+		Name:       dto.Name,
+		DomainId:   dto.DomainId,
+		RoleName:   dto.RoleName,
+		Remark:     dto.Remark,
+		MenuIds:    dto.MenusIds,
+		MenuIdsEle: dto.MenusIdsEle,
 	})
 }
 
-func (r RoleService) UpdateRole(dto *dto.RoleDto) error{
+func (r RoleService) UpdateRole(dto *dto.RoleDto) error {
 	role := models.Role{}
 	return role.Update(models.RoleEntity{
-		Id : dto.Id,
-		Name:dto.Name,
-		DomainId:dto.DomainId,
-		RoleName:dto.RoleName,
-		Remark:dto.Remark,
-		MenuIds:dto.MenusIds,
-		MenuIdsEle:dto.MenusIdsEle,
+		Id:         dto.Id,
+		Name:       dto.Name,
+		DomainId:   dto.DomainId,
+		RoleName:   dto.RoleName,
+		Remark:     dto.Remark,
+		MenuIds:    dto.MenusIds,
+		MenuIdsEle: dto.MenusIdsEle,
 	})
 }
 
-func (r RoleService) DeleteRole(id int) error{
+func (r RoleService) DeleteRole(id int) error {
 	role := models.Role{}
 	userRole := models.UserRole{}
-	roleData,err := role.GetRoleById(id)
-	if err != nil{
+	roleData, err := role.GetRoleById(id)
+	if err != nil {
 		return err
 	}
 	//1.删除数据库本表记录
 	err = role.Delete(models.RoleEntity{
-		Id:id,
+		Id: id,
 	})
-	if err != nil{
+	if err != nil {
 		return err
 	}
 	//2.删除user_role关联记录
-	_,err = userRole.DeleteByRid(int64(roleData.Id))
-	if err != nil{
+	_, err = userRole.DeleteByRid(int64(roleData.Id))
+	if err != nil {
 		return err
 	}
 	//3.删除casbin权限记录
 	perm := components.NewPerm()
-	perm.DeleteRoleByDomain(roleData.RoleName,roleData.Domain.Code)
+	perm.DeleteRoleByDomain(roleData.RoleName, roleData.Domain.Code)
 	return nil
 }
 
-func (r RoleService) AssignPerm(domain_id int,role_id int,menu_ids string) error{
+func (r RoleService) AssignPerm(domain_id int, role_id int, menu_ids string) error {
 	roleModel := models.Role{}
-	domain,err := models.GetDomain(domain_id)
-	if err != nil{
+	domain, err := models.GetDomain(domain_id)
+	if err != nil {
 		return err
 	}
-	role,err := roleModel.GetRoleById(role_id)
-	if err != nil{
+	role, err := roleModel.GetRoleById(role_id)
+	if err != nil {
 		return err
 	}
 	o := orm.NewOrm()
 	perm := components.NewPerm()
 	//1.删除旧有权限
 	perm.DeleteRoleByDomain(role.RoleName, domain.Code)
-	for _,v := range strings.Split(menu_ids,","){
-		mid,_ := strconv.Atoi(v)
-		menu := &models.Menu{Id:mid}
-		if err := o.Read(menu);err != nil {
+	for _, v := range strings.Split(menu_ids, ",") {
+		mid, _ := strconv.Atoi(v)
+		menu := &models.Menu{Id: mid}
+		if err := o.Read(menu); err != nil {
 			return err
 		}
 		if menu.Perms != "" {

@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"path/filepath"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"path/filepath"
 	"runtime"
 )
 
@@ -19,7 +19,7 @@ func init() {
 	mysqlport := beego.AppConfig.String("mysqlport")
 	mysqldb := beego.AppConfig.String("mysqldb")
 
-	beego.Warning(mysqluser+":"+mysqlpass+"@tcp("+mysqlurls+":"+mysqlport+")/"+mysqldb+"?charset=utf8mb4")
+	beego.Warning(mysqluser + ":" + mysqlpass + "@tcp(" + mysqlurls + ":" + mysqlport + ")/" + mysqldb + "?charset=utf8mb4")
 	//初始化数据库
 	orm.RegisterDataBase("default", "mysql", mysqluser+":"+mysqlpass+"@tcp("+mysqlurls+":"+mysqlport+")/"+mysqldb+"?charset=utf8mb4")
 	orm.Debug = false

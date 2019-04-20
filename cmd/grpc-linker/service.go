@@ -8,7 +8,7 @@ import (
 
 type ApiAuthServer struct{}
 
-func (aas *ApiAuthServer) CheckPerm(ctx context.Context,request *pb.PermRequest) (*pb.PermResponse,error){
+func (aas *ApiAuthServer) CheckPerm(ctx context.Context, request *pb.PermRequest) (*pb.PermResponse, error) {
 	permService := service.PermService{}
-	return &pb.PermResponse{Pass:permService.CheckPermByUid(int(request.Uid),request.Perm,request.Domain)},nil
+	return &pb.PermResponse{Pass: permService.CheckPermByUid(int(request.Uid), request.Perm, request.Domain)}, nil
 }
