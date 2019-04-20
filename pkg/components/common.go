@@ -3,6 +3,7 @@ package components
 import (
 	"crypto/md5"
 	"encoding/base64"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
@@ -97,4 +98,17 @@ func Token_auth(signedToken, secret string) (string, error) {
 		return claims.Appid, err
 	}
 	return "", err
+}
+
+func Init()  {
+	RedisInit()
+	usageStr := `
+  ______              
+ |___  /              
+    / / ___ _   _ ___ 
+   / / / _ \ | | / __|
+  / /_|  __/ |_| \__ \
+ /_____\___|\__,_|___/
+`
+	fmt.Printf("%s\n", usageStr)
 }
