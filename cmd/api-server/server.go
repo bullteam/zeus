@@ -1,10 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/bullteam/zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/config"
 	"github.com/bullteam/zeus/pkg/dao"
-	"github.com/bullteam/zeus/pkg/models"
 	_ "github.com/bullteam/zeus/pkg/routers"
 	"github.com/spf13/cobra"
 	"os"
@@ -34,12 +35,12 @@ func init() {
 
 func start(_ *cobra.Command, _ []string) error {
 	beego.LoadAppConfig("ini", components.Args.ConfigFile+"/app.conf")
-	components.Init()//启动
-	database, err := Database()
+	components.RedisInit()
+	usae()
+	database, err := config.Database()
 	if err != nil {
 		beego.Error("failed to get database configuration: %v", err)
 	}
-
 	if err := dao.InitDatabase(database); err != nil {
 		beego.Error("failed to initialize database: %v", err)
 	}
@@ -56,20 +57,15 @@ func main() {
 		os.Exit(-1)
 	}
 }
-
-// Database returns database settings
-func Database() (*models.Database, error) {
-	database := &models.Database{}
-	mysql := &models.MySQL{}
-	mysql.Host = beego.AppConfig.String("mysqlurls")
-	port,err :=beego.AppConfig.Int("mysqlport")
-	if err != nil {
-		return nil,err
-	}
-	mysql.Port = port
-	mysql.Username = beego.AppConfig.String("mysqluser")
-	mysql.Password = beego.AppConfig.String("mysqlpass")
-	mysql.Database = beego.AppConfig.String("mysqldb")
-	database.MySQL = mysql
-	return database, nil
+func usae(){
+	usageStr := `
+  ______              
+ |___  /              
+    / / ___ _   _ ___ 
+   / / / _ \ | | / __|
+  / /_|  __/ |_| \__ \
+ /_____\___|\__,_|___/
+`
+	fmt.Printf("%s\n", usageStr)
 }
+

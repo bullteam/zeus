@@ -10,7 +10,6 @@ import (
 var Cache cache.Cache
 
 func RedisInit() {
-	//env := beego.BConfig.RunMode
 	redisconn := beego.AppConfig.String("redis_conn")
 	redisport := beego.AppConfig.String("redis_port")
 	redispwd := beego.AppConfig.String("redis_pwd")

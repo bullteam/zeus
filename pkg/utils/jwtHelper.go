@@ -15,9 +15,9 @@ var keyMap sync.Map
 
 func GenerateJwtWithUserInfo(uid string, uname string) (string, error) {
 	jwtToken := components.NewJwtHandler()
-	jwt_private_key, err := filepath.Abs(components.Args.ConfigFile+ "/keys/jwt_private.pem")
+	jwt_private_key, err := filepath.Abs(components.Args.ConfigFile + "/keys/jwt_private.pem")
 	if err != nil {
-		return "",err
+		return "", err
 	}
 	jwtToken.SetPrivateKey(LoadRSAPrivateKeyFromDisk(jwt_private_key))
 	defer jwtToken.Release()
@@ -28,9 +28,9 @@ func GenerateJwtWithUserInfo(uid string, uname string) (string, error) {
 }
 func GenerateRefreshJwtWithToken(token string) (string, error) {
 	jwtToken := components.NewJwtHandler()
-	jwt_private_key, err := filepath.Abs(components.Args.ConfigFile+ "/keys/jwt_private.pem")
+	jwt_private_key, err := filepath.Abs(components.Args.ConfigFile + "/keys/jwt_private.pem")
 	if err != nil {
-		return "",err
+		return "", err
 	}
 	jwtToken.SetPrivateKey(LoadRSAPrivateKeyFromDisk(jwt_private_key))
 	defer jwtToken.Release()

@@ -5,12 +5,11 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/bullteam/zeus/pkg/models"
+
 	"strconv"
 	"strings"
 	"sync"
 )
-
-const NonExistUserID = 0
 
 // Database is an interface of different databases
 type Database interface {
@@ -28,7 +27,6 @@ func InitDatabase(database *models.Database) error {
 	if err != nil {
 		return err
 	}
-
 	beego.Info("initializing database: %s", db.String())
 	if err := db.Register(); err != nil {
 		return err

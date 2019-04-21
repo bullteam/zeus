@@ -9,8 +9,9 @@ import (
 	"sync"
 	//"strings"
 	"path/filepath"
-	"runtime"
-	"strings"
+	//"runtime"
+	//"strings"
+	//"github.com/bullteam/zeus/pkg/components"
 )
 
 var (
@@ -21,13 +22,19 @@ var (
 func NewPerm() *perm {
 	permSync.Do(func() {
 		//for unit testing
-		confFilePath := beego.AppPath
-		//if beego.AppConfig.String("mysqlurls") == "" {
-		if strings.Index(confFilePath, "/tmp") == 0 {
-			_, file, _, _ := runtime.Caller(0)
-			//beego.Warning(file)
-			confFilePath = filepath.Dir(filepath.Join(file, ".."+string(filepath.Separator)))
+		//confFilePath := beego.AppPath
+		////if beego.AppConfig.String("mysqlurls") == "" {
+		//if strings.Index(confFilePath, "/tmp") == 0 {
+		//	_, file, _, _ := runtime.Caller(0)
+		//	//beego.Warning(file)
+		//	confFilePath = filepath.Dir(filepath.Join(file, ".."+string(filepath.Separator)))
+		//}
+		rbacmodelconf, err := filepath.Abs(Args.ConfigFile+ "/rbac_model.conf")
+		if err != nil {
+			//c.Fail(components.ErrChkJwt)
+			return
 		}
+
 		mysqluser := beego.AppConfig.String("mysqluser")
 		mysqlpass := beego.AppConfig.String("mysqlpass")
 		mysqlurls := beego.AppConfig.String("mysqlurls")
@@ -35,7 +42,7 @@ func NewPerm() *perm {
 		mysqldb := beego.AppConfig.String("mysqldbcasbin")
 		a := beegoormadapter.NewAdapter("mysql", mysqluser+":"+mysqlpass+"@tcp("+mysqlurls+":"+mysqlport+")/"+mysqldb+"?charset=utf8mb4", true)
 		permOnce = &perm{
-			casbin.NewEnforcer(confFilePath+"/conf/rbac_model.conf", a),
+			casbin.NewEnforcer(rbacmodelconf, a),
 		}
 		//permOnce.enforcer.EnableAutoSave(true)
 	})

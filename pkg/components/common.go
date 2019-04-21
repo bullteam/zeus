@@ -1,7 +1,6 @@
 package components
 
 import (
-	"fmt"
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -60,15 +59,3 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func Init()  {
-	RedisInit()
-	usageStr := `
-  ______              
- |___  /              
-    / / ___ _   _ ___ 
-   / / / _ \ | | / __|
-  / /_|  __/ |_| \__ \
- /_____\___|\__,_|___/
-`
-	fmt.Printf("%s\n", usageStr)
-}
