@@ -12,18 +12,25 @@ Zeus 宙斯权限后台，为企业提供统一后台权限管理服务。项目
 ## Features
 - 登录/登出
 - 权限管理
-    - 用户管理
-    - 角色管理
+    - 用户管理(人员管理)
+    - 角色管理(功能权限管理)
     - 部门管理
     - 项目管理
     - 菜单管理
 ## Roadmap
 - 支持企业微信/钉钉登陆
-- 同步企业组织架构和用户
+- 组织架构管理(同步钉钉)
 - 风控
 - 操作日志监控
+    - 登陆日志
+    - 异常登陆
+    - 操作日志
+- 数据权限管理
+- 页面管理
+    - 页面配置管理
 - 配置中心
 - 应用中心
+- [支持2FA认证](http://www.ruanyifeng.com/blog/2017/11/2fa-tutorial.html)
   
 # Docker 部署
 可参考 [Docker Documentation][2] 或者直接看[官方文档][1]
@@ -33,21 +40,25 @@ Zeus 宙斯权限后台，为企业提供统一后台权限管理服务。项目
 # 架构
 <img src="./docs/images/arch.png" height=920></img>
 
+# 数据库E-R图
+<img src="./docs/images/dber.png" height=376></img>
+
 ### 快速开始
+需要golang 1.11+ 编译环境,设置git clone 权限
 ````
+git clone git@github.com:bullteam/zeus.git
 export GOPROXY=https://goproxy.io
 export GO111MODULE=on
-go mod tidy
 cd cmd/api-server
 go build -o zeus
-./zeus
+./zeus start -c ../../config
 
 ````
 # 数据移值
 
 ```bash
 # 执行 sql 语句
-mysql> source ./install/all.sql;
+mysql> source ./install/auth.sql;
 mysql> source ./install/casbin.sql;
 
 # 分别导入到auth、casbin库
@@ -60,7 +71,7 @@ mysql> source ./install/casbin.sql;
 # openssl jwt 密钥生成
 [openssl jwt 密钥](docs/GenrsaKey.md)
 # 演示 Demo
-* [demo](http://admin.bullteam.cn)
+* [demo](http://admin.bullteam.cn) 
   
 # 接入权限系统 client demo
 * [python-client](https://github.com/bullteam/zeusclient-python)
@@ -70,12 +81,13 @@ mysql> source ./install/casbin.sql;
 # WebUI
 * [官方](https://github.com/bullteam/zeus-ui)
 # API文档
+API 开发文档如下：
 * [POSTMAN](https://documenter.getpostman.com/view/159835/Rzfjk7Jh)
 
 [1]: https://docs.docker.com/ "Docker Documentation"
 [2]: https://github.com/yeasy/docker_practice "docker_practice"
 
-## 协作者
+## 开发者
 
 * [wutongci](http://github.com/wutongci)
 * [funlake](https://github.com/funlake)
