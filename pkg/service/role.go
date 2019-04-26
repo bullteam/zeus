@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/astaxie/beego/orm"
 	"github.com/bullteam/zeus/pkg/components"
+	"github.com/bullteam/zeus/pkg/dao"
 	"github.com/bullteam/zeus/pkg/dto"
 	"github.com/bullteam/zeus/pkg/models"
 	"strconv"
@@ -11,30 +12,27 @@ import (
 )
 
 type RoleService struct {
+	dao       *dao.RoleDao
+	domainDao *dao.DomainDao
+	urDao 	  *dao.UserRoleDao
 }
 
-//GetList
-func (r RoleService) GetList(start int, limit int, q []string) ([]models.Role, int64) {
-	role := models.Role{}
-	return role.List(start, limit, q)
+func (r *RoleService) GetList(start int, limit int, q []string) ([]models.Role, int64) {
+	return r.dao.List(start, limit, q)
 }
 
-//Show
-func (r RoleService) GetRoleById(role_id int) (v *models.Role, perms [][]string, err error) {
-	role := models.Role{}
+func (r *RoleService) GetRoleById(roleId int) (v *models.Role, perms [][]string, err error) {
 	perm := components.NewPerm()
-	roleRs, err := role.GetRoleById(role_id)
+	roleRs, err := r.dao.GetRoleById(roleId)
 	return roleRs, perm.GetAllPermByRole(roleRs.RoleName, roleRs.Domain.Code), err
 }
 
-func (r RoleService) GetRoleByDomainId(rid int, domain_id int) (*models.Role, error) {
-	role := models.Role{}
-	return role.GetRoleByDid(rid, domain_id)
+func (r *RoleService) GetRoleByDomainId(rid int, domainId int) (*models.Role, error) {
+	return r.dao.GetRoleByDid(rid, domainId)
 }
 
-func (r RoleService) CreateRole(dto *dto.RoleDto) (sql.Result, error) {
-	role := models.Role{}
-	return role.Create(models.RoleEntity{
+func (r *RoleService) CreateRole(dto *dto.RoleDto) (sql.Result, error) {
+	return r.dao.Create(models.RoleEntity{
 		Name:       dto.Name,
 		DomainId:   dto.DomainId,
 		RoleName:   dto.RoleName,
@@ -44,9 +42,8 @@ func (r RoleService) CreateRole(dto *dto.RoleDto) (sql.Result, error) {
 	})
 }
 
-func (r RoleService) UpdateRole(dto *dto.RoleDto) error {
-	role := models.Role{}
-	return role.Update(models.RoleEntity{
+func (r *RoleService) UpdateRole(dto *dto.RoleDto) error {
+	return r.dao.Update(models.RoleEntity{
 		Id:         dto.Id,
 		Name:       dto.Name,
 		DomainId:   dto.DomainId,
@@ -57,22 +54,20 @@ func (r RoleService) UpdateRole(dto *dto.RoleDto) error {
 	})
 }
 
-func (r RoleService) DeleteRole(id int) error {
-	role := models.Role{}
-	userRole := models.UserRole{}
-	roleData, err := role.GetRoleById(id)
+func (r *RoleService) DeleteRole(id int) error {
+	roleData, err := r.dao.GetRoleById(id)
 	if err != nil {
 		return err
 	}
 	//1.删除数据库本表记录
-	err = role.Delete(models.RoleEntity{
+	err = r.dao.Delete(models.RoleEntity{
 		Id: id,
 	})
 	if err != nil {
 		return err
 	}
 	//2.删除user_role关联记录
-	_, err = userRole.DeleteByRid(int64(roleData.Id))
+	_, err = r.urDao.DeleteByRid(int64(roleData.Id))
 	if err != nil {
 		return err
 	}
@@ -82,13 +77,12 @@ func (r RoleService) DeleteRole(id int) error {
 	return nil
 }
 
-func (r RoleService) AssignPerm(domain_id int, role_id int, menu_ids string) error {
-	roleModel := models.Role{}
-	domain, err := models.GetDomain(domain_id)
+func (r *RoleService) AssignPerm(domainId int, roleId int, menuIds string) error {
+	domain, err := r.domainDao.GetDomain(domainId)
 	if err != nil {
 		return err
 	}
-	role, err := roleModel.GetRoleById(role_id)
+	role, err := r.dao.GetRoleById(roleId)
 	if err != nil {
 		return err
 	}
@@ -96,7 +90,7 @@ func (r RoleService) AssignPerm(domain_id int, role_id int, menu_ids string) err
 	perm := components.NewPerm()
 	//1.删除旧有权限
 	perm.DeleteRoleByDomain(role.RoleName, domain.Code)
-	for _, v := range strings.Split(menu_ids, ",") {
+	for _, v := range strings.Split(menuIds, ",") {
 		mid, _ := strconv.Atoi(v)
 		menu := &models.Menu{Id: mid}
 		if err := o.Read(menu); err != nil {
@@ -110,4 +104,8 @@ func (r RoleService) AssignPerm(domain_id int, role_id int, menu_ids string) err
 	}
 	//perm.CommitChange()
 	return nil
+}
+
+func (r *RoleService) GetRolesByUid(uid int) []orm.Params {
+	return r.dao.GetRolesByUid(uid)
 }

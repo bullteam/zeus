@@ -6,7 +6,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/bullteam/zeus/pkg/components"
 	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/models"
 	"github.com/bullteam/zeus/pkg/service"
 	"github.com/bullteam/zeus/pkg/utils"
 	"github.com/dchest/captcha"
@@ -17,51 +16,41 @@ import (
 type UserController struct {
 	TokenCheckController
 }
+
 type AccountController struct {
-	BaseController
-}
-type LoginoutController struct {
-	TokenCheckController
-}
-type FindpasswdController struct {
-	BaseController
-}
-type ChangepasswdController struct {
-	TokenCheckController
-}
-type ChangeuserroleController struct {
 	BaseController
 }
 
 func (c *AccountController) Login() {
-	form := models.LoginForm{}
-	if err := c.ParseForm(&form); err != nil || form.Username == "" || form.Password == "" {
-		beego.Debug("ParseLoginForm:", err)
-		c.Fail(components.ErrInputData)
+	loginDto := &dto.LoginDto{}
+	err := c.ParseAndValidateFirstErr(loginDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
 		return
 	}
-	displayCapcha := models.DisplayCapcha(form.Username) //是否校验验证码
+	userService := service.UserService{}
+	displayCapcha := userService.DisplayCapcha(loginDto.Username) //是否校验验证码
 	//beego.Debug(displayCapcha)
-	if displayCapcha && (form.CaptchaId == "" || form.CaptchaVal == "") {
-		beego.Debug("captcha:", form.CaptchaId+"-"+form.CaptchaVal)
+	if displayCapcha && (loginDto.CaptchaId == "" || loginDto.CaptchaVal == "") {
+		beego.Debug("captcha:", loginDto.CaptchaId + "-" + loginDto.CaptchaVal)
 		c.Fail(components.ErrCaptchaEmpty)
 		return
 	}
-	if displayCapcha && (!captcha.VerifyString(form.CaptchaId, form.CaptchaVal)) {
-		beego.Debug("captcha:", form.CaptchaId+"-"+form.CaptchaVal)
+	if displayCapcha && (!captcha.VerifyString(loginDto.CaptchaId, loginDto.CaptchaVal)) {
+		beego.Debug("captcha:", loginDto.CaptchaId + "-" + loginDto.CaptchaVal)
 		c.Fail(components.ErrCaptcha)
 		return
 	}
 
 	//beego.Debug("ParseLoginForm:", &form)
-	user := models.User{}
-	if _, err := user.FindByID(form.Username); err != nil {
-		beego.Error("FindUserById:", err)
+	user, err := userService.FindByUserName(loginDto.Username)
+	if err != nil {
+		beego.Error("FindByUserName:", err)
 		c.Fail(components.ErrNoUser)
 		return
 	}
-	if ok, err := user.CheckPass(form.Password); err != nil || !ok {
-		models.SetCapcha(form.Username) //错误三次设置显示验证码
+	if ok, err := userService.CheckPass(loginDto.Password,user); err != nil || !ok {
+		userService.SetCapcha(loginDto.Username) //错误三次设置显示验证码
 		beego.Error("CheckUserPass:", err)
 		c.Fail(components.ErrPass)
 		return
@@ -91,43 +80,23 @@ func (c *AccountController) Login() {
 }
 
 func (c *UserController) Add() {
-	username := c.GetString("username")
-	password := c.GetString("password")
-	mobile := c.GetString("mobile")
-	faceicon := c.GetString("faceicon")
-	realname := c.GetString("realname")
-	email := c.GetString("email")
-	roles := c.GetString("roles")
-	title := c.GetString("title")
-	if username == "" || password == "" {
-		c.Fail(components.ErrInputData)
+	userAddDto := &dto.UserAddDto{}
+	err := c.ParseAndValidateFirstErr(userAddDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
 		return
 	}
-	sex, err := c.GetInt("sex")
-	if err != nil {
-		c.Fail(components.ErrInputData)
-		return
-	}
-	status, err := c.GetInt("status")
-	if err != nil {
-		status = 1
-	}
-	dept_id, err := c.GetInt("dept_id")
-	if err != nil {
-		c.Fail(components.ErrInputData)
-		return
-	}
-	userCheck := models.User{}
-	if _, err := userCheck.FindByID(username); err == nil {
+	userService := service.UserService{}
+	if _, err := userService.FindByUserName(userAddDto.Username); err == nil {
 		c.Fail(components.ErrDupRecord, "用户已存在")
 		return
 	}
-	id, err := models.NewUser(username, password, mobile, sex, realname, email, status, faceicon, dept_id, title)
+	id, err := userService.NewUser(userAddDto)
 	//用户，角色关联
+	roles := c.GetString("roles")
 	if roles != "" {
 		sroles := strings.Split(roles, ",")
-		us := service.UserService{}
-		us.AddRoles(id, sroles)
+		userService.AddRoles(id, sroles)
 	}
 	c.Resp(0, "success", map[string]interface{}{
 		"id": id,
@@ -138,53 +107,32 @@ func (c *UserController) Logout() {
 	c.Fail(components.Err404)
 }
 
-func (c *FindpasswdController) Post() {
+func (c *AccountController) Post() {
 	c.Fail(components.Err404)
 }
 
 func (c *UserController) Edit() {
-	username := c.GetString("username")
-	password := c.GetString("password")
-	mobile := c.GetString("mobile")
-	faceicon := c.GetString("faceicon")
-	realname := c.GetString("realname")
-	email := c.GetString("email")
-	roles := c.GetString("roles")
-	title := c.GetString("title")
-	if username == "" {
-		c.Fail(components.ErrInputData)
-		return
-	}
-	id, err := c.GetInt("id")
+	userEditDto := &dto.UserEditDto{}
+	err := c.ParseAndValidateFirstErr(userEditDto)
 	if err != nil {
-		c.Fail(components.ErrInputData)
+		c.Fail(components.ErrInvalidParams, err.Error())
 		return
 	}
-	sex, err := c.GetInt("sex")
-	if err != nil {
-		c.Fail(components.ErrInputData)
-		return
-	}
-	status, err := c.GetInt("status")
-	if err != nil {
-		c.Fail(components.ErrInputData)
-		return
-	}
-	dept_id, err := c.GetInt("dept_id")
-	if err != nil {
-		c.Fail(components.ErrInputData)
-		return
-	}
-	if _, err := models.GetUserByUid(int64(id)); err != nil {
+	userService := service.UserService{}
+	if _, err := userService.GetUserByUid(int64(userEditDto.Id)); err != nil {
 		c.Fail(components.ErrNoUser)
 		return
 	}
-	err = models.UpdateUser(id, username, password, mobile, sex, realname, email, status, faceicon, dept_id, title)
+	err = userService.UpdateUser(userEditDto)
+	if err != nil {
+		c.Fail(components.ErrEditFail, err.Error())
+		return
+	}
 	//用户，角色关联
+	roles := c.GetString("roles")
 	//if roles != "" {
 	sroles := strings.Split(roles, ",")
-	us := service.UserService{}
-	us.AddRoles(int64(id), sroles)
+	userService.AddRoles(int64(userEditDto.Id), sroles)
 	if err != nil {
 		c.Fail(components.ErrNoUserChange)
 		return
@@ -193,7 +141,7 @@ func (c *UserController) Edit() {
 	c.Resp(0, "success", map[string]interface{}{})
 }
 
-func (c *UserController) Updatestatus() {
+func (c *UserController) UpdateStatus() {
 	id, err := c.GetInt("id")
 	if err != nil {
 		c.Fail(components.ErrInputData)
@@ -204,7 +152,8 @@ func (c *UserController) Updatestatus() {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	err = models.UpdateStatus(id, status)
+	userService := service.UserService{}
+	err = userService.UpdateStatus(id, status)
 	if err != nil {
 		c.Fail(components.ErrNoUserChange)
 		return
@@ -212,24 +161,11 @@ func (c *UserController) Updatestatus() {
 	c.Resp(0, "success", map[string]interface{}{})
 }
 
-//func (c *UserController) List()  {
-//	page, page_err := c.GetInt("p")
-//	if page_err != nil {
-//		page = 1
-//	}
-//	offset := 20
-//    user,cnt := models.User_list(page,offset)
-//	c.Resp(0,"success",map[string]interface{}{
-//		"user" : user,
-//		"total" : cnt,
-//		"page" : page,
-//	})
-//}
 //用户列表，支持查询
 func (c *UserController) List() {
 	us := service.UserService{}
 	start, _ := c.GetInt("start", 0)
-	limit, _ := c.GetInt("limit", LIST_ROWS_PERPAGE)
+	limit, _ := c.GetInt("limit", listRowsPerPage)
 	q := c.GetString("q")
 	data, total := us.GetList(start, limit, strings.Split(q, ","))
 	c.Resp(0, "success", map[string]interface{}{
@@ -243,13 +179,14 @@ func (c *UserController) Show() {
 		c.Fail(components.ErrIdData)
 		return
 	}
-	user, err := models.GetUserByUid(int64(id))
+	userService := service.UserService{}
+	user, err := userService.GetUserByUid(int64(id))
 	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	role := models.Role{}
-	roles := role.GetRolesByUid(id)
+	roleService := service.RoleService{}
+	roles := roleService.GetRolesByUid(id)
 	c.Resp(0, "success", map[string]interface{}{
 		"userinfo": user,
 		"role":     roles,
@@ -263,13 +200,15 @@ func (c *UserController) Del() {
 		c.Fail(components.ErrInputData)
 		return
 	}
-	err = models.DeleteUser(id)
+	userService := service.UserService{}
+	err = userService.DeleteUser(id)
 	if err != nil {
 		c.Fail(components.ErrInputData)
 		return
 	}
 	c.Resp(0, "success", map[string]interface{}{})
 }
+
 func (c *UserController) GetMenu() {
 	userService := service.UserService{}
 	code := c.GetString("code")
@@ -290,9 +229,11 @@ func (c *UserController) ChangePwd() {
 	uid, _ := strconv.Atoi(c.Uid)
 	if err := userService.ResetPassword(uid, pwdDto); err != nil {
 		c.Fail(components.ErrEditFail, err.Error())
+		return
 	}
 	c.Resp(0, "success")
 }
+
 func (c *UserController) ChangeUserPwd() {
 	userService := service.UserService{}
 	pwdDto := &dto.PwdUserResetDto{}
@@ -300,6 +241,7 @@ func (c *UserController) ChangeUserPwd() {
 
 	if err := userService.ResetUserPassword(pwdDto.Uid, pwdDto); err != nil {
 		c.Fail(components.ErrEditFail, err.Error())
+		return
 	}
 	c.Resp(0, "success")
 }
@@ -310,6 +252,7 @@ func (c *UserController) MoveToNewDepartment() {
 	c.ParseAndValidate(deptDto)
 	if _, err := userService.SwitchDepartment(strings.Split(deptDto.Uids, ","), deptDto.Did); err != nil {
 		c.Fail(components.ErrEditFail, err.Error())
+		return
 	}
 	c.Resp(0, "success")
 }

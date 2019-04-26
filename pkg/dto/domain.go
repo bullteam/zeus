@@ -7,13 +7,13 @@ var DOMAIN_SEARCH = map[string]interface{}{
 	"c": "code",
 }
 
-type DomainaddAddDto struct {
+type DomainAddDto struct {
 	Name        string `form:"name"`
 	Callbackurl string `form:"callbackurl"`
 	Remark      string `form:"remark"`
 	Code        string `form:"code"`
 }
 
-func (d *DomainaddAddDto) Valid(v *validation.Validation) {
+func (d *DomainAddDto) Valid(v *validation.Validation) {
 
 }
