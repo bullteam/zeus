@@ -10,9 +10,9 @@ func Database() (*models.Database, error) {
 	database := &models.Database{}
 	mysql := &models.MySQL{}
 	mysql.Host = beego.AppConfig.String("mysqlurls")
-	port,err :=beego.AppConfig.Int("mysqlport")
+	port, err := beego.AppConfig.Int("mysqlport")
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	mysql.Port = port
 	mysql.Username = beego.AppConfig.String("mysqluser")

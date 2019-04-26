@@ -2,26 +2,26 @@ package service
 
 import (
 	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/models"
+	"github.com/bullteam/zeus/pkg/dao"
 	"strconv"
 	"strings"
 )
 
 type PermService struct {
+	roleDao *dao.RoleDao
 }
 
-func (ps PermService) GetPermsByRoleAndDomain(role string, domain string) [][]string {
+func (ps *PermService) GetPermsByRoleAndDomain(role string, domain string) [][]string {
 	perm := components.NewPerm()
 	return perm.GetAllPermByRole(role, domain)
 }
 
-func (ps PermService) CheckPermByUid(uid int, permission string, domain string) bool {
-	role := models.Role{}
+func (ps *PermService) CheckPermByUid(uid int, permission string, domain string) bool {
 	perm := components.NewPerm()
-	roles := role.GetRolesByUid(uid)
+	roles := ps.roleDao.GetRolesByUid(uid)
 	for _, r := range roles {
 		rid, _ := strconv.Atoi(r["id"].(string))
-		roleData, err := role.GetRoleById(rid)
+		roleData, err := ps.roleDao.GetRoleById(rid)
 		if err != nil || roleData == nil {
 			return false
 		}
@@ -32,9 +32,9 @@ func (ps PermService) CheckPermByUid(uid int, permission string, domain string) 
 	return false
 }
 
-func (ps PermService) TransformPerm(route string) string {
+func (ps *PermService) TransformPerm(route string) string {
 	pos := strings.LastIndex(route, "/")
-	new := []rune(route)
-	new[pos] = ':'
-	return string(new)
+	newSli := []rune(route)
+	newSli[pos] = ':'
+	return string(newSli)
 }

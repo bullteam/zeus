@@ -1,15 +1,18 @@
 package controllers
 
 import (
+	"errors"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
 	"github.com/bullteam/zeus/pkg/components"
 	"github.com/bullteam/zeus/pkg/utils"
 	"path/filepath"
+	"reflect"
 	"strings"
 )
 
-const LIST_ROWS_PERPAGE = 20
+const listRowsPerPage = 20
+const maxLimit = 500
 
 type BaseController struct {
 	beego.Controller
@@ -94,4 +97,44 @@ func (b *BaseController) ParseAndValidate(obj interface{}) {
 		b.Fail(components.ErrInvalidParams, errs)
 		return
 	}
+}
+
+// 解析并验证表单，返回第一个错误信息
+func (b *BaseController) ParseAndValidateFirstErr(obj interface{}) error {
+	if err := b.ParseForm(obj); err != nil {
+		return err
+	}
+	valid := &validation.Validation{}
+	if v, _ := valid.Valid(obj); !v {
+		// stuctTag
+		tags := make(map[string]interface{})
+		s := reflect.TypeOf(obj).Elem()
+		for i := 0; i < s.NumField(); i++ {
+			tags[s.Field(i).Name] = s.Field(i).Tag.Get("form")
+		}
+		for _, err := range valid.Errors {
+			return errors.New(tags[err.Field].(string) + ":" + err.Message)
+		}
+	}
+
+	return nil
+}
+
+// 获取分页参数
+func (b *BaseController) GetPaginationParams() (start, limit int) {
+	start, err := b.GetInt("start", 1)
+	if err != nil || start <= 0 {
+		start = 1
+	}
+
+	limit, err = b.GetInt("limit", listRowsPerPage)
+	if err != nil || limit <= 0 {
+		limit = listRowsPerPage
+	}
+
+	if limit > maxLimit {
+		limit = maxLimit
+	}
+
+	return start, limit
 }

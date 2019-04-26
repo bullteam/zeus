@@ -10,18 +10,11 @@ require (
 	github.com/funlake/beego-orm-adapter v0.0.0-20181229090034-cccde287a641
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/protobuf v1.3.1
-	github.com/google/godepq v0.0.0-20190404170206-3e694d79976f // indirect
-	github.com/icepy/go-dingtalk v0.0.0-20180430151047-e8997a391814 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/lib/pq v1.1.0 // indirect
-	github.com/pelletier/go-toml v1.3.0 // indirect
-	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cobra v0.0.3
-	github.com/spf13/jwalterweatherman v1.1.0 // indirect
-	github.com/spf13/pflag v1.0.3
-	github.com/spf13/viper v1.3.2
-	github.com/stretchr/testify v1.3.0 // indirect
+	github.com/spf13/pflag v1.0.3 // indirect
 	golang.org/x/crypto v0.0.0-20190418165655-df01cb2cc480
 	golang.org/x/net v0.0.0-20190420063019-afa5a82059c6
 	golang.org/x/sys v0.0.0-20190419153524-e8e3143a4f4a // indirect
@@ -30,4 +23,5 @@ require (
 	google.golang.org/genproto v0.0.0-20190418145605-e7d98fc518a7 // indirect
 	google.golang.org/grpc v1.20.1
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
+	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
