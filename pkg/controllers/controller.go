@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/validation"
+	"github.com/beego/i18n"
 	"github.com/bullteam/zeus/pkg/components"
 	"github.com/bullteam/zeus/pkg/utils"
 	"path/filepath"
@@ -25,6 +26,14 @@ type TokenCheckController struct {
 	BaseController
 }
 
+var CurrentLang string
+
+var langTypes []*langType // Languages are supported.
+
+type langType struct {
+	Lang, Name string
+}
+
 // 固定返回的json数据格式
 // code: 错误码
 // msg: 错误信息
@@ -44,6 +53,7 @@ func (self *BaseController) Resp(code int, msg string, data ...interface{}) {
 }
 
 func (self *BaseController) Fail(errs *components.ControllerError, moreErrInfo ...string) {
+	errs.Message = i18n.Tr(CurrentLang,errs.Langkey)
 	self.Data["json"] = errs
 	errs.Moreinfo = ""
 	for _, v := range moreErrInfo {
@@ -81,6 +91,8 @@ func (c *TokenCheckController) Prepare() {
 	c.Uid = claims.Uid
 	c.Uname = claims.Uname
 	c.RawToken = tokenString
+
+	c.setLangVer()//设置语言
 }
 
 func (b *BaseController) ParseAndValidate(obj interface{}) {
@@ -137,4 +149,81 @@ func (b *BaseController) GetPaginationParams() (start, limit int) {
 	}
 
 	return start, limit
+}
+
+/**
+	设置语言
+ */
+func (b *BaseController) setLangVer() bool {
+	// Initialized language type list.
+	langs := strings.Split(beego.AppConfig.String("lang::types"), "|")
+	names := strings.Split(beego.AppConfig.String("lang::names"), "|")
+	langTypes := make([]*langType, 0, len(langs))
+	for i, v := range langs {
+		langTypes = append(langTypes, &langType{
+			Lang: v,
+			Name: names[i],
+		})
+	}
+
+	isNeedRedir := false
+	hasCookie := false
+
+	// 1. Check URL arguments.
+	lang := b.Input().Get("lang")
+
+	// 2. Get language information from cookies.
+	if len(lang) == 0 {
+		lang = b.Ctx.GetCookie("lang")
+		hasCookie = true
+	} else {
+		isNeedRedir = true
+	}
+
+	// Check again in case someone modify by purpose.
+	if !i18n.IsExist(lang) {
+		lang = ""
+		isNeedRedir = false
+		hasCookie = false
+	}
+
+	// 3. Get language information from 'Accept-Language'.
+	if len(lang) == 0 {
+		al := b.Ctx.Request.Header.Get("Accept-Language")
+		beego.Debug(al)
+		if len(al) > 4 {
+			al = al[:5] // Only compare first 5 letters.
+			if i18n.IsExist(al) {
+				lang = al
+			}
+		}
+	}
+
+	// 4. Default language is English.
+	if len(lang) == 0 {
+		lang = "en-US"
+		isNeedRedir = false
+	}
+
+	curLang := langType{
+		Lang: lang,
+	}
+
+	// Save language information in cookies.
+	if !hasCookie {
+		b.Ctx.SetCookie("lang", curLang.Lang, 1<<31-1, "/")
+	}
+
+	restLangs := make([]*langType, 0, len(langTypes)-1)
+	for _, v := range langTypes {
+		if lang != v.Lang {
+			restLangs = append(restLangs, v)
+		} else {
+			curLang.Name = v.Name
+		}
+	}
+
+	// Set language properties.
+	CurrentLang = curLang.Lang
+	return isNeedRedir
 }
