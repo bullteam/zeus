@@ -66,10 +66,6 @@ func (c *PermController) CheckPerm() {
 	ps := service.PermService{}
 	uid, _ := strconv.Atoi(c.Uid)
 	perms := c.GetString("perm")
-	//pos   := strings.LastIndex(perms,"/")
-	//new   := []rune(perms)
-	//new[pos] = ':'
-	//perms = string(new)
 	domain := c.GetString("domain")
 	if uid < 0 || !ps.CheckPermByUid(uid, perms, domain) {
 		c.Fail(components.ErrPermission, "fail")

@@ -34,7 +34,7 @@ func init() {
 }
 
 func start(_ *cobra.Command, _ []string) error {
-	beego.LoadAppConfig("ini", components.Args.ConfigFile+"/app.conf")
+	_ = beego.LoadAppConfig("ini", components.Args.ConfigFile+"/app.conf")
 	components.RedisInit()
 	usae()
 	database, err := config.Database()
