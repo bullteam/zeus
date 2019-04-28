@@ -4,10 +4,9 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/bullteam/zeus/pkg/controllers"
 	"github.com/dchest/captcha"
-	//"github.com/astaxie/beego/plugins/cors"
 )
 
-func init() {
+func init()  {
 	/*******用户管理*******/
 	accountController := &controllers.AccountController{}
 	userController := &controllers.UserController{}
@@ -19,7 +18,6 @@ func init() {
 	beego.Router("/user/change-password", userController, "post:ChangePwd")
 	beego.Router("/user/change-user-password", userController, "post:ChangeUserPwd")
 	beego.Router("/user/add", userController, "post:Add") //用户注册
-	//beego.Router("/user", userController, "get:List")            //用户列表
 	beego.Router("/user", userController, "get:List")                       //用户列表
 	beego.Router("/user/edit", userController, "post:Edit")                 //用户编辑
 	beego.Router("/user/show", userController, "get:Show")                  //用户信息

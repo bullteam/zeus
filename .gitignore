@@ -12,3 +12,4 @@
 *.out
 .idea/
 cmd/api-server/zeus
+zeus
