@@ -25,7 +25,7 @@ type UserEditDto struct {
 	Username     string `form:"username" valid:"Required"`
 	Mobile       string `form:"mobile"`
 	Email        string `form:"email"`
-	Password     string `form:"password" valid:"Required"`
+	Password     string `form:"password"`
 	Faceicon     string `form:"faceicon"`
 	Realname     string `form:"realname"`
 	Title        string `form:"title"`
