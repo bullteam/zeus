@@ -173,6 +173,7 @@ func (c *UserController) List() {
 		"total":  total,
 	})
 }
+
 func (c *UserController) Show() {
 	id, err := c.GetInt("id")
 	if err != nil {
@@ -225,9 +226,13 @@ func (c *UserController) GetDomain() {
 func (c *UserController) ChangePwd() {
 	userService := service.UserService{}
 	pwdDto := &dto.PwdResetDto{}
-	c.ParseAndValidate(pwdDto)
+	err := c.ParseAndValidateFirstErr(pwdDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
 	uid, _ := strconv.Atoi(c.Uid)
-	if err := userService.ResetPassword(uid, pwdDto); err != nil {
+	if err = userService.ResetPassword(uid, pwdDto); err != nil {
 		c.Fail(components.ErrEditFail, err.Error())
 		return
 	}
@@ -237,9 +242,13 @@ func (c *UserController) ChangePwd() {
 func (c *UserController) ChangeUserPwd() {
 	userService := service.UserService{}
 	pwdDto := &dto.PwdUserResetDto{}
-	c.ParseAndValidate(pwdDto)
+	err := c.ParseAndValidateFirstErr(pwdDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
 
-	if err := userService.ResetUserPassword(pwdDto.Uid, pwdDto); err != nil {
+	if err = userService.ResetUserPassword(pwdDto.Uid, pwdDto); err != nil {
 		c.Fail(components.ErrEditFail, err.Error())
 		return
 	}
@@ -249,7 +258,11 @@ func (c *UserController) ChangeUserPwd() {
 func (c *UserController) MoveToNewDepartment() {
 	userService := service.UserService{}
 	deptDto := &dto.MoveDepartmentDto{}
-	c.ParseAndValidate(deptDto)
+	err := c.ParseAndValidateFirstErr(deptDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
 	if _, err := userService.SwitchDepartment(strings.Split(deptDto.Uids, ","), deptDto.Did); err != nil {
 		c.Fail(components.ErrEditFail, err.Error())
 		return
