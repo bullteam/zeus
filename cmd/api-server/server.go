@@ -25,8 +25,8 @@ func init() {
 }
 
 func start(_ *cobra.Command, _ []string) error {
-	beego.LoadAppConfig("ini", components.Args.ConfigFile+"/app.conf")
-	beego.AddFuncMap("i18n", i18n.Tr)
+	_ = beego.LoadAppConfig("ini", components.Args.ConfigFile+"/app.conf")
+	_ = beego.AddFuncMap("i18n", i18n.Tr)
 	components.RedisInit()
 	usae()
 	database, err := config.Database()

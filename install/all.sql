@@ -15,6 +15,22 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+--  Table structure for `casbin_rule`
+-- ----------------------------
+DROP TABLE IF EXISTS `casbin_rule`;
+CREATE TABLE `casbin_rule` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `p_type` varchar(255) NOT NULL DEFAULT '',
+    `v0` varchar(255) NOT NULL DEFAULT '',
+    `v1` varchar(255) NOT NULL DEFAULT '',
+    `v2` varchar(255) NOT NULL DEFAULT '',
+    `v3` varchar(255) NOT NULL DEFAULT '',
+    `v4` varchar(255) NOT NULL DEFAULT '',
+    `v5` varchar(255) NOT NULL DEFAULT '',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
 --  Table structure for `data_perm`
 -- ----------------------------
 DROP TABLE IF EXISTS `data_perm`;
