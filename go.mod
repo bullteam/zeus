@@ -12,6 +12,7 @@ require (
 	github.com/funlake/beego-orm-adapter v0.0.0-20181229090034-cccde287a641
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/protobuf v1.3.1
+	github.com/icepy/go-dingtalk v0.0.0-20180430151047-e8997a391814 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/lib/pq v1.1.0 // indirect

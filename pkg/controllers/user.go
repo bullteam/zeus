@@ -79,6 +79,13 @@ func (c *AccountController) Login() {
 	}
 }
 
+func (c *AccountController) DingtalkLogin() {
+	id :=1
+	c.Resp(0, "success", map[string]interface{}{
+		"id": id,
+	})
+}
+
 func (c *UserController) Add() {
 	userAddDto := &dto.UserAddDto{}
 	err := c.ParseAndValidateFirstErr(userAddDto)
