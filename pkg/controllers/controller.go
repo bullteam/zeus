@@ -190,7 +190,6 @@ func (b *BaseController) setLangVer() bool {
 	// 3. Get language information from 'Accept-Language'.
 	if len(lang) == 0 {
 		al := b.Ctx.Request.Header.Get("Accept-Language")
-		beego.Debug(al)
 		if len(al) > 4 {
 			al = al[:5] // Only compare first 5 letters.
 			if i18n.IsExist(al) {
@@ -201,7 +200,7 @@ func (b *BaseController) setLangVer() bool {
 
 	// 4. Default language is English.
 	if len(lang) == 0 {
-		lang = "en-US"
+		lang = "zh-CN"
 		isNeedRedir = false
 	}
 

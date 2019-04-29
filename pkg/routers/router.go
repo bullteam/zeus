@@ -6,18 +6,19 @@ import (
 	"github.com/dchest/captcha"
 )
 
-func init()  {
+func init() {
 	/*******用户管理*******/
 	accountController := &controllers.AccountController{}
 	userController := &controllers.UserController{}
 	beego.Router("/user/login", accountController, "post:Login")             //用户登录
+	beego.Router("/user/login-dingtalk", accountController, "post:DingtalkLogin")    //第三方登陆
 	beego.Router("/user/refresh-token", userController, "post:RefreshToken") //刷新令牌
 	beego.Router("/user/loginout", userController, "get:Logout")             //用户退出登录
-	beego.Router("/user/findpasswd", accountController)    				//找回密码
+	beego.Router("/user/findpasswd", accountController)                      //找回密码
 	//beego.Router("/user/changepwd", userController, "post:ChangePwd")            //用户更改密码
 	beego.Router("/user/change-password", userController, "post:ChangePwd")
 	beego.Router("/user/change-user-password", userController, "post:ChangeUserPwd")
-	beego.Router("/user/add", userController, "post:Add") //用户注册
+	beego.Router("/user/add", userController, "post:Add")                   //用户注册
 	beego.Router("/user", userController, "get:List")                       //用户列表
 	beego.Router("/user/edit", userController, "post:Edit")                 //用户编辑
 	beego.Router("/user/show", userController, "get:Show")                  //用户信息
@@ -71,8 +72,8 @@ func init()  {
 
 	// 数据权限管理
 	dataPermController := &controllers.DataPermController{}
-	beego.Router("/data/perm/list", dataPermController,"get:List") // 数据权限列表
-	beego.Router("/data/perm/add", dataPermController,"post:Add") // 添加数据权限
-	beego.Router("/data/perm/edit", dataPermController,"post:Edit") // 编辑数据权限
-	beego.Router("/data/perm/del", dataPermController,"get:Del") // 删除数据权限
+	beego.Router("/data/perm/list", dataPermController, "get:List")  // 数据权限列表
+	beego.Router("/data/perm/add", dataPermController, "post:Add")   // 添加数据权限
+	beego.Router("/data/perm/edit", dataPermController, "post:Edit") // 编辑数据权限
+	beego.Router("/data/perm/del", dataPermController, "get:Del")    // 删除数据权限
 }
