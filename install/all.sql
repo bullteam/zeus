@@ -130,6 +130,18 @@ CREATE TABLE `role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='角色表';
 
 -- ----------------------------
+--  Table structure for `role`
+-- ----------------------------
+DROP TABLE IF EXISTS `role_data_perm`;
+CREATE TABLE `role_data_perm` (
+      `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+      `role_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '角色id',
+      `data_perm_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '数据权限id',
+      PRIMARY KEY (`id`),
+      KEY `idx_rdp_role_id` (`role_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COMMENT='数据权限与角色关系表';
+
+-- ----------------------------
 --  Table structure for `user`
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;

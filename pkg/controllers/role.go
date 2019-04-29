@@ -60,13 +60,19 @@ func (r *RoleController) Add() {
 		r.Fail(components.ErrDupRecord, "角色已存在")
 		return
 	}
+	roleId, _ := result.LastInsertId()
+	// 分配功能权限
 	menuIds := r.GetString("menu_ids")
 	if menuIds != "" {
-		id, _ := result.LastInsertId()
-		if err := rs.AssignPerm(roleDto.DomainId, int(id), menuIds); err != nil {
+		if err := rs.AssignPerm(roleDto.DomainId, int(roleId), menuIds); err != nil {
 			r.Fail(components.ErrRoleAssignFail, err.Error())
 			return
 		}
+	}
+	// 分配数据权限
+	dataPermIds := r.GetString("data_perm_ids")
+	if len(dataPermIds) > 0 {
+		_ = rs.AssignDataPerm(int(roleId),dataPermIds)
 	}
 	r.Resp(0, "success")
 }
@@ -89,12 +95,18 @@ func (r *RoleController) Edit() {
 		r.Fail(components.ErrEditFail, err.Error())
 		return
 	}
+	// 分配功能权限
 	menuIds := r.GetString("menu_ids")
 	if menuIds != "" {
 		if err := rs.AssignPerm(roleDto.DomainId, roleDto.Id, menuIds); err != nil {
 			r.Fail(components.ErrRoleAssignFail, err.Error())
 			return
 		}
+	}
+	// 分配数据权限
+	dataPermIds := r.GetString("data_perm_ids")
+	if len(dataPermIds) > 0 {
+		_ = rs.AssignDataPerm(roleDto.Id,dataPermIds)
 	}
 	r.Resp(0, "success")
 }

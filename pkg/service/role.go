@@ -14,7 +14,8 @@ import (
 type RoleService struct {
 	dao       *dao.RoleDao
 	domainDao *dao.DomainDao
-	urDao 	  *dao.UserRoleDao
+	urDao     *dao.UserRoleDao
+	rdpDao    *dao.RoleDataPermDao
 }
 
 func (r *RoleService) GetList(start int, limit int, q []string) ([]models.Role, int64) {
@@ -24,6 +25,9 @@ func (r *RoleService) GetList(start int, limit int, q []string) ([]models.Role, 
 func (r *RoleService) GetRoleById(roleId int) (v *models.Role, perms [][]string, err error) {
 	perm := components.NewPerm()
 	roleRs, err := r.dao.GetRoleById(roleId)
+	if err != nil {
+		return roleRs, perms, err
+	}
 	return roleRs, perm.GetAllPermByRole(roleRs.RoleName, roleRs.Domain.Code), err
 }
 
@@ -74,9 +78,13 @@ func (r *RoleService) DeleteRole(id int) error {
 	//3.删除casbin权限记录
 	perm := components.NewPerm()
 	perm.DeleteRoleByDomain(roleData.RoleName, roleData.Domain.Code)
+
+	//4.删除数据权限
+	_ = r.rdpDao.DeleteByRoleId(id)
 	return nil
 }
 
+// 分配功能权限
 func (r *RoleService) AssignPerm(domainId int, roleId int, menuIds string) error {
 	domain, err := r.domainDao.GetDomain(domainId)
 	if err != nil {
@@ -103,6 +111,40 @@ func (r *RoleService) AssignPerm(domainId int, roleId int, menuIds string) error
 		}
 	}
 	//perm.CommitChange()
+	return nil
+}
+
+// 分配数据权限
+func (r *RoleService) AssignDataPerm(roleId int, dataPermIds string) error {
+	var (
+		dtos           []dto.AssignDataPermDto
+		dtoOne         dto.AssignDataPermDto
+		oldDataPermIds []int
+		dataIds        []string
+	)
+
+	// 查询旧的数据权限列表
+	oldRoleDataPerms, _ := r.rdpDao.GetByRoleId(roleId)
+
+	// 删除该角色所有旧的数据权限再插入新的
+	if len(oldRoleDataPerms) > 0 {
+		for _, v := range oldRoleDataPerms {
+			oldDataPermIds = append(oldDataPermIds, v.DataPermId)
+		}
+		_ = r.rdpDao.DeleteMulti(roleId, oldDataPermIds)
+	}
+	// 插入新的数据权限
+	dataIds = strings.Split(dataPermIds, ",")
+	if len(dataIds) > 0 {
+		for _, v := range dataIds {
+			tmpId, _ := strconv.Atoi(v)
+			dtoOne.RoleId = roleId
+			dtoOne.DataPermId = tmpId
+			dtos = append(dtos, dtoOne)
+		}
+		_ = r.rdpDao.InsertMulti(dtos)
+	}
+
 	return nil
 }
 
