@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"github.com/astaxie/beego/orm"
 	"github.com/bullteam/zeus/pkg/dto"
 	"github.com/bullteam/zeus/pkg/models"
 )
@@ -19,7 +20,6 @@ func (dao *RoleDataPermDao) InsertMulti(dtos []dto.AssignDataPermDto) error {
 		roleDataPerm.DataPermId = v.DataPermId
 		roleDataPerms = append(roleDataPerms, roleDataPerm)
 	}
-
 	_, err := o.InsertMulti(len(roleDataPerms), roleDataPerms)
 
 	return err
@@ -29,7 +29,7 @@ func (dao *RoleDataPermDao) InsertMulti(dtos []dto.AssignDataPermDto) error {
 func (dao *RoleDataPermDao) DeleteMulti(roleId int, dataPermIds []int) error {
 	o := GetOrmer()
 	for _, v := range dataPermIds {
-		_, _ = o.QueryTable(new(models.RoleDataPerm)).Filter("role_id",roleId).Filter("data_perm_id",v).Delete()
+		_, _ = o.QueryTable(new(models.RoleDataPerm)).Filter("role_id", roleId).Filter("data_perm_id", v).Delete()
 	}
 
 	return nil
@@ -38,16 +38,16 @@ func (dao *RoleDataPermDao) DeleteMulti(roleId int, dataPermIds []int) error {
 // 通过角色id删除所有数据权限
 func (dao *RoleDataPermDao) DeleteByRoleId(roleId int) error {
 	o := GetOrmer()
-	_, err := o.QueryTable(new(models.RoleDataPerm)).Filter("role_id",roleId).Delete()
+	_, err := o.QueryTable(new(models.RoleDataPerm)).Filter("role_id", roleId).Delete()
 
 	return err
 }
 
 // 根据角色id查找数据权限
-func (dao *RoleDataPermDao) GetByRoleId(roleId int) (rdps []models.RoleDataPerm, err error) {
+func (dao *RoleDataPermDao) GetByRoleId(roleId int) (rdps []orm.Params, err error) {
 	o := GetOrmer()
-
-	_, err = o.QueryTable(new(models.RoleDataPerm)).Filter("role_id", roleId).All(&rdps)
+	sql := "select rdp.role_id,dp.name,dp.perms,dp.id from role_data_perm as rdp left join data_perm as dp on rdp.data_perm_id=dp.id where rdp.role_id=?"
+	_, err = o.Raw(sql, roleId).Values(&rdps)
 
 	return rdps, err
 }

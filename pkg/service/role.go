@@ -129,7 +129,8 @@ func (r *RoleService) AssignDataPerm(roleId int, dataPermIds string) error {
 	// 删除该角色所有旧的数据权限再插入新的
 	if len(oldRoleDataPerms) > 0 {
 		for _, v := range oldRoleDataPerms {
-			oldDataPermIds = append(oldDataPermIds, v.DataPermId)
+			tmpId, _ := strconv.Atoi(v["id"].(string))
+			oldDataPermIds = append(oldDataPermIds, tmpId)
 		}
 		_ = r.rdpDao.DeleteMulti(roleId, oldDataPermIds)
 	}
@@ -150,4 +151,9 @@ func (r *RoleService) AssignDataPerm(roleId int, dataPermIds string) error {
 
 func (r *RoleService) GetRolesByUid(uid int) []orm.Params {
 	return r.dao.GetRolesByUid(uid)
+}
+
+// 通过角色id获取数据权限列表
+func (r *RoleService) GetRoleDataPermsByRoleId(roleId int) ([]orm.Params,error){
+	return r.rdpDao.GetByRoleId(roleId)
 }
