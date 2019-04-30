@@ -9,14 +9,14 @@ var DepartmentSearch = map[string]interface{}{
 type DepartmentAddDto struct {
 	Name     string `form:"name" valid:"Required"`
 	ParentId int    `form:"parent_id"`
-	OrderNum int    `form:"order_num"`
+	OrderNum int    `form:"order_num" valid:"Min(0)"`
 }
 
 type DepartmentEditDto struct {
 	Id       int    `form:"id" valid:"Required;Min(1)"`
 	Name     string `form:"name" valid:"Required"`
 	ParentId int    `form:"parent_id"`
-	OrderNum int    `form:"order_num" valid:"Min(1)"`
+	OrderNum int    `form:"order_num" valid:"Min(0)"`
 }
 
 // 如果你的 struct 实现了接口 validation.ValidFormer
