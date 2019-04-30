@@ -14,7 +14,7 @@ import (
 type RoleService struct {
 	dao       *dao.RoleDao
 	domainDao *dao.DomainDao
-	urDao 	  *dao.UserRoleDao
+	urDao     *dao.UserRoleDao
 }
 
 func (r *RoleService) GetList(start int, limit int, q []string) ([]models.Role, int64) {

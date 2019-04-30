@@ -16,5 +16,6 @@ func init() {
 		new(Role),
 		new(User),
 		new(UserRole),
+		new(UserOAuth),
 	)
 }

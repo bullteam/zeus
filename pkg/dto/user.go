@@ -62,6 +62,10 @@ type MoveDepartmentDto struct {
 	Did  int    `form:"department_id" valid:"Required"`
 }
 
+type LoginDingtalkDto struct {
+	Code string `form:"code"`
+}
+
 func (prd *PwdResetDto) Valid(v *validation.Validation) {
 	if prd.NewPwd != prd.NewRePwd {
 		v.SetError("NewPwd", "新密码与确认密码不一致")

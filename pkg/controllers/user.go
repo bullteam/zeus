@@ -22,6 +22,7 @@ type AccountController struct {
 }
 
 func (c *AccountController) Login() {
+	c.setLangVer() //设置语言
 	loginDto := &dto.LoginDto{}
 	err := c.ParseAndValidateFirstErr(loginDto)
 	if err != nil {
@@ -30,26 +31,24 @@ func (c *AccountController) Login() {
 	}
 	userService := service.UserService{}
 	displayCapcha := userService.DisplayCapcha(loginDto.Username) //是否校验验证码
-	//beego.Debug(displayCapcha)
 	if displayCapcha && (loginDto.CaptchaId == "" || loginDto.CaptchaVal == "") {
-		beego.Debug("captcha:", loginDto.CaptchaId + "-" + loginDto.CaptchaVal)
+		beego.Debug("captcha:", loginDto.CaptchaId+"-"+loginDto.CaptchaVal)
 		c.Fail(components.ErrCaptchaEmpty)
 		return
 	}
 	if displayCapcha && (!captcha.VerifyString(loginDto.CaptchaId, loginDto.CaptchaVal)) {
-		beego.Debug("captcha:", loginDto.CaptchaId + "-" + loginDto.CaptchaVal)
+		beego.Debug("captcha:", loginDto.CaptchaId+"-"+loginDto.CaptchaVal)
 		c.Fail(components.ErrCaptcha)
 		return
 	}
 
-	//beego.Debug("ParseLoginForm:", &form)
 	user, err := userService.FindByUserName(loginDto.Username)
 	if err != nil {
 		beego.Error("FindByUserName:", err)
 		c.Fail(components.ErrNoUser)
 		return
 	}
-	if ok, err := userService.CheckPass(loginDto.Password,user); err != nil || !ok {
+	if ok, err := userService.CheckPass(loginDto.Password, user); err != nil || !ok {
 		userService.SetCapcha(loginDto.Username) //错误三次设置显示验证码
 		beego.Error("CheckUserPass:", err)
 		c.Fail(components.ErrPass)
@@ -79,10 +78,78 @@ func (c *AccountController) Login() {
 	}
 }
 
+//钉钉登陆
 func (c *AccountController) DingtalkLogin() {
-	id :=1
+	c.setLangVer() //设置语言
+	dingtalkDto := &dto.LoginDingtalkDto{}
+	err := c.ParseAndValidateFirstErr(dingtalkDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
+	userService := service.UserService{}
+	user,err := userService.LoginByDingtalk(dingtalkDto.Code)
+	if err != nil{
+		c.Fail(components.ErrNoUser, err.Error())
+		return
+	}
+	//generate jwt with rsa private key
+	jwtoken, err := utils.GenerateJwtWithUserInfo(strconv.Itoa(user.Id), user.Name)
+	if err != nil {
+		controllErr := components.ErrGenJwt
+		controllErr.Moreinfo = err.Error()
+		c.Fail(controllErr)
+		return
+	} else {
+		md5Ctx := md5.New()
+		md5Ctx.Write([]byte(jwtoken))
+		cipherStr := md5Ctx.Sum(nil)
+		refreshToken, _ := utils.GenerateRefreshJwtWithToken(fmt.Sprintf("auth%xsafe", cipherStr))
+		c.Resp(0, "success", map[string]interface{}{
+			"access_token":  jwtoken,
+			"refresh_token": refreshToken,
+			"userid":        user.Id,
+			"username":      user.Name,
+		})
+	}
+}
+
+//绑定钉钉
+func (c *UserController) DingtalkBind() {
+	dingtalkDto := &dto.LoginDingtalkDto{}
+	err := c.ParseAndValidateFirstErr(dingtalkDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
+	userService := service.UserService{}
+	user_id, err := strconv.Atoi(c.Uid)
+	if err != nil {
+		c.Fail(components.ErrInvalidUser, err.Error())
+		return
+	}
+	openid,err := userService.BindByDingtalk(dingtalkDto.Code, user_id)
+	if err != nil {
+		c.Fail(components.ErrBindDingtalk, err.Error())
+	}
 	c.Resp(0, "success", map[string]interface{}{
-		"id": id,
+		"openid": openid,
+	})
+}
+
+
+//解除绑定钉钉
+func (c *UserController) DingtalkUnbind() {
+	dingtalkDto := &dto.LoginDingtalkDto{}
+	err := c.ParseAndValidateFirstErr(dingtalkDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
+	userService := service.UserService{}
+	beego.Debug(userService)
+	c.Resp(0, "success", map[string]interface{}{
+		"state": "",
 	})
 }
 
