@@ -35,6 +35,9 @@ func (r *RoleController) Show() {
 	//get data
 	data, perms, err := rs.GetRoleById(roleId)
 
+	// 获取数据权限列表
+	dataPerms, _ := rs.GetRoleDataPermsByRoleId(roleId)
+
 	//err data
 	if err != nil {
 		r.Fail(components.ErrIdData)
@@ -43,6 +46,7 @@ func (r *RoleController) Show() {
 	r.Resp(0, "success", map[string]interface{}{
 		"detail": data,
 		"perms":  perms,
+		"data_perms": dataPerms,
 	})
 }
 
