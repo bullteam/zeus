@@ -140,16 +140,20 @@ func (c *UserController) DingtalkBind() {
 
 //解除绑定钉钉
 func (c *UserController) DingtalkUnbind() {
-	dingtalkDto := &dto.LoginDingtalkDto{}
-	err := c.ParseAndValidateFirstErr(dingtalkDto)
+	UnBindDingtalkDto := &dto.UnBindDingtalkDto{}
+	err := c.ParseAndValidateFirstErr(UnBindDingtalkDto)
 	if err != nil {
 		c.Fail(components.ErrInvalidParams, err.Error())
 		return
 	}
 	userService := service.UserService{}
-	beego.Debug(userService)
+	Oauthid, err := strconv.Atoi(UnBindDingtalkDto.Oauthid)
+	errs := userService.UnBindUserDingtalk(Oauthid)
+	if errs != nil {
+		c.Fail(components.ErrUnBindDingtalk, errs.Error())
+	}
 	c.Resp(0, "success", map[string]interface{}{
-		"state": "",
+		"state": true,
 	})
 }
 

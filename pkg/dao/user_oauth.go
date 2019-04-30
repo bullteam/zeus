@@ -1,8 +1,6 @@
 package dao
 
 import (
-	"database/sql"
-	"github.com/astaxie/beego/orm"
 	"github.com/bullteam/zeus/pkg/models"
 )
 
@@ -18,16 +16,21 @@ func (dao *UserOAuthDao) GetUserByOpenId(openid string, from int) (*models.UserO
 	}
 	return nil, nil
 }
-func (dao *UserOAuthDao) Create(userOAuth models.UserOAuth) (sql.Result, error) {
+
+func (dao *UserOAuthDao) Create(userOAuth models.UserOAuth) (int64, error) {
 	o := GetOrmer()
-	qs, _ := o.Raw("insert into user_oauth (from,user_id,name,openid,unionid,avatar,extra) values (?,?,?,?,?,?,?)").Prepare()
-	result, err := qs.Exec(userOAuth.From, userOAuth.User_id, userOAuth.Name, userOAuth.Openid, userOAuth.Unionid, userOAuth.Avatar, userOAuth.Extra)
-	return result, err
+	return o.Insert(&userOAuth)
 }
 
-func (dao *UserOAuthDao) Delete(userOAuth models.UserOAuth) error {
-	o := orm.NewOrm()
-	qs, _ := o.Raw("delete from user_oauth where id=? limit 1").Prepare()
-	_, err := qs.Exec(userOAuth.Id)
-	return err
+func (dao *UserOAuthDao) Delete(id int) error {
+	o := GetOrmer()
+	UserOAuth := &models.UserOAuth{Id: id}
+	if o.Read(UserOAuth) == nil {
+		_, err := o.Delete(UserOAuth)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -54,6 +54,7 @@ var (
 	ErrDupRecord         = &ControllerError{13005, "err.ErrDupRecord", "", ""}
 	ErrWrongRefreshToken = &ControllerError{13006, "err.ErrWrongRefreshToken", "", ""}
 	ErrBindDingtalk      = &ControllerError{13007, "err.ErrBindDingtalk", "", ""}
+	ErrUnBindDingtalk    = &ControllerError{13008, "err.ErrUnBindDingtalk", "", ""}
 )
 
 type Claims struct {

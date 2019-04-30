@@ -6,6 +6,7 @@ import (
 	"github.com/bullteam/zeus/pkg/dao"
 	"github.com/bullteam/zeus/pkg/dto"
 	"github.com/bullteam/zeus/pkg/models"
+	"github.com/bullteam/zeus/pkg/utils"
 	dingtalk "github.com/icepy/go-dingtalk/src"
 	"strconv"
 )
@@ -165,19 +166,20 @@ func (us *UserService) BindByDingtalk(code string, uid int) (openid string,err e
 	if err != nil {
 		return  "",err
 	}
-	User,errs := us.userOAuthDao.GetUserByOpenId(Info.OpenID, 1)
-	if errs != nil || User.Openid != ""{
-		return  "",errs
+	User,errs := us.userOAuthDao.GetUserByOpenId(Info.Openid, 1)
+	if errs != nil || !utils.IsNilObject(User){
+		return  "",nil
 	}
+	beego.Debug(Info)
 	userOAuth := models.UserOAuth{
 		From:    1, // 1表示钉钉
 		User_id: uid,
 		Name:    Info.Nick,
-		Openid:  Info.OpenID,
-		Unionid: Info.UnionID,
+		Openid:  Info.Openid,
+		Unionid: Info.Unionid,
 	}
 	us.userOAuthDao.Create(userOAuth)
-	return Info.OpenID,nil
+	return Info.Openid,nil
 }
 
 //钉钉登陆
@@ -186,39 +188,36 @@ func (us *UserService) LoginByDingtalk(code string) (user *models.UserOAuth ,err
 	if err != nil {
 		return nil,err
 	}
-	User, err := us.userOAuthDao.GetUserByOpenId(Info.OpenID, 1)
+	User, err := us.userOAuthDao.GetUserByOpenId(Info.Openid, 1)
 	if err == nil {
 		return User,nil
 	}
 	return nil,err
 }
 
-func getUserInfo(code string) (UserInfo *dingtalk.SNSGetUserInfo,err error) {
+func getUserInfo(code string) (UserInfo *DingtalkUserInfo,err error) {
 	c := GetCompanyDingTalkClient()
 	c.RefreshSNSAccessToken()
 	perInfo, err := c.SNSGetPersistentCode(code)
-	beego.Debug("23342342")
 	if err != nil {
 		return nil,err
 	}
 	snstoken, err := c.SNSGetSNSToken(perInfo.OpenID, perInfo.PersistentCode)
-	beego.Debug(snstoken)
 	if err != nil {
 		return nil,err
 	}
 	Info, _ := c.SNSGetUserInfo(snstoken.SnsToken)
-	userInfo := &dingtalk.SNSGetUserInfo{
-		Info.UserInfo.MaskedMobile,
-		Info.UserInfo.Nick,
+	userInfo := &DingtalkUserInfo{
 		Info.UserInfo.OpenID,
 		Info.UserInfo.UnionID,
+		Info.UserInfo.Nick,
 		Info.UserInfo.DingID,
 	}
 	return userInfo,nil
 }
 
-func (us *UserService) BindUserDingtalk(code string) error {
-	return nil
+func (us *UserService) UnBindUserDingtalk(oauthid int) error {
+	return us.userOAuthDao.Delete(oauthid)
 }
 
 func GetCompanyDingTalkClient() *dingtalk.DingTalkClient {
