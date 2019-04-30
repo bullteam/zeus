@@ -32,6 +32,22 @@ func (c *DataPermController) List() {
 	})
 }
 
+// 数据权限详情
+func (c *DataPermController) Show() {
+	dataPermId, err := c.GetInt("id")
+	if err != nil {
+		c.Fail(components.ErrInputData)
+		return
+	}
+	ds := service.DataPermService{}
+	data, err := ds.GetById(dataPermId)
+	if err != nil {
+		c.Fail(components.ErrIdData)
+		return
+	}
+	c.Resp(0, "success", data)
+}
+
 // 添加数据权限
 func (c *DataPermController) Add() {
 	dataPermAddDto := &dto.DataPermAddDto{}
