@@ -11,9 +11,9 @@ type DataPermDao struct {
 }
 
 // 获取数据权限列表
-func (dao *DataPermDao) GetDataPermList(query *models.DataPermQuery) ([]*models.DataPerm, int64) {
+func (dao *DataPermDao) GetDataPermList(query *models.DataPermQuery) ([]models.DataPerm, int64) {
 	var (
-		dataPermList []*models.DataPerm
+		dataPermList []models.DataPerm
 		offset       int
 	)
 	qs := dataPermQueryConditions(query)
@@ -34,10 +34,8 @@ func (dao *DataPermDao) GetDataPermList(query *models.DataPermQuery) ([]*models.
 
 func (dao *DataPermDao) GetById(id int) (models.DataPerm, error) {
 	o := GetOrmer()
-	dataPerm := models.DataPerm{
-		Id: id,
-	}
-	err := o.Read(&dataPerm)
+	dataPerm := models.DataPerm{}
+	err := o.QueryTable("data_perm").Filter("id",id).RelatedSel().One(&dataPerm)
 
 	return dataPerm, err
 }
