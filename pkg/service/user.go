@@ -1,18 +1,29 @@
 package service
 
 import (
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/bullteam/zeus/pkg/dao"
 	"github.com/bullteam/zeus/pkg/dto"
 	"github.com/bullteam/zeus/pkg/models"
+	"github.com/bullteam/zeus/pkg/utils"
+	dingtalk "github.com/icepy/go-dingtalk/src"
 	"strconv"
 )
 
 type UserService struct {
-	dao       *dao.UserDao
-	roleDao   *dao.RoleDao
-	domainDao *dao.DomainDao
-	urDao     *dao.UserRoleDao
+	dao          *dao.UserDao
+	roleDao      *dao.RoleDao
+	domainDao    *dao.DomainDao
+	urDao        *dao.UserRoleDao
+	userOAuthDao *dao.UserOAuthDao
+}
+
+type DingtalkUserInfo struct {
+	Openid  string
+	Unionid string
+	Nick    string
+	Dingid  string
 }
 
 func (us *UserService) GetList(start, limit int, q []string) ([]*models.User, int64) {
@@ -147,4 +158,74 @@ func (us *UserService) SwitchDepartment(uids []string, did int) (int64, error) {
 		euid = append(euid, s)
 	}
 	return us.dao.UpdateDepartment(euid, did)
+}
+
+//绑定钉钉
+func (us *UserService) BindByDingtalk(code string, uid int) (openid string,err error) {
+	Info,err := getUserInfo(code)
+	if err != nil {
+		return  "",err
+	}
+	User,errs := us.userOAuthDao.GetUserByOpenId(Info.Openid, 1)
+	if errs != nil || !utils.IsNilObject(User){
+		return  "",nil
+	}
+	beego.Debug(Info)
+	userOAuth := models.UserOAuth{
+		From:    1, // 1表示钉钉
+		User_id: uid,
+		Name:    Info.Nick,
+		Openid:  Info.Openid,
+		Unionid: Info.Unionid,
+	}
+	us.userOAuthDao.Create(userOAuth)
+	return Info.Openid,nil
+}
+
+//钉钉登陆
+func (us *UserService) LoginByDingtalk(code string) (user *models.UserOAuth ,err error) {
+	Info,err := getUserInfo(code)
+	if err != nil {
+		return nil,err
+	}
+	User, err := us.userOAuthDao.GetUserByOpenId(Info.Openid, 1)
+	if err == nil {
+		return User,nil
+	}
+	return nil,err
+}
+
+func getUserInfo(code string) (UserInfo *DingtalkUserInfo,err error) {
+	c := GetCompanyDingTalkClient()
+	c.RefreshSNSAccessToken()
+	perInfo, err := c.SNSGetPersistentCode(code)
+	if err != nil {
+		return nil,err
+	}
+	snstoken, err := c.SNSGetSNSToken(perInfo.OpenID, perInfo.PersistentCode)
+	if err != nil {
+		return nil,err
+	}
+	Info, _ := c.SNSGetUserInfo(snstoken.SnsToken)
+	userInfo := &DingtalkUserInfo{
+		Info.UserInfo.OpenID,
+		Info.UserInfo.UnionID,
+		Info.UserInfo.Nick,
+		Info.UserInfo.DingID,
+	}
+	return userInfo,nil
+}
+
+func (us *UserService) UnBindUserDingtalk(oauthid int) error {
+	return us.userOAuthDao.Delete(oauthid)
+}
+
+func GetCompanyDingTalkClient() *dingtalk.DingTalkClient {
+	SNSAppID := beego.AppConfig.String("dingtalk::SNSAppID")
+	SNSSecret := beego.AppConfig.String("dingtalk::SNSSecret")
+	config := &dingtalk.DTConfig{
+		SNSAppID:  SNSAppID,
+		SNSSecret: SNSSecret,
+	}
+	return dingtalk.NewDingTalkCompanyClient(config)
 }

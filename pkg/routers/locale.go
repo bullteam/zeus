@@ -7,11 +7,12 @@ import (
 )
 
 var langTypes []*langType
+
 type langType struct {
 	Lang, Name string
 }
 
-func init()  {
+func init() {
 	langs := strings.Split(beego.AppConfig.String("lang::types"), "|")
 	names := strings.Split(beego.AppConfig.String("lang::names"), "|")
 	langTypes = make([]*langType, 0, len(langs))

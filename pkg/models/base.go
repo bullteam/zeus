@@ -17,5 +17,6 @@ func init() {
 		new(RoleDataPerm),
 		new(User),
 		new(UserRole),
+		new(UserOAuth),
 	)
 }

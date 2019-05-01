@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 )
+
 var rootCmd = &cobra.Command{
 	Use:               "zeus",
 	Short:             "zeus API server",
@@ -13,11 +14,12 @@ var rootCmd = &cobra.Command{
 	Long:              `Start zeus API server`,
 	PersistentPreRunE: func(*cobra.Command, []string) error { return nil },
 }
-func init(){
+
+func init() {
 	rootCmd.AddCommand(api_server.StartCmd)
 }
 
-func Execute()  {
+func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(-1)
 	}
