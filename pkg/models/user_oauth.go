@@ -4,7 +4,7 @@ import "time"
 
 type UserOAuth struct {
 	Id         int       `json:"id"`
-	From       int       `json:"name"`
+	From       int       `json:"from"`
 	User_id    int       `json:"user_id"`
 	Openid     string    `json:"openid"`
 	Unionid    string    `json:"unionid"`

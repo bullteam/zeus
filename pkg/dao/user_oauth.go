@@ -7,6 +7,16 @@ import (
 type UserOAuthDao struct {
 }
 
+func (dao *UserOAuthDao) GetUserById(userid int) (*models.UserOAuth, error) {
+	o := GetOrmer()
+	v := &models.UserOAuth{}
+	err := o.QueryTable("user_oauth").Filter("user_id", userid).RelatedSel().One(v)
+	if err == nil {
+		return v, nil
+	}
+	return nil, nil
+}
+
 func (dao *UserOAuthDao) GetUserByOpenId(openid string, from int) (*models.UserOAuth, error) {
 	o := GetOrmer()
 	v := &models.UserOAuth{}
