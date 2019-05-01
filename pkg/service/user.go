@@ -229,3 +229,7 @@ func GetCompanyDingTalkClient() *dingtalk.DingTalkClient {
 	}
 	return dingtalk.NewDingTalkCompanyClient(config)
 }
+
+func (us *UserService) GetBindOauthUserInfo(userid int) (UserInfo *models.UserOAuth, err error)  {
+	return us.userOAuthDao.GetUserById(userid)
+}

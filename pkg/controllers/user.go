@@ -258,6 +258,11 @@ func (c *UserController) Show() {
 		c.Fail(components.ErrIdData)
 		return
 	}
+	user_id, err := strconv.Atoi(c.Uid)
+	if err != nil {
+		c.Fail(components.ErrInvalidUser, err.Error())
+		return
+	}
 	userService := service.UserService{}
 	user, err := userService.GetUserByUid(int64(id))
 	if err != nil {
@@ -266,9 +271,12 @@ func (c *UserController) Show() {
 	}
 	roleService := service.RoleService{}
 	roles := roleService.GetRolesByUid(id)
+	OauthUserInfoService := service.UserService{}
+	OauthUserInfo,_ := OauthUserInfoService.GetBindOauthUserInfo(user_id)
 	c.Resp(0, "success", map[string]interface{}{
 		"userinfo": user,
 		"role":     roles,
+		"oauth_user_info" : OauthUserInfo,
 	})
 }
 
