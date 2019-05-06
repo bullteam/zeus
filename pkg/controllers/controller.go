@@ -53,7 +53,9 @@ func (self *BaseController) Resp(code int, msg string, data ...interface{}) {
 }
 
 func (self *BaseController) Fail(errs *components.ControllerError, moreErrInfo ...string) {
-	errs.Message = i18n.Tr(CurrentLang,errs.Langkey)
+	beego.Debug(CurrentLang,errs.Langkey)
+	beego.Debug(i18n.Tr(CurrentLang, errs.Langkey))
+	errs.Message = i18n.Tr(CurrentLang, errs.Langkey)
 	self.Data["json"] = errs
 	errs.Moreinfo = ""
 	for _, v := range moreErrInfo {
@@ -92,7 +94,7 @@ func (c *TokenCheckController) Prepare() {
 	c.Uname = claims.Uname
 	c.RawToken = tokenString
 
-	c.setLangVer()//设置语言
+	c.setLangVer() //设置语言
 }
 
 func (b *BaseController) ParseAndValidate(obj interface{}) {
@@ -152,8 +154,8 @@ func (b *BaseController) GetPaginationParams() (start, limit int) {
 }
 
 /**
-	设置语言
- */
+设置语言
+*/
 func (b *BaseController) setLangVer() bool {
 	// Initialized language type list.
 	langs := strings.Split(beego.AppConfig.String("lang::types"), "|")

@@ -13,7 +13,7 @@ type DepartmentDao struct {
 func (dao *DepartmentDao) List(start int, limit int, q []string) ([]*models.Department, int64) {
 	o := GetOrmer()
 	var depts []*models.Department
-	qs := o.QueryTable("department").OrderBy("order_num")
+	qs := o.QueryTable("department").OrderBy("id")
 	if len(q) > 0 {
 		for k, v := range utils.TransformFieldsCdt(q, dto.DepartmentSearch) {
 			qs = utils.TransformQset(qs, k, v.(string))

@@ -39,7 +39,7 @@ func start(_ *cobra.Command, _ []string) error {
 	beego.Run()
 	return nil
 }
-func usae(){
+func usae() {
 	usageStr := `
   ______              
  |___  /              
@@ -50,4 +50,3 @@ func usae(){
 `
 	fmt.Printf("%s\n", usageStr)
 }
-
