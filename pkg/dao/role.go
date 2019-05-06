@@ -14,7 +14,7 @@ type RoleDao struct {
 func (dao *RoleDao) List(start int, limit int, q []string) ([]models.Role, int64) {
 	o := GetOrmer()
 	var roles []models.Role
-	qs := o.QueryTable("role")
+	qs := o.QueryTable("role").OrderBy("id")
 	if len(q) > 0 {
 		for k, v := range utils.TransformFieldsCdt(q, dto.RoleSearch) {
 			qs = utils.TransformQset(qs, k, v.(string))
