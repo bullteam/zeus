@@ -14,6 +14,7 @@ func init() {
 		new(Domain),
 		new(Menu),
 		new(Role),
+		new(RoleDataPerm),
 		new(User),
 		new(UserRole),
 		new(UserOAuth),
