@@ -7,8 +7,6 @@ import (
 	"image/png"
 	"strconv"
 
-	// "crypto/rand"
-	"encoding/base32"
 	"fmt"
 	"github.com/bullteam/zeus/pkg/components"
 	"github.com/bullteam/zeus/pkg/dto"
@@ -63,22 +61,31 @@ func (c *MyAccountController) GetInfo() {
 	data := map[string]string{
 		"code ":   "data:image/png;base64," + base64Img,
 		"account": account,
-		"issuer":  issuer,
 		"secret":  userSecretQuery.Secret,
 	}
 	c.Resp(0, "success", data)
 }
 
 func (c *MyAccountController) BindCode() {
-	secret := []byte{'H', 'e', 'l', 'l', 'o', '!', 0xDE, 0xAD, 0xBE, 0xEF} //TODO 暂时固定
-	secretBase32 := base32.StdEncoding.EncodeToString(secret)              //TODO 通过数据库/Redis存储
-	bindCodeDto := &dto.BindCodeDto{}
-	err := c.ParseAndValidateFirstErr(bindCodeDto)
+	user_id, err := strconv.Atoi(c.Uid)
 	if err != nil {
-		c.Fail(components.ErrInvalidParams, err.Error())
+		c.Fail(components.ErrInvalidUser, err.Error())
 		return
 	}
-	//account := service.MyAccountService{}
+	myAccountService := service.MyAccountService{}
+	userSecretQuery, err := myAccountService.GetSecret(user_id)
+	fmt.Println(userSecretQuery, err)
+	if err != nil {
+		c.Fail(components.ErrInvalidUser, err.Error())
+		return
+	}
+	secretBase32 := userSecretQuery.Secret
+	bindCodeDto := &dto.BindCodeDto{}
+	errs := c.ParseAndValidateFirstErr(bindCodeDto)
+	if errs != nil {
+		c.Fail(components.ErrInvalidParams, errs.Error())
+		return
+	}
 
 	otpc := &dgoogauth.OTPConfig{
 		Secret:      secretBase32,

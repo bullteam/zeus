@@ -13,7 +13,6 @@ func init() {
 	beego.Router("/user/login", accountController, "post:Login")                  //用户登录
 	beego.Router("/user/login-dingtalk", accountController, "post:DingtalkLogin") //第三方登陆
 	beego.Router("/user/bind-dingtalk", userController, "post:DingtalkBind")      //绑定钉钉
-
 	beego.Router("/user/refresh-token", userController, "post:RefreshToken")      //刷新令牌
 	beego.Router("/user/loginout", userController, "get:Logout")                  //用户退出登录
 	beego.Router("/user/findpasswd", accountController)                           //找回密码
