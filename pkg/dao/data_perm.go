@@ -24,7 +24,7 @@ func (dao *DataPermDao) GetDataPermList(query *models.DataPermQuery) ([]models.D
 		qs = qs.Offset(offset).Limit(query.Pagination.Limit)
 	}
 
-	_, err := qs.OrderBy("order_num").All(&dataPermList)
+	_, err := qs.OrderBy("order_num").RelatedSel().All(&dataPermList)
 	if err != nil {
 		return dataPermList, 0
 	}
