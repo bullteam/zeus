@@ -55,6 +55,7 @@ var (
 	ErrWrongRefreshToken = &ControllerError{13006, "err.ErrWrongRefreshToken", "", ""}
 	ErrBindDingtalk      = &ControllerError{13007, "err.ErrBindDingtalk", "", ""}
 	ErrUnBindDingtalk    = &ControllerError{13008, "err.ErrUnBindDingtalk", "", ""}
+	ErrGoogleBindCode    = &ControllerError{13009, "err.ErrGoogleBindCode", "", ""}
 )
 
 type Claims struct {

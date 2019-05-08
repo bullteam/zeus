@@ -11,7 +11,7 @@ type UserOAuth struct {
 	Avatar     string    `json:"avatar"`
 	Extra      string    `json:"extra"`
 	Name       string    `json:"name"`
-	CreateTime string    `json:"create_time"`
+	CreateTime time.Time    `json:"create_time"`
 	UpdateTime time.Time `json:"update_time"`
 }
 

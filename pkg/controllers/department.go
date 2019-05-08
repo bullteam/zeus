@@ -79,6 +79,7 @@ func (c *DeptController) Edit() {
 	_, err = ds.Update(deptDto)
 	if err != nil {
 		c.Fail(components.ErrEditFail, err.Error())
+		return
 	}
 	c.Resp(0, "success")
 }
