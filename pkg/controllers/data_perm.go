@@ -79,7 +79,7 @@ func (c *DataPermController) Edit() {
 
 	err = ds.Update(dataPermEditDto)
 	if err != nil {
-		c.Fail(components.ErrAddFail, err.Error())
+		c.Fail(components.ErrEditFail, err.Error())
 		return
 	}
 	c.Resp(0, "success", map[string]interface{}{})

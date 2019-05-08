@@ -1,0 +1,1 @@
+ALTER TABLE `data_perm` ADD COLUMN `perms_rule` varchar(500) NOT NULL DEFAULT '' COMMENT '数据规则'

@@ -24,7 +24,7 @@ func (dao *DataPermDao) GetDataPermList(query *models.DataPermQuery) ([]models.D
 		qs = qs.Offset(offset).Limit(query.Pagination.Limit)
 	}
 
-	_, err := qs.OrderBy("order_num").RelatedSel().All(&dataPermList)
+	_, err := qs.OrderBy("order_num").All(&dataPermList)
 	if err != nil {
 		return dataPermList, 0
 	}
@@ -69,16 +69,11 @@ func (dao *DataPermDao) Insert(dto *dto.DataPermAddDto) (int64, error) {
 	}
 
 	o := GetOrmer()
-	var dataPerm models.DataPerm
-	dataPerm.Domain.Id = dto.DomainId
-	dataPerm.Menu.Id = dto.MenuId
-	dataPerm.Name = dto.Name
-	dataPerm.Perms = dto.Perms
-	dataPerm.OrderNum = dto.OrderNum
+	qs, _ := o.Raw("insert into " + models.TableDataPerm + " (domain_id,menu_id,name,perms,order_num,perms_rule) values (?,?,?,?,?,?)").Prepare()
+	result, err := qs.Exec(dto.DomainId, dto.MenuId, dto.Name, dto.Perms, dto.OrderNum, dto.PermsRule)
+	id, _ := result.LastInsertId()
 
-	id, _ := o.Insert(&dataPerm)
-
-	return id, nil
+	return id, err
 }
 
 func (dao *DataPermDao) Update(dto *dto.DataPermEditDto) error {
@@ -103,13 +98,12 @@ func (dao *DataPermDao) Update(dto *dto.DataPermEditDto) error {
 	}
 
 	o := GetOrmer()
-
 	dataPerm.Domain.Id = dto.DomainId
 	dataPerm.Menu.Id = dto.MenuId
 	dataPerm.Name = dto.Name
 	dataPerm.Perms = dto.Perms
 	dataPerm.OrderNum = dto.OrderNum
-
+	dataPerm.PermsRule = dto.PermsRule
 	_, err = o.Update(&dataPerm)
 
 	return err

@@ -20,6 +20,7 @@ func (s *DataPermService) GetDataPermList(query *models.DataPermQuery) (dataPerm
 				"id": dpRow.Id,
 				"name": dpRow.Name,
 				"perms": dpRow.Perms,
+				"perms_rule": dpRow.PermsRule,
 				"order_num": dpRow.OrderNum,
 				"menu_id": dpRow.Menu.Id,
 				"menu_name": dpRow.Menu.Name,
