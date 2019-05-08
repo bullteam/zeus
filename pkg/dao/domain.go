@@ -16,7 +16,6 @@ func (dao *DomainDao) NewDomain(dto *dto.DomainAddDto) (d *models.Domain, err er
 		Remark:      dto.Remark,
 		Code:        dto.Code,
 	}
-
 	return &domain, nil
 }
 

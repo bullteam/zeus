@@ -13,7 +13,7 @@ func init() {
 	beego.Router("/user/login", accountController, "post:Login")                  //用户登录
 	beego.Router("/user/login-dingtalk", accountController, "post:DingtalkLogin") //第三方登陆
 	beego.Router("/user/bind-dingtalk", userController, "post:DingtalkBind")      //绑定钉钉
-	beego.Router("/user/unbind-dingtalk", userController, "post:DingtalkUnbind")  //解除绑定钉钉
+
 	beego.Router("/user/refresh-token", userController, "post:RefreshToken")      //刷新令牌
 	beego.Router("/user/loginout", userController, "get:Logout")                  //用户退出登录
 	beego.Router("/user/findpasswd", accountController)                           //找回密码
@@ -29,6 +29,13 @@ func init() {
 	beego.Router("/user/menu", userController, "get:GetMenu")               //获取用户相关菜单
 	beego.Router("/user/domain", userController, "get:GetDomain")           //获取用户相关域
 	beego.Router("/user/move-department", userController, "post:MoveToNewDepartment")
+
+	/*******个人账号*******/
+	myAccountController := &controllers.MyAccountController{}
+	beego.Router("/account/security", myAccountController, "get:GetInfo")  // 安全设置 -- 两步验证
+	beego.Router("/account/bindcode", myAccountController, "post:BindCode") //安全设置- 校验验证码
+	beego.Router("/user/unbind-dingtalk", userController, "post:DingtalkUnbind")  //解除绑定钉钉 TODO
+
 
 	/******角色管理*****/
 	roleController := &controllers.RoleController{}
