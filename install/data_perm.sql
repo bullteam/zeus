@@ -1,1 +1,5 @@
-ALTER TABLE `data_perm` ADD COLUMN `perms_rule` varchar(500) NOT NULL DEFAULT '' COMMENT '数据规则'
+ALTER TABLE `data_perm` ADD COLUMN `perms_rule` varchar(500) NOT NULL DEFAULT '' COMMENT '数据规则';
+
+ALTER TABLE `data_perm` CHANGE COLUMN `menu_id` `parent_id` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT '菜单ID', CHANGE COLUMN `perms_rule` `perms_rule` varchar(500) NOT NULL DEFAULT '' COMMENT '数据规则' AFTER `perms`, ADD COLUMN `perms_type` tinyint(3) NOT NULL DEFAULT 1 COMMENT '1=分类 2=数据权限' AFTER `perms_rule`, CHANGE COLUMN `order_num` `order_num` int(11) UNSIGNED NOT NULL DEFAULT 1 COMMENT '排序' AFTER `perms_type`, CHANGE COLUMN `create_time` `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `order_num`, CHANGE COLUMN `update_time` `update_time` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER `create_time`;
+
+ALTER TABLE `data_perm` ADD COLUMN `remarks` varchar(500) NOT NULL DEFAULT '' COMMENT '说明';

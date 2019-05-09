@@ -21,13 +21,13 @@ func (s *DataPermService) GetDataPermList(query *models.DataPermQuery) (dataPerm
 				"name": dpRow.Name,
 				"perms": dpRow.Perms,
 				"perms_rule": dpRow.PermsRule,
+				"perms_type": dpRow.PermsType,
 				"order_num": dpRow.OrderNum,
-				"menu_id": dpRow.Menu.Id,
-				"menu_name": dpRow.Menu.Name,
-				"menu_parent_id": dpRow.Menu.ParentId,
+				"parent_id": dpRow.ParentId,
 				"domain_id": dpRow.Domain.Id,
 				"domain_name": dpRow.Domain.Name,
 				"domain_code": dpRow.Domain.Code,
+				"remarks": dpRow.Remarks,
 			})
 		}
 	}

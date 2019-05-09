@@ -69,8 +69,8 @@ func (dao *DataPermDao) Insert(dto *dto.DataPermAddDto) (int64, error) {
 	}
 
 	o := GetOrmer()
-	qs, _ := o.Raw("insert into " + models.TableDataPerm + " (domain_id,menu_id,name,perms,order_num,perms_rule) values (?,?,?,?,?,?)").Prepare()
-	result, err := qs.Exec(dto.DomainId, dto.MenuId, dto.Name, dto.Perms, dto.OrderNum, dto.PermsRule)
+	qs, _ := o.Raw("insert into " + models.TableDataPerm + " (domain_id,parent_id,name,perms,perms_rule,perms_type,order_num,remarks) values (?,?,?,?,?,?,?,?)").Prepare()
+	result, err := qs.Exec(dto.DomainId, dto.ParentId, dto.Name, dto.Perms, dto.PermsRule, dto.PermsType, dto.OrderNum, dto.Remarks)
 	id, _ := result.LastInsertId()
 
 	return id, err
@@ -99,11 +99,14 @@ func (dao *DataPermDao) Update(dto *dto.DataPermEditDto) error {
 
 	o := GetOrmer()
 	dataPerm.Domain.Id = dto.DomainId
-	dataPerm.Menu.Id = dto.MenuId
+	dataPerm.ParentId = dto.ParentId
 	dataPerm.Name = dto.Name
 	dataPerm.Perms = dto.Perms
-	dataPerm.OrderNum = dto.OrderNum
 	dataPerm.PermsRule = dto.PermsRule
+	dataPerm.PermsType = dto.PermsType
+	dataPerm.OrderNum = dto.OrderNum
+	dataPerm.Remarks = dto.Remarks
+
 	_, err = o.Update(&dataPerm)
 
 	return err
@@ -124,7 +127,12 @@ func (dao *DataPermDao) Delete(id int) error {
 	if err != nil {
 		_ = o.Rollback()
 	}
-	// TODO 删除已分配给角色的
+	// 删除已分配给角色的
+	roleDataPermDao := RoleDataPermDao{}
+	_, err = roleDataPermDao.DeleteByDataPermId(id)
+	if err != nil {
+		_ = o.Rollback()
+	}
 	_ = o.Commit()
 
 	return nil
