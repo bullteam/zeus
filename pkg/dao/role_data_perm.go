@@ -35,6 +35,14 @@ func (dao *RoleDataPermDao) DeleteMulti(roleId int, dataPermIds []int) error {
 	return nil
 }
 
+// 通过数据权限id删除
+func (dao *RoleDataPermDao) DeleteByDataPermId(dataPermId int) (int64, error) {
+	o := GetOrmer()
+	num, err := o.QueryTable(new(models.RoleDataPerm)).Filter("data_perm_id",dataPermId).Delete()
+
+	return num, err
+}
+
 // 通过角色id删除所有数据权限
 func (dao *RoleDataPermDao) DeleteByRoleId(roleId int) error {
 	o := GetOrmer()
