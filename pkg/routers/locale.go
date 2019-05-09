@@ -25,7 +25,7 @@ func init() {
 
 	for _, lang := range langs {
 		beego.Trace("Loading language: " + lang)
-		if err := i18n.SetMessage(lang, "./conf/locale/"+"locale_"+lang+".ini"); err != nil {
+		if err := i18n.SetMessage(lang, "conf/locale/"+"locale_"+lang+".ini"); err != nil {
 			beego.Error("Fail to set message file: " + err.Error())
 			return
 		}
