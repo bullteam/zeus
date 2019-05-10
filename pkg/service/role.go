@@ -18,7 +18,7 @@ type RoleService struct {
 	rdpDao    *dao.RoleDataPermDao
 }
 
-func (r *RoleService) GetList(start int, limit int, q []string) ([]models.Role, int64) {
+func (r *RoleService) GetList(start int, limit int, q []string) ([]orm.Params, int64) {
 	return r.dao.List(start, limit, q)
 }
 
@@ -154,6 +154,6 @@ func (r *RoleService) GetRolesByUid(uid int) []orm.Params {
 }
 
 // 通过角色id获取数据权限列表
-func (r *RoleService) GetRoleDataPermsByRoleId(roleId int) ([]orm.Params,error){
+func (r *RoleService) GetRoleDataPermsByRoleId(roleId int) ([]orm.Params, error) {
 	return r.rdpDao.GetByRoleId(roleId)
 }
