@@ -11,7 +11,7 @@ type DataPerm struct {
 	PermsType int     `json:"perms_type"` // 类型 1=分类 2=数据权限
 	OrderNum  int     `json:"order_num"`  // 排序字段
 	Domain    *Domain `orm:"rel(one)" json:"domain"`
-	Remarks   string  `json:"remarks"`    // 说明
+	Remarks   string  `json:"remarks"` // 说明
 }
 
 type DataPermQuery struct {
