@@ -56,6 +56,7 @@ var (
 	ErrBindDingtalk      = &ControllerError{13007, "err.ErrBindDingtalk", "", ""}
 	ErrUnBindDingtalk    = &ControllerError{13008, "err.ErrUnBindDingtalk", "", ""}
 	ErrGoogleBindCode    = &ControllerError{13009, "err.ErrGoogleBindCode", "", ""}
+	ErrSendMail          = &ControllerError{13010, "err.ErrSendMail", "", ""}
 )
 
 type Claims struct {

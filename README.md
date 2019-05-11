@@ -79,7 +79,7 @@ mysql> source ./install/casbin.sql;
 # openssl jwt 密钥生成
 [openssl jwt 密钥](docs/GenrsaKey.md)
 # 演示 Demo
-* [demo](http://admin.bullteam.cn) 
+* [demo](http://admin.bullteam.cn)  账号 admin  密码  123456   （为了防止恶意使用不定时重置，请各位客官尽情享用）
   
 # 接入权限系统 client demo
 * [python-client](https://github.com/bullteam/zeusclient-python)

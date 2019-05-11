@@ -35,6 +35,7 @@ func init() {
 	beego.Router("/account/bindcode", myAccountController, "post:BindCode") //安全设置- 校验验证码
 	beego.Router("/user/unbind-dingtalk", userController, "post:DingtalkUnbind")  //解除绑定钉钉 TODO
 	beego.Router("/account/third", myAccountController, "get:Third")  // 第三方绑定账号列表
+	beego.Router("/account/verifymail", myAccountController, "post:Verifymail")  // 发送邮件
 
 
 	/******角色管理*****/

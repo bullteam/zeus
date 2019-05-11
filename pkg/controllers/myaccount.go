@@ -3,10 +3,12 @@ package controllers
 import (
 	"bytes"
 	"encoding/base64"
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/utils"
 	"github.com/bullteam/zeus/pkg/service"
+	"github.com/bullteam/zeus/pkg/utils/mailTemplate"
 	"image/png"
 	"strconv"
-
 	"fmt"
 	"github.com/bullteam/zeus/pkg/components"
 	"github.com/bullteam/zeus/pkg/dto"
@@ -27,7 +29,6 @@ func (c *MyAccountController) GetInfo() {
 	}
 	myAccountService := service.MyAccountService{}
 	userSecretQuery, err := myAccountService.GetSecret(user_id)
-	fmt.Println(userSecretQuery, err)
 	if err != nil {
 		c.Fail(components.ErrInvalidUser, err.Error())
 		return
@@ -52,7 +53,6 @@ func (c *MyAccountController) GetInfo() {
 		return
 	}
 	out := new(bytes.Buffer)
-
 	errx := png.Encode(out, img)
 	if errx != nil {
 		c.Fail(components.ErrInvalidParams, errx.Error())
@@ -115,4 +115,36 @@ func (c *MyAccountController) Third() {
 	myAccountService := service.MyAccountService{}
 	oauthList := myAccountService.GetThirdList(user_id)
 	c.Resp(0, "success", oauthList)
+}
+
+/**
+  验证邮件地址(发送邮件)
+ */
+func (c *MyAccountController) Verifymail() {
+	verifyEmailDto := &dto.VerifyEmail{}
+	errs := c.ParseAndValidateFirstErr(verifyEmailDto)
+	if errs != nil {
+		c.Fail(components.ErrInvalidParams, errs.Error())
+		return
+	}
+	username := beego.AppConfig.String("email::username")
+	password := beego.AppConfig.String("email::password")
+	host := beego.AppConfig.String("email::host")
+	port,_ := beego.AppConfig.Int("email::port")
+	from := beego.AppConfig.String("email::from")
+	if port == 0 {
+		port = 25
+	}
+	config := fmt.Sprintf(`{"username":"%s","password":"%s","host":"%s","port":%d,"from":"%s"}`, username, password, host, port, from)
+	temail := utils.NewEMail(config)
+	temail.To = []string{verifyEmailDto.Email}//指定收件人邮箱地址
+	temail.From = from//指定发件人的邮箱地址
+	temail.Subject = "验证账号邮件"//指定邮件的标题
+	temail.HTML = mailTemplate.MailBody()
+	err := temail.Send()
+	if err != nil{
+		c.Fail(components.ErrSendMail, err.Error())
+		return
+	}
+	c.Resp(0, "success", "邮件发送成功！")
 }
