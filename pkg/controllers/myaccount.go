@@ -74,7 +74,6 @@ func (c *MyAccountController) BindCode() {
 	}
 	myAccountService := service.MyAccountService{}
 	userSecretQuery, err := myAccountService.GetSecret(user_id)
-	fmt.Println(userSecretQuery, err)
 	if err != nil {
 		c.Fail(components.ErrInvalidUser, err.Error())
 		return
@@ -105,4 +104,15 @@ func (c *MyAccountController) BindCode() {
 	}
 	data := "Authenticated!"
 	c.Resp(0, "success", data)
+}
+
+func (c *MyAccountController) Third() {
+	user_id, err := strconv.Atoi(c.Uid)
+	if err != nil {
+		c.Fail(components.ErrInvalidUser, err.Error())
+		return
+	}
+	myAccountService := service.MyAccountService{}
+	oauthList := myAccountService.GetThirdList(user_id)
+	c.Resp(0, "success", oauthList)
 }

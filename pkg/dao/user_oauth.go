@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"github.com/astaxie/beego/orm"
 	"github.com/bullteam/zeus/pkg/models"
 )
 
@@ -43,4 +44,18 @@ func (dao *UserOAuthDao) Delete(id int) error {
 	}
 
 	return nil
+}
+
+/**
+ 	获取绑定列表
+ */
+func (dao *UserOAuthDao) List(user_id int) (oauthlists []orm.Params) {
+	var oauthlist []orm.Params
+	o := GetOrmer()
+	sql := "select `from`,name from user_oauth where user_id = ?"
+	_, err := o.Raw(sql, user_id).Values(&oauthlist)
+	if err != nil {
+		return oauthlists
+	}
+	return oauthlist
 }

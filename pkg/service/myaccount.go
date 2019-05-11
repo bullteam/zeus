@@ -4,6 +4,7 @@ import (
 	"encoding/base32"
 	"crypto/rand"
 	"fmt"
+	"github.com/astaxie/beego/orm"
 	"github.com/bullteam/zeus/pkg/dao"
 	"github.com/bullteam/zeus/pkg/models"
 	"github.com/bullteam/zeus/pkg/utils"
@@ -11,6 +12,7 @@ import (
 
 type MyAccountService struct {
 	dao          *dao.UserSecretDao
+	oauthdao        *dao.UserOAuthDao
 }
 
 // https://github.com/google/google-authenticator/wiki/Key-Uri-Format
@@ -39,4 +41,11 @@ func (s *MyAccountService) GetSecret(uid int) (userSecretQuery models.UserSecret
 	}
 	s.dao.Create(usersecret)
   return  userSecretQuery,nil
+}
+
+/**
+ 	获取第三方账号绑定列表
+ */
+func (s *MyAccountService) GetThirdList(user_id int) (oauthlist []orm.Params) {
+	return s.oauthdao.List(user_id)
 }

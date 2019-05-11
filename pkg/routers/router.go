@@ -34,6 +34,7 @@ func init() {
 	beego.Router("/account/security", myAccountController, "get:GetInfo")  // 安全设置 -- 两步验证
 	beego.Router("/account/bindcode", myAccountController, "post:BindCode") //安全设置- 校验验证码
 	beego.Router("/user/unbind-dingtalk", userController, "post:DingtalkUnbind")  //解除绑定钉钉 TODO
+	beego.Router("/account/third", myAccountController, "get:Third")  // 第三方绑定账号列表
 
 
 	/******角色管理*****/
