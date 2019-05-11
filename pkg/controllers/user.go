@@ -114,32 +114,6 @@ func (c *AccountController) DingtalkLogin() {
 	}
 }
 
-//绑定钉钉
-func (c *UserController) DingtalkBind() {
-	dingtalkDto := &dto.LoginDingtalkDto{}
-	err := c.ParseAndValidateFirstErr(dingtalkDto)
-	if err != nil {
-		c.Fail(components.ErrInvalidParams, err.Error())
-		return
-	}
-	userService := service.UserService{}
-	user_id, err := strconv.Atoi(c.Uid)
-	if err != nil {
-		c.Fail(components.ErrInvalidUser, err.Error())
-		return
-	}
-	openid,err := userService.BindByDingtalk(dingtalkDto.Code, user_id)
-	if err != nil {
-		c.Fail(components.ErrBindDingtalk, err.Error())
-	}
-	c.Resp(0, "success", map[string]interface{}{
-		"openid": openid,
-	})
-}
-
-
-
-
 func (c *UserController) Add() {
 	userAddDto := &dto.UserAddDto{}
 	err := c.ParseAndValidateFirstErr(userAddDto)

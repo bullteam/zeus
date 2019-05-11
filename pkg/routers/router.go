@@ -12,7 +12,7 @@ func init() {
 	userController := &controllers.UserController{}
 	beego.Router("/user/login", accountController, "post:Login")                  //用户登录
 	beego.Router("/user/login-dingtalk", accountController, "post:DingtalkLogin") //第三方登陆
-	beego.Router("/user/bind-dingtalk", userController, "post:DingtalkBind")      //绑定钉钉
+
 	beego.Router("/user/refresh-token", userController, "post:RefreshToken")      //刷新令牌
 	beego.Router("/user/loginout", userController, "get:Logout")                  //用户退出登录
 	beego.Router("/user/findpasswd", accountController)                           //找回密码
@@ -33,7 +33,8 @@ func init() {
 	myAccountController := &controllers.MyAccountController{}
 	beego.Router("/account/security", myAccountController, "get:GetInfo")  // 安全设置 -- 两步验证
 	beego.Router("/account/bindcode", myAccountController, "post:BindCode") //安全设置- 校验验证码
-	beego.Router("/account/unbind", myAccountController, "get:ThirdUnbind")  //解除绑定第三方应用
+	beego.Router("/account/unbind", myAccountController, "post:ThirdUnbind")  //解除绑定第三方应用
+	beego.Router("/account/bind", myAccountController, "post:Thirdbind")      //绑定第三方应用
 	beego.Router("/account/third", myAccountController, "get:Third")  // 第三方绑定账号列表
 	beego.Router("/account/verifymail", myAccountController, "post:Verifymail")  // 发送邮件
 

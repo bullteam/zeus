@@ -4,6 +4,7 @@ import (
 	"encoding/base32"
 	"crypto/rand"
 	"fmt"
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/bullteam/zeus/pkg/dao"
 	"github.com/bullteam/zeus/pkg/models"
@@ -48,4 +49,26 @@ func (s *MyAccountService) GetSecret(uid int) (userSecretQuery models.UserSecret
  */
 func (s *MyAccountService) GetThirdList(user_id int) (oauthlist []orm.Params) {
 	return s.oauthdao.List(user_id)
+}
+
+//绑定第三方应用
+func (s *MyAccountService) BindByDingtalk(code string, uid int,from int) (openid string,err error) {
+	Info,err := getUserInfo(code)
+	if err != nil {
+		return  "",err
+	}
+	User,errs := s.oauthdao.GetUserByOpenId(Info.Openid, from)
+	if errs != nil || !utils.IsNilObject(User){
+		return  "",nil
+	}
+	beego.Debug(Info)
+	userOAuth := models.UserOAuth{
+		From:    from, // 1表示钉钉
+		User_id: uid,
+		Name:    Info.Nick,
+		Openid:  Info.Openid,
+		Unionid: Info.Unionid,
+	}
+	s.oauthdao.Create(userOAuth)
+	return Info.Openid,nil
 }

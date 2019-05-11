@@ -66,7 +66,13 @@ type LoginDingtalkDto struct {
 	Code string `form:"code"`
 }
 
-type UnBindDingtalkDto struct {
+type BindThirdDto struct {
+	From int `form:"from"`
+	Code string `form:"code"`
+}
+
+
+type UnBindThirdDto struct {
 	From int `form:"from"`
 }
 

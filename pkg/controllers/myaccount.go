@@ -150,8 +150,35 @@ func (c *MyAccountController) Verifymail() {
 }
 
 //解除绑定第三方应用
+func (c *MyAccountController) Thirdbind() {
+	bindThirdDto := &dto.BindThirdDto{}
+	err := c.ParseAndValidateFirstErr(bindThirdDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
+	from := bindThirdDto.From
+	if from == 0 {
+		from = 1
+	}
+	user_id, err := strconv.Atoi(c.Uid)
+	if err != nil {
+		c.Fail(components.ErrInvalidUser, err.Error())
+		return
+	}
+	myAccountService := service.MyAccountService{} //switch case from  1 钉钉 2 微信 TODO
+	openid,err := myAccountService.BindByDingtalk(bindThirdDto.Code, user_id,from)
+	if err != nil {
+		c.Fail(components.ErrBindDingtalk, err.Error())
+	}
+	c.Resp(0, "success", map[string]interface{}{
+		"openid": openid,
+	})
+}
+
+//解除绑定第三方应用
 func (c *MyAccountController) ThirdUnbind() {
-	UnBindDingtalkDto := &dto.UnBindDingtalkDto{}
+	UnBindDingtalkDto := &dto.UnBindThirdDto{}
 	err := c.ParseAndValidateFirstErr(UnBindDingtalkDto)
 	if err != nil {
 		c.Fail(components.ErrInvalidParams, err.Error())
@@ -166,7 +193,7 @@ func (c *MyAccountController) ThirdUnbind() {
 	if from == 0 {
 		from = 1
 	}
-	userService := service.UserService{}
+	userService := service.UserService{} //switch case from  1 钉钉 2 微信 TODO
 	errs := userService.UnBindUserDingtalk(from,user_id)
 	if errs != nil {
 		c.Fail(components.ErrUnBindDingtalk, errs.Error())

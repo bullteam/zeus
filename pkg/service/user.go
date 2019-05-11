@@ -6,7 +6,6 @@ import (
 	"github.com/bullteam/zeus/pkg/dao"
 	"github.com/bullteam/zeus/pkg/dto"
 	"github.com/bullteam/zeus/pkg/models"
-	"github.com/bullteam/zeus/pkg/utils"
 	dingtalk "github.com/icepy/go-dingtalk/src"
 	"strconv"
 )
@@ -160,27 +159,6 @@ func (us *UserService) SwitchDepartment(uids []string, did int) (int64, error) {
 	return us.dao.UpdateDepartment(euid, did)
 }
 
-//绑定钉钉
-func (us *UserService) BindByDingtalk(code string, uid int) (openid string,err error) {
-	Info,err := getUserInfo(code)
-	if err != nil {
-		return  "",err
-	}
-	User,errs := us.userOAuthDao.GetUserByOpenId(Info.Openid, 1)
-	if errs != nil || !utils.IsNilObject(User){
-		return  "",nil
-	}
-	beego.Debug(Info)
-	userOAuth := models.UserOAuth{
-		From:    1, // 1表示钉钉
-		User_id: uid,
-		Name:    Info.Nick,
-		Openid:  Info.Openid,
-		Unionid: Info.Unionid,
-	}
-	us.userOAuthDao.Create(userOAuth)
-	return Info.Openid,nil
-}
 
 //钉钉登陆
 func (us *UserService) LoginByDingtalk(code string) (user *models.UserOAuth ,err error) {
