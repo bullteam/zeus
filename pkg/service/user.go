@@ -216,8 +216,8 @@ func getUserInfo(code string) (UserInfo *DingtalkUserInfo,err error) {
 	return userInfo,nil
 }
 
-func (us *UserService) UnBindUserDingtalk(oauthid int) error {
-	return us.userOAuthDao.Delete(oauthid)
+func (us *UserService) UnBindUserDingtalk(from int,user_id int) error {
+	return us.userOAuthDao.DeleteByUseridAndFrom(from,user_id)
 }
 
 func GetCompanyDingTalkClient() *dingtalk.DingTalkClient {

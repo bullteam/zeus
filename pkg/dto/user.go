@@ -67,7 +67,7 @@ type LoginDingtalkDto struct {
 }
 
 type UnBindDingtalkDto struct {
-	Oauthid string `form:"user_oauth_id"`
+	From int `form:"from"`
 }
 
 func (prd *PwdResetDto) Valid(v *validation.Validation) {

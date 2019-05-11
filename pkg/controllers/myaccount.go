@@ -148,3 +148,30 @@ func (c *MyAccountController) Verifymail() {
 	}
 	c.Resp(0, "success", "邮件发送成功！")
 }
+
+//解除绑定第三方应用
+func (c *MyAccountController) ThirdUnbind() {
+	UnBindDingtalkDto := &dto.UnBindDingtalkDto{}
+	err := c.ParseAndValidateFirstErr(UnBindDingtalkDto)
+	if err != nil {
+		c.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
+	user_id, err := strconv.Atoi(c.Uid)
+	if err != nil {
+		c.Fail(components.ErrInvalidUser, err.Error())
+		return
+	}
+	from := UnBindDingtalkDto.From
+	if from == 0 {
+		from = 1
+	}
+	userService := service.UserService{}
+	errs := userService.UnBindUserDingtalk(from,user_id)
+	if errs != nil {
+		c.Fail(components.ErrUnBindDingtalk, errs.Error())
+	}
+	c.Resp(0, "success", map[string]interface{}{
+		"state": true,
+	})
+}

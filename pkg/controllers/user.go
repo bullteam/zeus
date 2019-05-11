@@ -138,24 +138,7 @@ func (c *UserController) DingtalkBind() {
 }
 
 
-//解除绑定钉钉
-func (c *UserController) DingtalkUnbind() {
-	UnBindDingtalkDto := &dto.UnBindDingtalkDto{}
-	err := c.ParseAndValidateFirstErr(UnBindDingtalkDto)
-	if err != nil {
-		c.Fail(components.ErrInvalidParams, err.Error())
-		return
-	}
-	userService := service.UserService{}
-	Oauthid, err := strconv.Atoi(UnBindDingtalkDto.Oauthid)
-	errs := userService.UnBindUserDingtalk(Oauthid)
-	if errs != nil {
-		c.Fail(components.ErrUnBindDingtalk, errs.Error())
-	}
-	c.Resp(0, "success", map[string]interface{}{
-		"state": true,
-	})
-}
+
 
 func (c *UserController) Add() {
 	userAddDto := &dto.UserAddDto{}

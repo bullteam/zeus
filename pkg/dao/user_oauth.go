@@ -33,16 +33,15 @@ func (dao *UserOAuthDao) Create(userOAuth models.UserOAuth) (int64, error) {
 	return o.Insert(&userOAuth)
 }
 
-func (dao *UserOAuthDao) Delete(id int) error {
+func (dao *UserOAuthDao) DeleteByUseridAndFrom(from int,user_id int) error {
 	o := GetOrmer()
-	UserOAuth := &models.UserOAuth{Id: id}
+	UserOAuth := &models.UserOAuth{User_id: user_id,From:from}
 	if o.Read(UserOAuth) == nil {
 		_, err := o.Delete(UserOAuth)
 		if err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 
