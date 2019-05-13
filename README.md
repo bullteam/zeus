@@ -57,9 +57,8 @@ Zeus 宙斯权限后台，为企业提供统一后台权限管理服务。项目
 git clone git@github.com:bullteam/zeus.git
 export GOPROXY=https://goproxy.io
 export GO111MODULE=on
-cd cmd/api-server
 go build -o zeus
-./zeus start -c ../../config
+./zeus start -c ./conf
 
 ````
 # 数据移值
@@ -82,12 +81,12 @@ mysql> source ./install/casbin.sql;
 * [demo](http://admin.bullteam.cn)  账号 admin  密码  123456   （为了防止恶意使用不定时重置，请各位客官尽情享用）
   
 # 接入权限系统 client demo
-* [python-client](https://zeusclient-python)
-* [php-client](https://zeusclient-php)
-* [java-client](https://zeusclient-java)
-* [go-client](https://zeusclient-go)
+* [python-client](https://github.com/bullteam/zeusclient-python)
+* [php-client](https://github.com/bullteam/zeusclient-php)
+* [java-client](https://github.com/bullteam/zeusclient-java)
+* [go-client](https://github.com/bullteam/zeusclient-go)
 # WebUI
-* [官方](https://zeus-ui)
+* [官方](https://github.com/bullteam/zeus-ui)
 # API文档
 API 开发文档如下：
 * [POSTMAN](https://documenter.getpostman.com/view/159835/Rzfjk7Jh)
