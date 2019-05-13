@@ -35,12 +35,9 @@ func (dao *UserOAuthDao) Create(userOAuth models.UserOAuth) (int64, error) {
 
 func (dao *UserOAuthDao) DeleteByUseridAndFrom(from int,user_id int) error {
 	o := GetOrmer()
-	UserOAuth := &models.UserOAuth{User_id: user_id,From:from}
-	if o.Read(UserOAuth) == nil {
-		_, err := o.Delete(UserOAuth)
-		if err != nil {
-			return err
-		}
+	_, err := o.QueryTable("user_oauth").Filter("from", from).Filter("user_id",user_id).Delete()
+	if err != nil {
+		return err
 	}
 	return nil
 }

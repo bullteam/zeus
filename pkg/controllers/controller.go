@@ -53,8 +53,6 @@ func (self *BaseController) Resp(code int, msg string, data ...interface{}) {
 }
 
 func (self *BaseController) Fail(errs *components.ControllerError, moreErrInfo ...string) {
-	beego.Debug(CurrentLang,errs.Langkey)
-	beego.Debug(i18n.Tr(CurrentLang, errs.Langkey))
 	errs.Message = i18n.Tr(CurrentLang, errs.Langkey)
 	self.Data["json"] = errs
 	errs.Moreinfo = ""
