@@ -88,13 +88,13 @@ func (c *AccountController) DingtalkLogin() {
 		return
 	}
 	userService := service.UserService{}
-	user,err := userService.LoginByDingtalk(dingtalkDto.Code)
+	userOauth,err := userService.LoginByDingtalk(dingtalkDto.Code)
 	if err != nil{
 		c.Fail(components.ErrNoUser, err.Error())
 		return
 	}
 	//generate jwt with rsa private key
-	jwtoken, err := utils.GenerateJwtWithUserInfo(strconv.Itoa(user.User_id), user.Name)
+	jwtoken, err := utils.GenerateJwtWithUserInfo(strconv.Itoa(userOauth.User_id), userOauth.Name)
 	if err != nil {
 		controllErr := components.ErrGenJwt
 		controllErr.Moreinfo = err.Error()
@@ -108,8 +108,8 @@ func (c *AccountController) DingtalkLogin() {
 		c.Resp(0, "success", map[string]interface{}{
 			"access_token":  jwtoken,
 			"refresh_token": refreshToken,
-			"userid":        user.User_id,
-			"username":      user.Name,
+			"userid":        userOauth.User_id,
+			"username":      userOauth.Name,
 		})
 	}
 }
