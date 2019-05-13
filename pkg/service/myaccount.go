@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"github.com/bullteam/zeus/pkg/dao"
-	"github.com/bullteam/zeus/pkg/models"
-	"github.com/bullteam/zeus/pkg/utils"
+	"zeus/pkg/dao"
+	"zeus/pkg/models"
+	"zeus/pkg/utils"
 )
 
 type MyAccountService struct {

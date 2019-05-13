@@ -1,6 +1,6 @@
 ### 从官方仓库 fork 代码
 
-1. 浏览器访问 https://github.com/bullteam/zeus
+1. 浏览器访问 https://zeus
 2. 点击 "Fork" 按钮 (位于页面的右上方)
 
 ### 从你自己的仓库 Clone 代码
@@ -9,7 +9,7 @@
 cd $NAFTIS
 git clone https://github.com/$YOUR_GITHUB_ACCOUNT/zeus
 cd naftis
-git remote add upstream 'https://github.com/bullteam/zeus'
+git remote add upstream 'https://zeus'
 git config --global --add http.followRedirects 1
 ```
 
@@ -37,7 +37,7 @@ git push origin my-feature # 推送 my-featur 到你自己的仓库
 ### 提交 PR
 
 ```bash
-你可以访问 https://github.com/$YOUR_GITHUB_ACCOUNT/zeus 或者  https://github.com/bullteam/zeus 来浏览你的分支 (比如 "my-feature")。
+你可以访问 https://github.com/$YOUR_GITHUB_ACCOUNT/zeus 或者  https://zeus 来浏览你的分支 (比如 "my-feature")。
 
 点击 "Compare" 按钮来比较变更, 然后点击你的 "my-feature" 分支旁边的 "Pull request" 按钮来提交 PR。
 ```

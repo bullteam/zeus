@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	api_server "github.com/bullteam/zeus/cmd/api-server"
+	api_server "zeus/cmd/api-server"
 	"github.com/spf13/cobra"
 	"os"
 )

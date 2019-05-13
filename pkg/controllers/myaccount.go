@@ -5,13 +5,13 @@ import (
 	"encoding/base64"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/utils"
-	"github.com/bullteam/zeus/pkg/service"
-	"github.com/bullteam/zeus/pkg/utils/mailTemplate"
+	"zeus/pkg/service"
+	"zeus/pkg/utils/mailTemplate"
 	"image/png"
 	"strconv"
 	"fmt"
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/dto"
+	"zeus/pkg/components"
+	"zeus/pkg/dto"
 	"github.com/dgryski/dgoogauth"
 	"github.com/skip2/go-qrcode"
 	"net/url"
@@ -147,6 +147,20 @@ func (c *MyAccountController) Verifymail() {
 		return
 	}
 	c.Resp(0, "success", "邮件发送成功！")
+}
+
+/**
+  验证邮件地址(验证)
+*/
+func (c *MyAccountController) EmailVerification() {
+	emailVerificationDto := &dto.EmailVerificationDto{}
+	errs := c.ParseAndValidateFirstErr(emailVerificationDto)
+	if errs != nil {
+		c.Fail(components.ErrInvalidParams, errs.Error())
+		return
+	}
+	//code := emailVerificationDto.Code 	// TODO
+	c.Resp(0, "success", "邮件验证成功！")
 }
 
 //解除绑定第三方应用

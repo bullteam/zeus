@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/bullteam/zeus/pkg/components"
+	"zeus/pkg/components"
 	"github.com/dgrijalva/jwt-go"
 	"testing"
 	"time"

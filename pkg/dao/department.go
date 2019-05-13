@@ -2,9 +2,9 @@ package dao
 
 import (
 	"errors"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/models"
-	"github.com/bullteam/zeus/pkg/utils"
+	"zeus/pkg/dto"
+	"zeus/pkg/models"
+	"zeus/pkg/utils"
 )
 
 type DepartmentDao struct {

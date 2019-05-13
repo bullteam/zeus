@@ -1,6 +1,6 @@
 package dao
 
-import "github.com/bullteam/zeus/pkg/models"
+import "zeus/pkg/models"
 
 type UserSecretDao struct {
 }

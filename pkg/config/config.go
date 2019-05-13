@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/models"
 )
 
 // Database returns database settings

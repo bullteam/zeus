@@ -7,3 +7,7 @@ type BindCodeDto struct {
 type VerifyEmail struct {
 	Email string `form:"email" valid:"Required"` // email
 }
+
+type EmailVerificationDto struct {
+	Code string `form:"code" valid:"Required"` // email
+}

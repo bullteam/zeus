@@ -1,4 +1,4 @@
-module github.com/bullteam/zeus
+module zeus
 
 go 1.12
 

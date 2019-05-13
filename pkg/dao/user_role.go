@@ -2,7 +2,7 @@ package dao
 
 import (
 	"github.com/astaxie/beego/orm"
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/models"
 )
 
 type UserRoleDao struct {

@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/service"
+	"zeus/pkg/components"
+	"zeus/pkg/dto"
+	"zeus/pkg/service"
 	"strings"
 )
 

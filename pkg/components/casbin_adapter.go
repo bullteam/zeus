@@ -2,7 +2,7 @@ package components
 
 import (
 	"github.com/astaxie/beego/orm"
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/models"
 	"github.com/casbin/casbin/model"
 	"github.com/casbin/casbin/persist"
 	"runtime"

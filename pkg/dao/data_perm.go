@@ -3,8 +3,8 @@ package dao
 import (
 	"errors"
 	"github.com/astaxie/beego/orm"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/dto"
+	"zeus/pkg/models"
 )
 
 type DataPermDao struct {

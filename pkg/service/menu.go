@@ -2,8 +2,8 @@ package service
 
 import (
 	"github.com/astaxie/beego/orm"
-	"github.com/bullteam/zeus/pkg/dao"
-	"github.com/bullteam/zeus/pkg/dto"
+	"zeus/pkg/dao"
+	"zeus/pkg/dto"
 )
 
 type MenuService struct {

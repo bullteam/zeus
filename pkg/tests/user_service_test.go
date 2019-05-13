@@ -2,8 +2,8 @@ package tests
 
 import (
 	"github.com/astaxie/beego/validation"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/service"
+	"zeus/pkg/dto"
+	"zeus/pkg/service"
 	"testing"
 )
 

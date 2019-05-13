@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/config"
-	"github.com/bullteam/zeus/pkg/dao"
-	_ "github.com/bullteam/zeus/pkg/routers"
+	"zeus/pkg/components"
+	"zeus/pkg/config"
+	"zeus/pkg/dao"
+	_ "zeus/pkg/routers"
 	"github.com/spf13/cobra"
 )
 

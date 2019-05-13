@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/bullteam/zeus/pkg/controllers"
+	"zeus/pkg/controllers"
 	"github.com/dchest/captcha"
 )
 
@@ -37,7 +37,8 @@ func init() {
 	beego.Router("/account/bind", myAccountController, "post:Thirdbind")      //绑定第三方应用
 	beego.Router("/account/third", myAccountController, "get:Third")  // 第三方绑定账号列表
 	beego.Router("/account/verifymail", myAccountController, "post:Verifymail")  // 发送邮件
-
+	beego.Router("/account/verifymail", myAccountController, "post:Verifymail")  // 发送邮件
+	beego.Router("/account/emailVerification", myAccountController, "get:EmailVerification")  // 验证邮件地址
 
 	/******角色管理*****/
 	roleController := &controllers.RoleController{}

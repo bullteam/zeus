@@ -2,7 +2,7 @@ package dao
 
 import (
 	"fmt"
-	"github.com/bullteam/zeus/pkg/utils"
+	"zeus/pkg/utils"
 
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql" //register mysql driver

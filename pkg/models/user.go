@@ -25,5 +25,5 @@ type User struct {
 	Status        int         `json:"status"`
 	CreateTime    time.Time   `orm:"auto_now_add;type(datetime)" json:"create_time"`
 	LastLoginTime time.Time   `orm:"auto_now_add;type(datetime)" json:"-"`
-	Roles         []*Role     `orm:"rel(m2m);rel_through(github.com/bullteam/zeus/pkg/models.UserRole)"`
+	Roles         []*Role     `orm:"rel(m2m);rel_through(zeus/pkg/models.UserRole)"`
 }

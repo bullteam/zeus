@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/dao"
+	"zeus/pkg/components"
+	"zeus/pkg/dao"
 	"strconv"
 	"strings"
 )

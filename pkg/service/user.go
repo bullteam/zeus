@@ -3,9 +3,9 @@ package service
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"github.com/bullteam/zeus/pkg/dao"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/dao"
+	"zeus/pkg/dto"
+	"zeus/pkg/models"
 	dingtalk "github.com/icepy/go-dingtalk/src"
 	"strconv"
 )

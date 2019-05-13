@@ -3,10 +3,10 @@ package service
 import (
 	"database/sql"
 	"github.com/astaxie/beego/orm"
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/dao"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/components"
+	"zeus/pkg/dao"
+	"zeus/pkg/dto"
+	"zeus/pkg/models"
 	"strconv"
 	"strings"
 )

@@ -2,7 +2,7 @@ package tests
 
 import (
 	"github.com/astaxie/beego/validation"
-	"github.com/bullteam/zeus/pkg/components"
+	"zeus/pkg/components"
 	_ "github.com/go-sql-driver/mysql"
 	"testing"
 )
