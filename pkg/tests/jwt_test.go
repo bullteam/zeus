@@ -1,10 +1,12 @@
 package tests
 
 import (
+	"path/filepath"
 	"zeus/pkg/components"
 	"github.com/dgrijalva/jwt-go"
 	"testing"
 	"time"
+	"zeus/pkg/utils"
 )
 
 var (
@@ -88,4 +90,17 @@ func TestJwtHandler_Expired(t *testing.T) {
 	} else {
 		t.Logf("Expired check successful,claims should be null like %x", v)
 	}
+}
+
+func  TestToken(t *testing.T)  {
+	tokenString := "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMiIsInVuYW1lIjoi6buE56aP56WlIiwiZXhwIjoxNTU3ODM2MDQwfQ.PM1M7QiNWRyy1LpI24woiJ-1TOGQpiEGjzPfiG2NjPg8l7iXXfsZhhuzXRaKhEY6PVZ2_Td_waBb5fH3llCoKYlPZASr8jbXcK36VDO9y6KMUNAv_-57yz9H8Mq1I9CISWrPxOMnNircGIdlAeB6OimR41oo5SiV713qQtEu2wA"
+	jwt_public_key, err := filepath.Abs( "../../conf/keys/jwt_public.pem")
+	if err != nil {
+		t.Errorf("error token")
+	}
+	jh := components.NewJwtHandler()
+	jh.SetPublicKey(utils.LoadRSAPublicKeyFromDisk(jwt_public_key))
+	defer jh.Release()
+	claims, _ := jh.Validate(tokenString)
+	t.Log(claims)
 }
