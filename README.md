@@ -114,6 +114,6 @@ API 开发文档如下：
 
 ## 相关截图
 
-<img src="./docs/images/screenshot1.png" height=1080></img>
-<img src="./docs/images/screenshot2.png" height=757></img>
-<img src="./docs/images/screenshot3.png" height=949></img>
+<img src="./docs/images/screenshot1.png"></img>
+<img src="./docs/images/screenshot2.png"></img>
+<img src="./docs/images/screenshot3.png"></img>

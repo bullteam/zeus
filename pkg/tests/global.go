@@ -1,18 +1,22 @@
 package tests
 
 import (
+	"flag"
+	//"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"path/filepath"
-	"runtime"
+	//"path/filepath"
+	//"runtime"
 )
+var apppath string
 
 func init() {
-	_, file, _, _ := runtime.Caller(1)
+	flag.StringVar(&apppath, "p", "", "path test log")
+	flag.Parse()
+	//_, file, _, _ := runtime.Caller(1)
 	// find app.conf path
-	apppath, _ := filepath.Abs(filepath.Dir(filepath.Join(file, "../../"+string(filepath.Separator))))
+	//apppath, _ := filepath.Abs(filepath.Dir(filepath.Join(file, "../../"+string(filepath.Separator))))
 	beego.TestBeegoInit(apppath)
-
 	mysqluser := beego.AppConfig.String("mysqluser")
 	mysqlpass := beego.AppConfig.String("mysqlpass")
 	mysqlurls := beego.AppConfig.String("mysqlurls")
