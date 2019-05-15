@@ -13,6 +13,7 @@
 > - 打通开源软件、付费Sass软件，企业内部开发系统等，包括不限于jenkis、jira、gitlab、confluence、禅道、企业邮箱、OA、CRM、财务软件、企业Sass云服务等内外部系统，解决企业多个软件和平台账号不同步的痛点。     
 > - `打造统一开放平台生态标准，为企业引进外部系统不再困难。`
 
+更多请进入官网介绍[公牛开源战队](http://www.bullteam.cn) 以及详细的[开发文档指南](http://doc.bullteam.cn)
 ## Features （目前实现功能）
 - 登录/登出
 - 权限管理
@@ -45,6 +46,7 @@
 - 打通Worklite、Teambition、Github、墨刀、Tapd 等Sass 服务
 - 打通jenkis、jira、gitlab、confluence、禅道等开源软件
   
+
 # Docker 部署
 可参考 [Docker Documentation][2] 或者直接看[官方文档][1]
 
@@ -79,6 +81,7 @@ mysql> source ./install/install.sql;
 
 # openssl jwt 密钥生成
 [openssl jwt 密钥](docs/GenrsaKey.md)
+
 # 演示 Demo
 * [admin.bullteam.cn](http://admin.bullteam.cn)  账号 admin  密码  123456   （为了防止恶意使用、系统将不定时重置，请各位客官尽情享用）
   
@@ -91,7 +94,7 @@ mysql> source ./install/install.sql;
 * [官方](https://github.com/bullteam/zeus-ui)
 # API文档
 API 开发文档如下：
-* [POSTMAN](https://documenter.getpostman.com/view/159835/Rzfjk7Jh)
+* [POSTMAN](https://documenter.getpostman.com/view/159835/S1LyTSN3 )
 
 [1]: https://docs.docker.com/ "Docker Documentation"
 [2]: https://github.com/yeasy/docker_practice "docker_practice"
@@ -103,5 +106,14 @@ API 开发文档如下：
 * [Hyman](https://github.com/zhengcog)
 * [severHo](https://github.com/qq330967496)
 
+更多请进入我们的官网了解我们  [公牛开源战队](http://www.bullteam.cn)
+
 欢迎各路开发者加入或者疑问加入讨论群，请加我微信,说明加入群原因 `zeus 开源交流`
-<img src="./docs/images/wx.png" height=145></img>
+
+<img src="./docs/images/wx.jpg" height=430></img>
+
+## 相关截图
+
+<img src="./docs/images/screenshot1.png" height=1080></img>
+<img src="./docs/images/screenshot2.png" height=757></img>
+<img src="./docs/images/screenshot3.png" height=949></img>
