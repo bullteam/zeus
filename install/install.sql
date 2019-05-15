@@ -156,7 +156,7 @@ CREATE TABLE `role` (
 
 /*Data for the table `role` */
 
-insert  into `user`(`id`,`username`,`mobile`,`sex`,`realname`,`password`,`salt`,`department_id`,`faceicon`,`email`,`status`,`create_time`,`last_login_time`,`title`) values (1,'wutongci','1862011114',1,'西西','19c13b60ae7ff1a94fc1365e393b3c443b92c10dad438170ddf3ac46fa0e0838d63c1a4e035a69ad240fd8bd6c30329420cf2bccdc5c007ddc7d378b72e1585a','3afff4ba636ce2a1fca2380619b182c16356422faa7157bbe7ee968f40c05bcfe48c61d518ded465c8c7a0adb43c358b3c4a0171d775abad5d88d6b023247dab',1,'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif','lily@hotmail.com',1,'2018-12-22 08:07:59','2018-12-22 08:07:59','developer'),(2,'admin','123123123',1,'admin','7076e523bbc9053eba77d19eb257ee9a4f4dda57061956701034d27cfd5e6ce4c413ad11a73a81e7493f3316ba4854799ff7eac995389029e8d95a7b78093ed1','1d5cb810b443f77c1e1f29317aad408065dc6b708f75f529249240114804835a25885c5be93d8b72e7dc0880a91e52fee160d21a8ffcf9ae55f93a1e2187fa06',1,'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif','111@123.com',1,'2019-02-18 01:30:11','2019-02-18 01:30:11','超管');
+insert  into `role`(`id`,`name`,`domain_id`,`role_name`,`remark`,`menu_ids`,`menu_ids_ele`) values (1,'超级管理员',1,'超级管理员','超级管理员','1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27','1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27'),(2,'系统设置',1,'系统设置','系统设置','17,18,19,20,21,22,23,24,25,26,27','17,18,19,20,21,22,23,24,25,26,27'),(3,'日志管理',1,'日志管理','日志管理','28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43','28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43');
 
 /*Table structure for table `role_data_perm` */
 
@@ -195,6 +195,8 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='用户表';
 
 /*Data for the table `user` */
+
+insert  into `user`(`id`,`username`,`mobile`,`sex`,`realname`,`password`,`salt`,`department_id`,`faceicon`,`email`,`status`,`create_time`,`last_login_time`,`title`) values (1,'wutongci','1862011114',1,'西西','19c13b60ae7ff1a94fc1365e393b3c443b92c10dad438170ddf3ac46fa0e0838d63c1a4e035a69ad240fd8bd6c30329420cf2bccdc5c007ddc7d378b72e1585a','3afff4ba636ce2a1fca2380619b182c16356422faa7157bbe7ee968f40c05bcfe48c61d518ded465c8c7a0adb43c358b3c4a0171d775abad5d88d6b023247dab',1,'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif','lily@hotmail.com',1,'2018-12-22 08:07:59','2018-12-22 08:07:59','developer'),(2,'admin','123123123',1,'admin','7076e523bbc9053eba77d19eb257ee9a4f4dda57061956701034d27cfd5e6ce4c413ad11a73a81e7493f3316ba4854799ff7eac995389029e8d95a7b78093ed1','1d5cb810b443f77c1e1f29317aad408065dc6b708f75f529249240114804835a25885c5be93d8b72e7dc0880a91e52fee160d21a8ffcf9ae55f93a1e2187fa06',1,'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif','111@123.com',1,'2019-02-18 01:30:11','2019-02-18 01:30:11','超管');
 
 /*Table structure for table `user_email` */
 

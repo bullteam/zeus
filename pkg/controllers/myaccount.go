@@ -3,18 +3,18 @@ package controllers
 import (
 	"bytes"
 	"encoding/base64"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/utils"
-	"zeus/pkg/service"
-	"zeus/pkg/utils/mailTemplate"
-	"image/png"
-	"strconv"
-	"fmt"
-	"zeus/pkg/components"
-	"zeus/pkg/dto"
 	"github.com/dgryski/dgoogauth"
 	"github.com/skip2/go-qrcode"
+	"image/png"
 	"net/url"
+	"strconv"
+	"zeus/pkg/components"
+	"zeus/pkg/dto"
+	"zeus/pkg/service"
+	"zeus/pkg/utils/mailTemplate"
 )
 
 type MyAccountController struct {
@@ -119,7 +119,7 @@ func (c *MyAccountController) Third() {
 
 /**
   验证邮件地址(发送邮件)
- */
+*/
 func (c *MyAccountController) Verifymail() {
 	verifyEmailDto := &dto.VerifyEmail{}
 	errs := c.ParseAndValidateFirstErr(verifyEmailDto)
@@ -130,19 +130,19 @@ func (c *MyAccountController) Verifymail() {
 	username := beego.AppConfig.String("email::username")
 	password := beego.AppConfig.String("email::password")
 	host := beego.AppConfig.String("email::host")
-	port,_ := beego.AppConfig.Int("email::port")
+	port, _ := beego.AppConfig.Int("email::port")
 	from := beego.AppConfig.String("email::from")
 	if port == 0 {
 		port = 25
 	}
 	config := fmt.Sprintf(`{"username":"%s","password":"%s","host":"%s","port":%d,"from":"%s"}`, username, password, host, port, from)
 	temail := utils.NewEMail(config)
-	temail.To = []string{verifyEmailDto.Email}//指定收件人邮箱地址
-	temail.From = from//指定发件人的邮箱地址
-	temail.Subject = "验证账号邮件"//指定邮件的标题
+	temail.To = []string{verifyEmailDto.Email} //指定收件人邮箱地址
+	temail.From = from                         //指定发件人的邮箱地址
+	temail.Subject = "验证账号邮件"                  //指定邮件的标题
 	temail.HTML = mailTemplate.MailBody()
 	err := temail.Send()
-	if err != nil{
+	if err != nil {
 		c.Fail(components.ErrSendMail, err.Error())
 		return
 	}
@@ -181,7 +181,7 @@ func (c *MyAccountController) Thirdbind() {
 		return
 	}
 	myAccountService := service.MyAccountService{} //switch case from  1 钉钉 2 微信 TODO
-	openid,err := myAccountService.BindByDingtalk(bindThirdDto.Code, user_id,from)
+	openid, err := myAccountService.BindByDingtalk(bindThirdDto.Code, user_id, from)
 	if err != nil {
 		c.Fail(components.ErrBindDingtalk, err.Error())
 	}
@@ -208,7 +208,7 @@ func (c *MyAccountController) ThirdUnbind() {
 		from = 1
 	}
 	userService := service.UserService{} //switch case from  1 钉钉 2 微信 TODO
-	errs := userService.UnBindUserDingtalk(from,user_id)
+	errs := userService.UnBindUserDingtalk(from, user_id)
 	if errs != nil {
 		c.Fail(components.ErrUnBindDingtalk, errs.Error())
 	}
