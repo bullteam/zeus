@@ -88,8 +88,8 @@ func (c *AccountController) DingtalkLogin() {
 		return
 	}
 	userService := service.UserService{}
-	user,err := userService.LoginByDingtalk(dingtalkDto.Code)
-	if err != nil{
+	user, err := userService.LoginByDingtalk(dingtalkDto.Code)
+	if err != nil {
 		c.Fail(components.ErrNoUser, err.Error())
 		return
 	}
@@ -128,7 +128,7 @@ func (c *UserController) DingtalkBind() {
 		c.Fail(components.ErrInvalidUser, err.Error())
 		return
 	}
-	openid,err := userService.BindByDingtalk(dingtalkDto.Code, user_id)
+	openid, err := userService.BindByDingtalk(dingtalkDto.Code, user_id)
 	if err != nil {
 		c.Fail(components.ErrBindDingtalk, err.Error())
 	}
@@ -136,7 +136,6 @@ func (c *UserController) DingtalkBind() {
 		"openid": openid,
 	})
 }
-
 
 //解除绑定钉钉
 func (c *UserController) DingtalkUnbind() {
@@ -272,11 +271,11 @@ func (c *UserController) Show() {
 	roleService := service.RoleService{}
 	roles := roleService.GetRolesByUid(id)
 	OauthUserInfoService := service.UserService{}
-	OauthUserInfo,_ := OauthUserInfoService.GetBindOauthUserInfo(user_id)
+	OauthUserInfo, _ := OauthUserInfoService.GetBindOauthUserInfo(user_id)
 	c.Resp(0, "success", map[string]interface{}{
-		"userinfo": user,
-		"role":     roles,
-		"oauth_user_info" : OauthUserInfo,
+		"userinfo":        user,
+		"role":            roles,
+		"oauth_user_info": OauthUserInfo,
 	})
 }
 

@@ -44,8 +44,8 @@ func (r *RoleController) Show() {
 		return
 	}
 	r.Resp(0, "success", map[string]interface{}{
-		"detail": data,
-		"perms":  perms,
+		"detail":     data,
+		"perms":      perms,
 		"data_perms": dataPerms,
 	})
 }
@@ -76,7 +76,7 @@ func (r *RoleController) Add() {
 	// 分配数据权限
 	dataPermIds := r.GetString("data_perm_ids")
 	if len(dataPermIds) > 0 {
-		_ = rs.AssignDataPerm(int(roleId),dataPermIds)
+		_ = rs.AssignDataPerm(int(roleId), dataPermIds)
 	}
 	r.Resp(0, "success")
 }
@@ -110,7 +110,7 @@ func (r *RoleController) Edit() {
 	// 分配数据权限
 	dataPermIds := r.GetString("data_perm_ids")
 	if len(dataPermIds) > 0 {
-		_ = rs.AssignDataPerm(roleDto.Id,dataPermIds)
+		_ = rs.AssignDataPerm(roleDto.Id, dataPermIds)
 	}
 	r.Resp(0, "success")
 }
