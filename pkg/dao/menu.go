@@ -1,8 +1,10 @@
 package dao
 
 import (
+	"errors"
 	"fmt"
 	"github.com/astaxie/beego/orm"
+	"strconv"
 	"strings"
 	"zeus/pkg/dto"
 	"zeus/pkg/models"
@@ -98,4 +100,35 @@ func (dao *MenuDao) Delete(id int) error {
 	}
 
 	return nil
+}
+
+func (dao *MenuDao) GetById(id int) (menu models.Menu, err error) {
+	o := GetOrmer()
+	menu = models.Menu{Id: id}
+	err = o.Read(&menu)
+
+	return menu, err
+}
+
+// 通过menuIds获取菜单列表
+func (dao *MenuDao) GetByIds(menusIds string) (menus []models.Menu, err error) {
+	if len(menusIds) == 0 {
+		return menus, errors.New("list empty")
+	}
+	var ids []int
+	for _, v := range strings.Split(menusIds, ",") {
+		menuId, err := strconv.Atoi(v)
+		if err == nil {
+			ids = append(ids, menuId)
+		}
+	}
+
+	if len(ids) > 0 {
+		o := GetOrmer()
+		qs := o.QueryTable(&models.Menu{}).Filter("id__in", ids).Limit(1000)
+
+		_, err = qs.All(&menus, "Id", "Perms")
+	}
+
+	return menus, err
 }

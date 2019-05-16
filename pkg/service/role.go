@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego/utils"
 	"strconv"
 	"strings"
 	"zeus/pkg/components"
@@ -16,6 +17,7 @@ type RoleService struct {
 	domainDao *dao.DomainDao
 	urDao     *dao.UserRoleDao
 	rdpDao    *dao.RoleDataPermDao
+	menuDao   *dao.MenuDao
 }
 
 func (r *RoleService) GetList(start int, limit int, q []string) ([]orm.Params, int64) {
@@ -94,23 +96,63 @@ func (r *RoleService) AssignPerm(domainId int, roleId int, menuIds string) error
 	if err != nil {
 		return err
 	}
-	o := orm.NewOrm()
+	var (
+		oldV1s     []interface{} // 旧的权限
+		addV1s     []interface{} // 新增的权限
+		delV1s     []interface{} // 删除的权限
+		currentV1s []interface{} // 当前选中的权限
+	)
 	perm := components.NewPerm()
-	//1.删除旧有权限
-	perm.DeleteRoleByDomain(role.RoleName, domain.Code)
-	for _, v := range strings.Split(menuIds, ",") {
-		mid, _ := strconv.Atoi(v)
-		menu := &models.Menu{Id: mid}
-		if err := o.Read(menu); err != nil {
-			return err
-		}
-		if menu.Perms != "" {
-			//2.重新汇入权限
-			//beego.Info(role.RoleName, menu.Perms, "*", domain.Code)
-			perm.AddPerm(role.RoleName, menu.Perms, "*", domain.Code)
+
+	// 获取当前角色旧的权限列表
+	oldCasbinRules := perm.GetAllPermByRoleName(role.RoleName, domain.Code)
+	for _, v := range oldCasbinRules {
+		if len(v[1]) > 0 {
+			oldV1s = append(oldV1s, v[1])
 		}
 	}
-	//perm.CommitChange()
+
+	// 获取当前角色选中的权限列表
+	menus, err := r.menuDao.GetByIds(menuIds)
+	if err != nil {
+		return err
+	}
+	for _, menu := range menus {
+		if len(menu.Perms) > 0 {
+			currentV1s = append(currentV1s, menu.Perms)
+		}
+	}
+
+	// 算出新增的权限列表
+	addV1s = utils.SliceDiff(currentV1s, oldV1s)
+	// 算出删除的权限列表
+	delV1s = utils.SliceDiff(oldV1s, currentV1s)
+
+	// 新增权限
+	if len(addV1s) > 0 {
+		for _, v := range addV1s {
+			perms := v.(string)
+			if len(perms) > 0 {
+				perm.AddPerm(role.RoleName, perms, "*", domain.Code)
+			}
+		}
+	}
+
+	// 删除权限
+	if len(delV1s) > 0 {
+		for _, v := range delV1s {
+			perms := v.(string)
+			if len(perms) > 0 {
+				perm.DelPerm(role.RoleName, perms, "*", domain.Code)
+			}
+		}
+	}
+
+	// 权限有变化重新加载策略到内存
+	if len(addV1s) > 0 || len(delV1s) > 0 {
+		perm.LoadPolicyToRAM()
+	}
+
 	return nil
 }
 
