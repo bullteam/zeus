@@ -50,7 +50,7 @@
 # Docker 部署
 可参考 [Docker Documentation][2] 或者直接看[官方文档][1]
 
-本项目参考，可以一键部署该项目 [docker-composer 部署脚本](http://github.com/bullteam/deploy)
+本项目参考，可以一键部署该项目 [docker-composer 部署脚本](http://github.com/bullteam/zeus-deploy)
 
 # 架构
 <img src="./docs/images/arch.png" height=920></img>
