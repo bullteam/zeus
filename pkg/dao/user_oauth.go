@@ -33,9 +33,9 @@ func (dao *UserOAuthDao) Create(userOAuth models.UserOAuth) (int64, error) {
 	return o.Insert(&userOAuth)
 }
 
-func (dao *UserOAuthDao) DeleteByUseridAndFrom(from int,user_id int) error {
+func (dao *UserOAuthDao) DeleteByUseridAndFrom(from int, user_id int) error {
 	o := GetOrmer()
-	_, err := o.QueryTable("user_oauth").Filter("from", from).Filter("user_id",user_id).Delete()
+	_, err := o.QueryTable("user_oauth").Filter("from", from).Filter("user_id", user_id).Delete()
 	if err != nil {
 		return err
 	}
@@ -43,8 +43,8 @@ func (dao *UserOAuthDao) DeleteByUseridAndFrom(from int,user_id int) error {
 }
 
 /**
- 	获取绑定列表
- */
+获取绑定列表
+*/
 func (dao *UserOAuthDao) List(user_id int) (oauthlists []orm.Params) {
 	var oauthlist []orm.Params
 	o := GetOrmer()

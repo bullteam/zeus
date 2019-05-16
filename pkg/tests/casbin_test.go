@@ -2,9 +2,9 @@ package tests
 
 import (
 	"github.com/astaxie/beego/validation"
-	"zeus/pkg/components"
 	_ "github.com/go-sql-driver/mysql"
 	"testing"
+	"zeus/pkg/components"
 )
 
 //func TestRawCasbin(t *testing.T){

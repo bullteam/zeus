@@ -17,17 +17,17 @@ func (s *DataPermService) GetDataPermList(query *models.DataPermQuery) (dataPerm
 	if total > 0 {
 		for _, dpRow := range dpRows {
 			dataPerms = append(dataPerms, map[string]interface{}{
-				"id": dpRow.Id,
-				"name": dpRow.Name,
-				"perms": dpRow.Perms,
-				"perms_rule": dpRow.PermsRule,
-				"perms_type": dpRow.PermsType,
-				"order_num": dpRow.OrderNum,
-				"parent_id": dpRow.ParentId,
-				"domain_id": dpRow.Domain.Id,
+				"id":          dpRow.Id,
+				"name":        dpRow.Name,
+				"perms":       dpRow.Perms,
+				"perms_rule":  dpRow.PermsRule,
+				"perms_type":  dpRow.PermsType,
+				"order_num":   dpRow.OrderNum,
+				"parent_id":   dpRow.ParentId,
+				"domain_id":   dpRow.Domain.Id,
 				"domain_name": dpRow.Domain.Name,
 				"domain_code": dpRow.Domain.Code,
-				"remarks": dpRow.Remarks,
+				"remarks":     dpRow.Remarks,
 			})
 		}
 	}

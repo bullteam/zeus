@@ -4,13 +4,13 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/dchest/captcha"
+	"strconv"
+	"strings"
 	"zeus/pkg/components"
 	"zeus/pkg/dto"
 	"zeus/pkg/service"
 	"zeus/pkg/utils"
-	"github.com/dchest/captcha"
-	"strconv"
-	"strings"
 )
 
 type UserController struct {
@@ -88,8 +88,8 @@ func (c *AccountController) DingtalkLogin() {
 		return
 	}
 	userService := service.UserService{}
-	userOauth,err := userService.LoginByDingtalk(dingtalkDto.Code)
-	if err != nil{
+	userOauth, err := userService.LoginByDingtalk(dingtalkDto.Code)
+	if err != nil {
 		c.Fail(components.ErrNoUser, err.Error())
 		return
 	}
@@ -229,11 +229,11 @@ func (c *UserController) Show() {
 	roleService := service.RoleService{}
 	roles := roleService.GetRolesByUid(id)
 	OauthUserInfoService := service.UserService{}
-	OauthUserInfo,_ := OauthUserInfoService.GetBindOauthUserInfo(user_id)
+	OauthUserInfo, _ := OauthUserInfoService.GetBindOauthUserInfo(user_id)
 	c.Resp(0, "success", map[string]interface{}{
-		"userinfo": user,
-		"role":     roles,
-		"oauth_user_info" : OauthUserInfo,
+		"userinfo":        user,
+		"role":            roles,
+		"oauth_user_info": OauthUserInfo,
 	})
 }
 

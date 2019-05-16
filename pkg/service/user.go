@@ -3,11 +3,11 @@ package service
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	dingtalk "github.com/icepy/go-dingtalk/src"
+	"strconv"
 	"zeus/pkg/dao"
 	"zeus/pkg/dto"
 	"zeus/pkg/models"
-	dingtalk "github.com/icepy/go-dingtalk/src"
-	"strconv"
 )
 
 type UserService struct {
@@ -159,30 +159,29 @@ func (us *UserService) SwitchDepartment(uids []string, did int) (int64, error) {
 	return us.dao.UpdateDepartment(euid, did)
 }
 
-
 //钉钉登陆
-func (us *UserService) LoginByDingtalk(code string) (user *models.UserOAuth ,err error) {
-	Info,err := getUserInfo(code)
+func (us *UserService) LoginByDingtalk(code string) (user *models.UserOAuth, err error) {
+	Info, err := getUserInfo(code)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	User, err := us.userOAuthDao.GetUserByOpenId(Info.Openid, 1)
 	if err == nil {
-		return User,nil
+		return User, nil
 	}
-	return nil,err
+	return nil, err
 }
 
-func getUserInfo(code string) (UserInfo *DingtalkUserInfo,err error) {
+func getUserInfo(code string) (UserInfo *DingtalkUserInfo, err error) {
 	c := GetCompanyDingTalkClient()
 	c.RefreshSNSAccessToken()
 	perInfo, err := c.SNSGetPersistentCode(code)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	snstoken, err := c.SNSGetSNSToken(perInfo.OpenID, perInfo.PersistentCode)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	Info, _ := c.SNSGetUserInfo(snstoken.SnsToken)
 	userInfo := &DingtalkUserInfo{
@@ -191,11 +190,11 @@ func getUserInfo(code string) (UserInfo *DingtalkUserInfo,err error) {
 		Info.UserInfo.Nick,
 		Info.UserInfo.DingID,
 	}
-	return userInfo,nil
+	return userInfo, nil
 }
 
-func (us *UserService) UnBindUserDingtalk(from int,user_id int) error {
-	return us.userOAuthDao.DeleteByUseridAndFrom(from,user_id)
+func (us *UserService) UnBindUserDingtalk(from int, user_id int) error {
+	return us.userOAuthDao.DeleteByUseridAndFrom(from, user_id)
 }
 
 func GetCompanyDingTalkClient() *dingtalk.DingTalkClient {
@@ -208,6 +207,6 @@ func GetCompanyDingTalkClient() *dingtalk.DingTalkClient {
 	return dingtalk.NewDingTalkCompanyClient(config)
 }
 
-func (us *UserService) GetBindOauthUserInfo(userid int) (UserInfo *models.UserOAuth, err error)  {
+func (us *UserService) GetBindOauthUserInfo(userid int) (UserInfo *models.UserOAuth, err error) {
 	return us.userOAuthDao.GetUserById(userid)
 }

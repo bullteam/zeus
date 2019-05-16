@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	api_server "zeus/cmd/api-server"
 	"github.com/spf13/cobra"
 	"os"
+	api_server "zeus/cmd/api-server"
 )
 
 var rootCmd = &cobra.Command{

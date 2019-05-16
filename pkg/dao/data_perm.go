@@ -35,7 +35,7 @@ func (dao *DataPermDao) GetDataPermList(query *models.DataPermQuery) ([]models.D
 func (dao *DataPermDao) GetById(id int) (models.DataPerm, error) {
 	o := GetOrmer()
 	dataPerm := models.DataPerm{}
-	err := o.QueryTable("data_perm").Filter("id",id).RelatedSel().One(&dataPerm)
+	err := o.QueryTable("data_perm").Filter("id", id).RelatedSel().One(&dataPerm)
 
 	return dataPerm, err
 }

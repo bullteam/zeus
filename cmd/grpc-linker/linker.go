@@ -3,11 +3,11 @@ package main
 import (
 	//_ "github.com/astaxie/beego/cache/redis"
 	"flag"
-	pb "zeus/cmd/grpc-linker/grpc-server/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
+	pb "zeus/cmd/grpc-linker/grpc-server/proto"
 )
 
 func main() {

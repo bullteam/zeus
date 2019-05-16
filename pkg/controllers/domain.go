@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"strings"
 	"zeus/pkg/components"
 	"zeus/pkg/dto"
 	"zeus/pkg/service"
-	"strings"
 )
 
 type DomainController struct {
