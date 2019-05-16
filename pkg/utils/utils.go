@@ -41,8 +41,6 @@ func TestTCPConn(addr string, timeout, interval int) error {
 	}
 }
 
-
-
 func IsNilObject(object interface{}) bool {
 	if object == nil {
 		return true

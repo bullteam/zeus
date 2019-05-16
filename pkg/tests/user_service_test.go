@@ -2,9 +2,9 @@ package tests
 
 import (
 	"github.com/astaxie/beego/validation"
+	"testing"
 	"zeus/pkg/dto"
 	"zeus/pkg/service"
-	"testing"
 )
 
 var userService = service.UserService{}

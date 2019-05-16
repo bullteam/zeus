@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"zeus/pkg/components"
-	"zeus/pkg/dto"
-	"zeus/pkg/models"
-	"zeus/pkg/utils"
 	"golang.org/x/crypto/scrypt"
 	"io"
 	"strconv"
 	"time"
+	"zeus/pkg/components"
+	"zeus/pkg/dto"
+	"zeus/pkg/models"
+	"zeus/pkg/utils"
 )
 
 type UserDao struct {

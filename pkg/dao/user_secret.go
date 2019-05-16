@@ -5,7 +5,6 @@ import "zeus/pkg/models"
 type UserSecretDao struct {
 }
 
-
 func (dao *UserSecretDao) GetSecretByUserid(userid int) (*models.UserSecret, error) {
 	o := GetOrmer()
 	v := &models.UserSecret{}

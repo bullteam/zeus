@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/beego/i18n"
+	"github.com/spf13/cobra"
 	"zeus/pkg/components"
 	"zeus/pkg/config"
 	"zeus/pkg/dao"
 	_ "zeus/pkg/routers"
-	"github.com/spf13/cobra"
 )
 
 var (
