@@ -148,11 +148,6 @@ func (r *RoleService) AssignPerm(domainId int, roleId int, menuIds string) error
 		}
 	}
 
-	// 权限有变化重新加载策略到内存
-	if len(addV1s) > 0 || len(delV1s) > 0 {
-		perm.LoadPolicyToRAM()
-	}
-
 	return nil
 }
 
