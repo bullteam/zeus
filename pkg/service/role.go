@@ -119,7 +119,14 @@ func (r *RoleService) AssignPerm(domainId int, roleId int, menuIds string) error
 	}
 	for _, menu := range menus {
 		if len(menu.Perms) > 0 {
-			currentV1s = append(currentV1s, menu.Perms)
+			menuPerms := strings.Split(menu.Perms, ",")
+			if len(menuPerms) > 0 {
+				for _, v := range menuPerms {
+					if len(v) > 0 {
+						currentV1s = append(currentV1s, v)
+					}
+				}
+			}
 		}
 	}
 

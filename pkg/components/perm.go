@@ -79,7 +79,7 @@ func (p *perm) DeleteRole(role string) {
 
 // 通过角色和域获取权限列表 并载入到内存
 func (p *perm) GetAllPermByRole(role string, domain string) [][]string {
-	p.enforcer.LoadPolicy()
+	//p.enforcer.LoadPolicy()
 	roles := p.enforcer.GetFilteredNamedPolicy("p", 0, role, "", "", domain)
 	return roles
 }
