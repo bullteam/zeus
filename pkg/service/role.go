@@ -155,7 +155,7 @@ func (r *RoleService) AssignPerm(domainId int, roleId int, menuIds string) error
 	}
 
 	if len(addV1s) > 0 || len(delV1s) > 0 {
-		perm.LoadPolicy()
+		perm.LoadPolicyToRAM()
 	}
 
 	return nil
