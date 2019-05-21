@@ -6,7 +6,7 @@ type MenuAddDto struct {
 	Name     string `form:"name" valid:"Required"`
 	Url      string `form:"url"`
 	Perms    string `form:"perms"`
-	MenuType int    `form:"menu_type" valid:"Required"`
+	MenuType int    `form:"menu_type"`
 	Icon     string `form:"icon"`
 	OrderNum int    `form:"order_num" valid:"Required"`
 }
@@ -18,7 +18,7 @@ type MenuEditDto struct {
 	Name     string `form:"name" valid:"Required"`
 	Url      string `form:"url"`
 	Perms    string `form:"perms"`
-	MenuType int    `form:"menu_type" valid:"Required"`
+	MenuType int    `form:"menu_type"`
 	Icon     string `form:"icon"`
 	OrderNum int    `form:"order_num" valid:"Required"`
 }
