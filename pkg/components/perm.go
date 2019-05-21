@@ -91,3 +91,7 @@ func (p *perm) GetAllPermByRoleName(role string, domain string) [][]string {
 func (p *perm) CommitChange() {
 	p.enforcer.SavePolicy()
 }
+
+func (p *perm) LoadPolicyToRAM() {
+	p.enforcer.LoadPolicy()
+}
