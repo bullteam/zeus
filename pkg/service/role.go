@@ -134,7 +134,6 @@ func (r *RoleService) AssignPerm(domainId int, roleId int, menuIds string) error
 	addV1s = utils.SliceDiff(currentV1s, oldV1s)
 	// 算出删除的权限列表
 	delV1s = utils.SliceDiff(oldV1s, currentV1s)
-
 	// 新增权限
 	if len(addV1s) > 0 {
 		for _, v := range addV1s {
@@ -153,6 +152,10 @@ func (r *RoleService) AssignPerm(domainId int, roleId int, menuIds string) error
 				perm.DelPerm(role.RoleName, perms, "*", domain.Code)
 			}
 		}
+	}
+
+	if len(addV1s) > 0 || len(delV1s) > 0 {
+		perm.LoadPolicy()
 	}
 
 	return nil
