@@ -1,10 +1,7 @@
 package components
 
 import (
-	"fmt"
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"github.com/billcobbler/casbin-redis-watcher"
 	"github.com/casbin/casbin"
 	"path/filepath"
 	"sync"
@@ -33,13 +30,13 @@ func NewPerm() *perm {
 		}
 
 		// 设置观察者，实现分布式
-		redisHost := beego.AppConfig.String("redis_conn")
+		/*redisHost := beego.AppConfig.String("redis_conn")
 		redisPort := beego.AppConfig.String("redis_port")
 		redisPws := beego.AppConfig.String("redis_pwd")
 		host := fmt.Sprintf("%s:%s", redisHost, redisPort)
 		w, _ := rediswatcher.NewWatcher(host, rediswatcher.Password(redisPws))
 		permOnce.enforcer.SetWatcher(w)
-		_ = w.SetUpdateCallback(updateCallback)
+		_ = w.SetUpdateCallback(updateCallback)*/
 		// permOnce.enforcer.EnableAutoSave(true)
 	})
 
@@ -79,7 +76,7 @@ func (p *perm) DeleteRole(role string) {
 
 // 通过角色和域获取权限列表 并载入到内存
 func (p *perm) GetAllPermByRole(role string, domain string) [][]string {
-	//p.enforcer.LoadPolicy()
+	p.enforcer.LoadPolicy()
 	roles := p.enforcer.GetFilteredNamedPolicy("p", 0, role, "", "", domain)
 	return roles
 }
