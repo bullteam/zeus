@@ -1,11 +1,10 @@
 package controllers
 
 import (
-	//"fmt"
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/service"
 	"strings"
+	"zeus/pkg/components"
+	"zeus/pkg/dto"
+	"zeus/pkg/service"
 )
 
 type RoleController struct {
@@ -16,7 +15,7 @@ type RoleController struct {
 func (r *RoleController) List() {
 	rs := service.RoleService{}
 	start, _ := r.GetInt("start", 0)
-	limit, _ := r.GetInt("limit", LIST_ROWS_PERPAGE)
+	limit, _ := r.GetInt("limit", listRowsPerPage)
 	q := r.GetString("q")
 	data, c := rs.GetList(start, limit, strings.Split(q, ","))
 	r.Resp(0, "success", map[string]interface{}{
@@ -28,25 +27,26 @@ func (r *RoleController) List() {
 //角色详情
 func (r *RoleController) Show() {
 	rs := service.RoleService{}
-	role_id, err := r.GetInt("id")
+	roleId, err := r.GetInt("id")
 	if err != nil {
 		r.Fail(components.ErrInputData)
 		return
 	}
 	//get data
-	data, perms, data_err := rs.GetRoleById(role_id)
+	data, perms, err := rs.GetRoleById(roleId)
+
+	// 获取数据权限列表
+	dataPerms, _ := rs.GetRoleDataPermsByRoleId(roleId)
 
 	//err data
-	if data_err != nil {
+	if err != nil {
 		r.Fail(components.ErrIdData)
-		//err_obj := components.ErrIdData
-		//err_obj.Moreinfo = fmt.Sprintf("%v", data_err)
-		//r.Fail(err_obj)
 		return
 	}
 	r.Resp(0, "success", map[string]interface{}{
-		"detail": data,
-		"perms":  perms,
+		"detail":     data,
+		"perms":      perms,
+		"data_perms": dataPerms,
 	})
 }
 
@@ -54,19 +54,29 @@ func (r *RoleController) Show() {
 func (r *RoleController) Add() {
 	rs := service.RoleService{}
 	roleDto := &dto.RoleDto{}
-	r.ParseAndValidate(roleDto)
+	err := r.ParseAndValidateFirstErr(roleDto)
+	if err != nil {
+		r.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
 	result, err := rs.CreateRole(roleDto)
 	if err != nil {
 		r.Fail(components.ErrDupRecord, "角色已存在")
 		return
 	}
-	menu_ids := r.GetString("menu_ids")
-	if menu_ids != "" {
-		id, _ := result.LastInsertId()
-		if err := rs.AssignPerm(roleDto.DomainId, int(id), menu_ids); err != nil {
+	roleId, _ := result.LastInsertId()
+	// 分配功能权限
+	menuIds := r.GetString("menu_ids")
+	if menuIds != "" {
+		if err := rs.AssignPerm(roleDto.DomainId, int(roleId), menuIds); err != nil {
 			r.Fail(components.ErrRoleAssignFail, err.Error())
 			return
 		}
+	}
+	// 分配数据权限
+	dataPermIds := r.GetString("data_perm_ids")
+	if len(dataPermIds) > 0 {
+		_ = rs.AssignDataPerm(int(roleId), dataPermIds)
 	}
 	r.Resp(0, "success")
 }
@@ -75,24 +85,34 @@ func (r *RoleController) Add() {
 func (r *RoleController) Edit() {
 	rs := service.RoleService{}
 	roleDto := &dto.RoleDto{}
-	r.ParseAndValidate(roleDto)
+	err := r.ParseAndValidateFirstErr(roleDto)
 	if roleDto.Id <= 0 {
 		r.Fail(components.ErrIdData)
+		return
 	}
-	err := rs.UpdateRole(roleDto)
+	if err != nil {
+		r.Fail(components.ErrInvalidParams, err.Error())
+		return
+	}
+	err = rs.UpdateRole(roleDto)
 	if err != nil {
 		r.Fail(components.ErrEditFail, err.Error())
 		return
 	}
-	menu_ids := r.GetString("menu_ids")
-	if menu_ids != "" {
-		if err := rs.AssignPerm(roleDto.DomainId, roleDto.Id, menu_ids); err != nil {
+	// 分配功能权限
+	menuIds := r.GetString("menu_ids")
+	if menuIds != "" {
+		if err := rs.AssignPerm(roleDto.DomainId, roleDto.Id, menuIds); err != nil {
 			r.Fail(components.ErrRoleAssignFail, err.Error())
 			return
 		}
 	}
+	// 分配数据权限
+	dataPermIds := r.GetString("data_perm_ids")
+	if len(dataPermIds) > 0 {
+		_ = rs.AssignDataPerm(roleDto.Id, dataPermIds)
+	}
 	r.Resp(0, "success")
-	//r.Resp(0, "success")
 }
 
 //角色删除
@@ -100,6 +120,7 @@ func (r *RoleController) Del() {
 	id, err := r.GetInt("id")
 	if err != nil || id < 1 {
 		r.Fail(components.ErrIdData)
+		return
 	}
 	rs := service.RoleService{}
 	err = rs.DeleteRole(id)
@@ -113,20 +134,23 @@ func (r *RoleController) Del() {
 
 //角色分配
 func (r *RoleController) Assign() {
-	domain_id, err := r.GetInt("domain_id")
-	if err != nil || domain_id < 1 {
+	domainId, err := r.GetInt("domain_id")
+	if err != nil || domainId < 1 {
 		r.Fail(components.ErrIdData)
+		return
 	}
-	role_id, err := r.GetInt("role_id")
-	if err != nil || role_id < 1 {
+	roleId, err := r.GetInt("role_id")
+	if err != nil || roleId < 1 {
 		r.Fail(components.ErrIdData)
+		return
 	}
-	menu_ids := r.GetString("menu_ids")
-	if menu_ids == "" {
+	menuIds := r.GetString("menu_ids")
+	if menuIds == "" {
 		r.Fail(components.ErrIdData)
+		return
 	}
 	us := service.RoleService{}
-	if err := us.AssignPerm(domain_id, role_id, menu_ids); err != nil {
+	if err := us.AssignPerm(domainId, roleId, menuIds); err != nil {
 		r.Fail(components.ErrRoleAssignFail, err.Error())
 		return
 	}

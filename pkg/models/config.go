@@ -2,7 +2,7 @@ package models
 
 // Database ...
 type Database struct {
-	MySQL  *MySQL  `json:"mysql,omitempty"`
+	MySQL *MySQL `json:"mysql,omitempty"`
 }
 
 // MySQL ...

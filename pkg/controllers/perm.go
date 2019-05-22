@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/bullteam/zeus/pkg/components"
-	"github.com/bullteam/zeus/pkg/service"
 	"strconv"
 	"strings"
+	"zeus/pkg/components"
+	"zeus/pkg/service"
 )
 
 type PermController struct {
@@ -15,7 +15,11 @@ func (pc *PermController) GetPermsByLoginUser() {
 	userService := service.UserService{}
 	roles := userService.GetRolesByUid(pc.Uid)
 	permService := service.PermService{}
-	var results []map[string]interface{}
+	roleService := service.RoleService{}
+	var (
+		results   []map[string]interface{} // 功能权限列表
+		dataPerms []map[string]interface{} // 数据权限列表
+	)
 	var path = map[string]bool{}
 	domain := pc.GetString("domain")
 	for _, role := range roles {
@@ -52,9 +56,25 @@ func (pc *PermController) GetPermsByLoginUser() {
 				"domain": perm[3],
 			})
 		}
+
+		// 获取数据权限列表
+		roleId, _ := strconv.Atoi(role["id"].(string))
+		roleDataPerms, _ := roleService.GetRoleDataPermsByRoleId(roleId)
+		if len(roleDataPerms) > 0 {
+			for _, roleDataPerm := range roleDataPerms {
+				dataPerms = append(dataPerms, map[string]interface{}{
+					"id":    roleDataPerm["id"],
+					"name":  roleDataPerm["name"],
+					"perms": roleDataPerm["perms"],
+				})
+			}
+			// 去重
+			dataPerms = removeRepeatedDataPerm(dataPerms)
+		}
 	}
 	pc.Resp(0, "success", map[string]interface{}{
-		"result": results,
+		"result":     results,
+		"data_perms": dataPerms,
 		"info": map[string]interface{}{
 			"id":       pc.Uid,
 			"username": pc.Uname,
@@ -62,14 +82,28 @@ func (pc *PermController) GetPermsByLoginUser() {
 	})
 }
 
+// 数据权限去重
+func removeRepeatedDataPerm(arr []map[string]interface{}) (newArr []map[string]interface{}) {
+	newArr = make([]map[string]interface{}, 0)
+	for i := 0; i < len(arr); i++ {
+		isRepeat := false
+		for j := i + 1; j < len(arr); j++ {
+			if arr[i]["id"] == arr[j]["id"] {
+				isRepeat = true
+				break
+			}
+		}
+		if !isRepeat {
+			newArr = append(newArr, arr[i])
+		}
+	}
+	return
+}
+
 func (c *PermController) CheckPerm() {
 	ps := service.PermService{}
 	uid, _ := strconv.Atoi(c.Uid)
 	perms := c.GetString("perm")
-	//pos   := strings.LastIndex(perms,"/")
-	//new   := []rune(perms)
-	//new[pos] = ':'
-	//perms = string(new)
 	domain := c.GetString("domain")
 	if uid < 0 || !ps.CheckPermByUid(uid, perms, domain) {
 		c.Fail(components.ErrPermission, "fail")

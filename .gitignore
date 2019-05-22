@@ -11,4 +11,7 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 .idea/
+.DS_Store
 cmd/api-server/zeus
+zeus
+.company_sns_access_token_file

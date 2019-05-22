@@ -3,12 +3,12 @@ package utils
 import (
 	"crypto/rsa"
 	"github.com/astaxie/beego"
-	"github.com/bullteam/zeus/pkg/components"
 	"github.com/dgrijalva/jwt-go"
 	"io/ioutil"
 	"path/filepath"
 	"sync"
 	"time"
+	"zeus/pkg/components"
 )
 
 var keyMap sync.Map

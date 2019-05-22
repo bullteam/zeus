@@ -2,7 +2,7 @@ package dto
 
 import "github.com/astaxie/beego/validation"
 
-var ROLE_SEARCH = map[string]interface{}{
+var RoleSearch = map[string]interface{}{
 	"d":  "domain_id",
 	"rn": "role_name",
 	"n":  "name",

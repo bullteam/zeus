@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"net"
+	"reflect"
 	"time"
 )
 
@@ -38,4 +39,18 @@ func TestTCPConn(addr string, timeout, interval int) error {
 		cancel <- 1
 		return fmt.Errorf("failed to connect to tcp:%s after %d seconds", addr, timeout)
 	}
+}
+
+func IsNilObject(object interface{}) bool {
+	if object == nil {
+		return true
+	}
+
+	value := reflect.ValueOf(object)
+	kind := value.Kind()
+	if kind >= reflect.Chan && kind <= reflect.Slice && value.IsNil() {
+		return true
+	}
+
+	return false
 }

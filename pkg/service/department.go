@@ -2,50 +2,50 @@ package service
 
 import (
 	"fmt"
-	"github.com/bullteam/zeus/pkg/dto"
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/dao"
+	"zeus/pkg/dto"
+	"zeus/pkg/models"
 )
 
 type DepartmentService struct {
+	dao *dao.DepartmentDao
 }
 
-//GetList
-func (r DepartmentService) GetList(start int, limit int, q []string) ([]*models.Department, int64) {
-	ds := models.Department{}
-	return ds.List(start, limit, q)
+func (s *DepartmentService) GetList(start int, limit int, q []string) ([]*models.Department, int64) {
+	return s.dao.List(start, limit, q)
 }
-func (d DepartmentService) CheckIfDeptExists(name string) bool {
-	m := models.Department{}
-	_, err := m.GetDeptByName(name)
+
+func (s *DepartmentService) GetDept(id int) (models.Department, error) {
+	return s.dao.GetDept(id)
+}
+
+func (s *DepartmentService) CheckIfDeptExists(name string) bool {
+	_, err := s.dao.GetDeptByName(name)
+
 	return err == nil
 }
-func (d DepartmentService) CheckIfOtherDeptExists(id int, name string) bool {
-	m := models.Department{}
-	_, err := m.GetDeptByOtherName(id, name)
+
+func (s *DepartmentService) CheckIfOtherDeptExists(id int, name string) bool {
+	_, err := s.dao.GetDeptByOtherName(id, name)
+
 	return err == nil
 }
 
 //did is department id
-func (d DepartmentService) CheckIfPeopleInside(did int) bool {
-	user := &models.User{}
-	_, _c := user.List(0, 1, []string{fmt.Sprintf("d=%d", did)})
+func (s *DepartmentService) CheckIfPeopleInside(did int) bool {
+	user := &UserService{}
+	_, _c := user.GetList(0, 1, []string{fmt.Sprintf("d=%d", did)})
 	return _c > 0
 }
 
-func (d DepartmentService) Create(dto *dto.DepartmentAddDto) (int64, error) {
-	dept := &models.Department{
-		Name:      dto.Name,
-		Parent_id: dto.Parent_id,
-		Order_num: dto.Order_num,
-	}
-	return dept.Insert()
+func (s *DepartmentService) Insert(dto *dto.DepartmentAddDto) (int64, error) {
+	return s.dao.Insert(dto)
 }
 
-func (d DepartmentService) Update(dto *dto.DepartmentEditDto) (int64, error) {
-	dept := &models.Department{
-		Id:        dto.Id,
-		Name:      dto.Name,
-		Order_num: dto.Order_num,
-	}
-	return dept.Update()
+func (s *DepartmentService) Update(dto *dto.DepartmentEditDto) (int64, error) {
+	return s.dao.Update(dto)
+}
+
+func (s *DepartmentService) Delete(id int) error {
+	return s.dao.Delete(id)
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"github.com/bullteam/zeus/pkg/models"
+	"zeus/pkg/models"
 
 	"strconv"
 	"strings"

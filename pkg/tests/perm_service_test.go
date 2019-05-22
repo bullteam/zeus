@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"github.com/bullteam/zeus/pkg/service"
 	_ "github.com/go-sql-driver/mysql"
 	"testing"
+	"zeus/pkg/service"
 )
 
 func TestPermService_CheckPermByUid(t *testing.T) {

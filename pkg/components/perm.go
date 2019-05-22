@@ -1,17 +1,13 @@
 package components
 
 import (
-	"github.com/casbin/casbin"
-	//"github.com/casbin/beego-orm-adapter"
+	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/funlake/beego-orm-adapter"
-	_ "github.com/go-sql-driver/mysql"
-	"sync"
-	//"strings"
+	"github.com/astaxie/beego/logs"
+	"github.com/billcobbler/casbin-redis-watcher"
+	"github.com/casbin/casbin"
 	"path/filepath"
-	//"runtime"
-	//"strings"
-	//"github.com/bullteam/zeus/pkg/components"
+	"sync"
 )
 
 var (
@@ -19,32 +15,32 @@ var (
 	permOnce *perm
 )
 
+// 监听权限是否有变化，有变化则重新加载到内存
+func updateCallback(msg string) {
+	logs.Info(msg)
+	_ = permOnce.enforcer.LoadPolicy()
+}
+
 func NewPerm() *perm {
 	permSync.Do(func() {
-		//for unit testing
-		//confFilePath := beego.AppPath
-		////if beego.AppConfig.String("mysqlurls") == "" {
-		//if strings.Index(confFilePath, "/tmp") == 0 {
-		//	_, file, _, _ := runtime.Caller(0)
-		//	//beego.Warning(file)
-		//	confFilePath = filepath.Dir(filepath.Join(file, ".."+string(filepath.Separator)))
-		//}
-		rbacmodelconf, err := filepath.Abs(Args.ConfigFile+ "/rbac_model.conf")
+		rbacmodelconf, err := filepath.Abs(Args.ConfigFile + "/rbac_model.conf")
 		if err != nil {
-			//c.Fail(components.ErrChkJwt)
 			return
 		}
-
-		mysqluser := beego.AppConfig.String("mysqluser")
-		mysqlpass := beego.AppConfig.String("mysqlpass")
-		mysqlurls := beego.AppConfig.String("mysqlurls")
-		mysqlport := beego.AppConfig.String("mysqlport")
-		mysqldb := beego.AppConfig.String("mysqldbcasbin")
-		a := beegoormadapter.NewAdapter("mysql", mysqluser+":"+mysqlpass+"@tcp("+mysqlurls+":"+mysqlport+")/"+mysqldb+"?charset=utf8mb4", true)
+		a := NewAdapter()
 		permOnce = &perm{
 			casbin.NewEnforcer(rbacmodelconf, a),
 		}
-		//permOnce.enforcer.EnableAutoSave(true)
+
+		// 设置观察者，实现分布式
+		redisHost := beego.AppConfig.String("redis_conn")
+		redisPort := beego.AppConfig.String("redis_port")
+		redisPws := beego.AppConfig.String("redis_pwd")
+		host := fmt.Sprintf("%s:%s", redisHost, redisPort)
+		w, _ := rediswatcher.NewWatcher(host, rediswatcher.Password(redisPws))
+		permOnce.enforcer.SetWatcher(w)
+		_ = w.SetUpdateCallback(updateCallback)
+		// permOnce.enforcer.EnableAutoSave(true)
 	})
 
 	return permOnce
@@ -64,21 +60,32 @@ func (p *perm) AddGroup(params ...interface{}) bool {
 func (p *perm) AddPerm(params ...interface{}) bool {
 	return p.enforcer.AddPolicy(params...)
 }
+
+func (p *perm) DelPerm(params ...interface{}) bool {
+	return p.enforcer.RemovePolicy(params...)
+}
+
 func (p *perm) Check(params ...interface{}) bool {
 	return p.enforcer.Enforce(params...)
 }
 
 func (p *perm) DeleteRoleByDomain(role string, domain string) {
 	p.enforcer.RemoveFilteredNamedPolicy("p", 0, role, "", "", domain)
-	//o := orm.NewOrm()
-	//e,_ := o.Raw("delete from casbin_rule where p_type=? and v0=? and v3=?").Prepare()
-	//e.Exec("p",role,domain)
 }
+
 func (p *perm) DeleteRole(role string) {
 	p.enforcer.RemoveFilteredNamedPolicy("p", 0, role)
 }
+
+// 通过角色和域获取权限列表 并载入到内存
 func (p *perm) GetAllPermByRole(role string, domain string) [][]string {
 	p.enforcer.LoadPolicy()
+	roles := p.enforcer.GetFilteredNamedPolicy("p", 0, role, "", "", domain)
+	return roles
+}
+
+// 通过角色和域获取权限列表 不载入内存
+func (p *perm) GetAllPermByRoleName(role string, domain string) [][]string {
 	roles := p.enforcer.GetFilteredNamedPolicy("p", 0, role, "", "", domain)
 	return roles
 }
