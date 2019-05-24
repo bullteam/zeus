@@ -7,8 +7,10 @@ import (
 	"github.com/beego/i18n"
 	"path/filepath"
 	"reflect"
+	"strconv"
 	"strings"
 	"zeus/pkg/components"
+	"zeus/pkg/service"
 	"zeus/pkg/utils"
 )
 
@@ -93,6 +95,9 @@ func (c *TokenCheckController) Prepare() {
 	c.RawToken = tokenString
 
 	c.setLangVer() //设置语言
+
+	// 检查权限
+	c.checkAccess()
 }
 
 func (b *BaseController) ParseAndValidate(obj interface{}) {
@@ -225,4 +230,17 @@ func (b *BaseController) setLangVer() bool {
 	// Set language properties.
 	CurrentLang = curLang.Lang
 	return isNeedRedir
+}
+
+// 权限验证 TODO...有分布式部署问题，待优化
+func (c *TokenCheckController) checkAccess() {
+	params := strings.Split(strings.ToLower(strings.Split(c.Ctx.Request.RequestURI, "?")[0]), "/")
+	uri := strings.Join(params, "/")
+	ps := service.PermService{}
+	uid, _ := strconv.Atoi(c.Uid)
+	domain := "root"
+	if uid < 0 || !ps.CheckPermByUid(uid, uri, domain) {
+		c.Fail(components.ErrPermission, "fail")
+		return
+	}
 }
