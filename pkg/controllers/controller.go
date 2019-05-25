@@ -232,15 +232,19 @@ func (b *BaseController) setLangVer() bool {
 	return isNeedRedir
 }
 
-// 权限验证 TODO...有分布式部署问题，待优化
+// 权限验证
 func (c *TokenCheckController) checkAccess() {
 	params := strings.Split(strings.ToLower(strings.Split(c.Ctx.Request.RequestURI, "?")[0]), "/")
 	uri := strings.Join(params, "/")
+	// 排除检查权限接口
+	if uri == "/user/perm/check" {
+		return
+	}
 	ps := service.PermService{}
 	uid, _ := strconv.Atoi(c.Uid)
 	domain := "root"
 	if uid < 0 || !ps.CheckPermByUid(uid, uri, domain) {
-		c.Fail(components.ErrPermission, "fail")
+		c.Fail(components.ErrPermission, "url: "+uri)
 		return
 	}
 }

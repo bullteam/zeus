@@ -14,6 +14,7 @@ require (
 	github.com/garyburd/redigo v1.6.0 // indirect
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/golang/protobuf v1.3.1
+	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/icepy/go-dingtalk v0.0.0-20180430151047-e8997a391814
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect

@@ -89,4 +89,6 @@ func init() {
 	beego.Router("/data/perm/edit", dataPermController, "post:Edit") // 编辑数据权限
 	beego.Router("/data/perm/del", dataPermController, "get:Del")    // 删除数据权限
 	beego.Router("/data/perm/show", dataPermController, "get:Show")  // 数据权限详情
+
+	beego.Router("/clear-cache", userController, "get:ClearCache") // 清除缓存
 }
