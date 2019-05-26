@@ -3,6 +3,7 @@ package controllers
 import (
 	"errors"
 	"github.com/astaxie/beego"
+	beegoutils "github.com/astaxie/beego/utils"
 	"github.com/astaxie/beego/validation"
 	"github.com/beego/i18n"
 	"path/filepath"
@@ -236,8 +237,12 @@ func (b *BaseController) setLangVer() bool {
 func (c *TokenCheckController) checkAccess() {
 	params := strings.Split(strings.ToLower(strings.Split(c.Ctx.Request.RequestURI, "?")[0]), "/")
 	uri := strings.Join(params, "/")
-	// 排除检查权限接口
-	if uri == "/user/perm/check" {
+	writeList := []interface{}{
+		"/user/menu",
+		"/user/perm/list",
+		"/user/perm/check",
+	}
+	if beegoutils.InSliceIface(uri, writeList) {
 		return
 	}
 	ps := service.PermService{}
