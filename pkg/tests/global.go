@@ -1,33 +1,23 @@
 package tests
 
 import (
-	"flag"
-	//"fmt"
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/orm"
-	//"path/filepath"
-	//"runtime"
+	"zeus/pkg/config"
+	"zeus/pkg/dao"
 )
+
 var apppath string
 
 func init() {
-	flag.StringVar(&apppath, "p", "", "path test log")
-	flag.Parse()
-	//_, file, _, _ := runtime.Caller(1)
-	// find app.conf path
-	//apppath, _ := filepath.Abs(filepath.Dir(filepath.Join(file, "../../"+string(filepath.Separator))))
+	// change to your application path
+	apppath = "/data1/src/web/zeus"
 	beego.TestBeegoInit(apppath)
-	mysqluser := beego.AppConfig.String("mysqluser")
-	mysqlpass := beego.AppConfig.String("mysqlpass")
-	mysqlurls := beego.AppConfig.String("mysqlurls")
-	mysqlport := beego.AppConfig.String("mysqlport")
-	mysqldb := beego.AppConfig.String("mysqldb")
 
-	beego.Warning(mysqluser + ":" + mysqlpass + "@tcp(" + mysqlurls + ":" + mysqlport + ")/" + mysqldb + "?charset=utf8mb4")
-	//初始化数据库
-	orm.RegisterDataBase("default", "mysql", mysqluser+":"+mysqlpass+"@tcp("+mysqlurls+":"+mysqlport+")/"+mysqldb+"?charset=utf8mb4")
-	orm.Debug = false
-	//设置最大链接数
-	orm.SetMaxIdleConns("default", 100)
-	orm.SetMaxOpenConns("default", 300)
+	database, err := config.Database()
+	if err != nil {
+		beego.Error("failed to get database configuration: %v", err)
+	}
+	if err := dao.InitDatabase(database); err != nil {
+		beego.Error("failed to initialize database: %v", err)
+	}
 }

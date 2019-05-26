@@ -122,6 +122,16 @@ func (dao *RoleDao) GetRolesAndDomainByUid(uid string) []orm.Params {
 	return roles
 }
 
+func (dao *RoleDao) GetRoleListAndDomain(uid int, domainCode string) []orm.Params {
+	var roles []orm.Params
+	o := GetOrmer()
+	_, _ = o.Raw(`select r.id,r.role_name,d.code,d.name as domain_name from user_role ur
+				left join role r on ur.role_id=r.id
+				left join domain d on d.id=r.domain_id where ur.user_id=? and d.code=?`, uid, domainCode).Values(&roles)
+
+	return roles
+}
+
 func (dao *RoleDao) GetRoleById(id int) (*models.Role, error) {
 	o := GetOrmer()
 	v := &models.Role{}

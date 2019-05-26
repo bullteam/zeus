@@ -100,13 +100,14 @@ func removeRepeatedDataPerm(arr []map[string]interface{}) (newArr []map[string]i
 	return
 }
 
+// 第三方业务后台检查权限专用接口
 func (c *PermController) CheckPerm() {
-	ps := service.PermService{}
-	uid, _ := strconv.Atoi(c.Uid)
 	perms := c.GetString("perm")
 	domain := c.GetString("domain")
+	ps := service.PermService{}
+	uid, _ := strconv.Atoi(c.Uid)
 	if uid < 0 || !ps.CheckPermByUid(uid, perms, domain) {
-		c.Fail(components.ErrPermission, "fail")
+		c.Fail(components.ErrPermission, "url: "+perms)
 		return
 	}
 	c.Resp(0, "success")

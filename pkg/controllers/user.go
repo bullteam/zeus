@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/dchest/captcha"
+	"github.com/gomodule/redigo/redis"
 	"strconv"
 	"strings"
 	"zeus/pkg/components"
@@ -349,4 +350,23 @@ func (c *UserController) RefreshToken() {
 	}
 	c.Fail(components.ErrWrongRefreshToken)
 	return
+}
+
+// 清除缓存
+func (c *UserController) ClearCache() {
+	// 清除权限缓存
+	rds := components.Cache
+	keys, err := redis.Values(rds.Do("keys", "check_perm_*"))
+	if err == nil {
+		for _, key := range keys {
+			rdsKey := utils.ByteToString(key.([]byte))
+			if len(rdsKey) > 0 {
+				rdsKeySlice := strings.Split(rdsKey, ":")
+				_, _ = rds.Do("del", rdsKeySlice[1])
+			}
+		}
+	}
+
+	// others
+	c.Resp(0, "success")
 }
