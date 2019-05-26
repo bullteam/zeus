@@ -40,6 +40,14 @@ func (ps *PermService) CheckPermByUidBACKUP(uid int, permission string, domain s
 // 使用redis缓存，解决分布式问题
 func (ps *PermService) CheckPermByUid(uid int, permission string, domain string) bool {
 	userPermList := ps.GetUserDomainPerms(uid, domain)
+	writeList := []interface{}{
+		"/user/menu",
+		"/user/perm/list",
+		"/user/perm/check",
+	}
+	if utils.InSliceIface(permission, writeList) {
+		return true
+	}
 	if userPermList != nil && len(userPermList) > 0 {
 		return utils.InSliceIface(permission, userPermList)
 	}

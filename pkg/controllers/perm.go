@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"github.com/astaxie/beego/utils"
 	"strconv"
 	"strings"
 	"zeus/pkg/components"
@@ -105,14 +104,6 @@ func removeRepeatedDataPerm(arr []map[string]interface{}) (newArr []map[string]i
 func (c *PermController) CheckPerm() {
 	perms := c.GetString("perm")
 	domain := c.GetString("domain")
-	writeList := []interface{}{
-		"/user/menu",
-		"/user/perm/list",
-	}
-	if utils.InSliceIface(perms, writeList) {
-		c.Resp(0, "success")
-		return
-	}
 	ps := service.PermService{}
 	uid, _ := strconv.Atoi(c.Uid)
 	if uid < 0 || !ps.CheckPermByUid(uid, perms, domain) {
