@@ -4,6 +4,10 @@
 [![golang](https://img.shields.io/badge/golang-1.12.1-green.svg?style=plastic)](https://www.golang.org/)
 [![casbin](https://img.shields.io/badge/casbin-1.8.1-brightgreen.svg?style=plastic)](https://github.com/casbin/casbin)
 
+
+## 重构版本 [zeus-admin](https://github.com/bullteam/zeus-admin)
+目前正在全力重构之中，欢迎前后端开发者加入一起开发
+
 #### 项目介绍
 > `Zeus 宙斯`权限后台，为企业提供统一后台权限管理私有化Sass云服务。    
 > - 项目使用`golang beego`框架开发，用`jwt + casbin`做权限管理,提供OAuth2.0 的Restful Api 接口。
@@ -46,33 +50,34 @@
 - 打通Worklite、Teambition、Github、墨刀、Tapd 等Sass 服务
 - 打通jenkis、jira、gitlab、confluence、禅道等开源软件
   
-
-# Docker 部署
-可参考 [Docker Documentation][2] 或者直接看[官方文档][1]
-
-本项目参考，可以一键部署该项目 [docker-composer 部署脚本](http://github.com/bullteam/zeus-deploy)
-
 # 架构
 <img src="./docs/images/arch.png" height=920></img>
 
 # 数据库E-R图
 <img src="./docs/images/dber.png" height=376></img>
 
-### 快速开始
-需要golang 1.11+ 编译环境,设置git clone 权限
+### 安装
+#### 编译golang,注意:需要golang 1.11+ 编译环境,设置git clone 权限
 ````
 git clone git@github.com:bullteam/zeus.git
+cd zeus/
 export GOPROXY=https://goproxy.io
 export GO111MODULE=on
 go build -o zeus
+chmod 777 ./zeus
 ./zeus start -c ./conf
-
 ````
-# 数据移值
-
+#### 编译web前端UI
+````
+cd zeus/web
+npm install --registry=https://registry.npm.taobao.org
+npm run build:prod
+````
+#### 数据移值
+安装mysql 5.7+  & redis 4.0 +
 ```bash
 # 执行 sql 语句
-mysql> source ./install/install.sql;
+mysql> source ./install/zeus.sql;
 ```
 
 ## Git 工作流
@@ -90,8 +95,7 @@ mysql> source ./install/install.sql;
 * [php-client](https://github.com/bullteam/zeusclient-php)
 * [java-client](https://github.com/bullteam/zeusclient-java)
 * [go-client](https://github.com/bullteam/zeusclient-go)
-# WebUI
-* [官方](https://github.com/bullteam/zeus-ui)
+
 # API文档
 API 开发文档如下：
 * [POSTMAN](https://documenter.getpostman.com/view/159835/S1LyTSN3 )
