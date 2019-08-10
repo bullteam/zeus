@@ -9,12 +9,12 @@
 目前正在全力重构之中，欢迎前后端开发者加入一起开发
 
 #### 项目介绍
-> `Zeus 宙斯`权限后台，为企业提供统一后台权限管理私有化Sass云服务。    
+> `Zeus 宙斯`权限后台，为企业提供统一后台权限管理私有化Saas云服务。    
 > - 项目使用`golang beego`框架开发，用`jwt + casbin`做权限管理,提供OAuth2.0 的Restful Api 接口。
 > - 为企业后台系统提供统一登陆鉴权、菜单管理、权限管理、组织架构管理、员工管理、配置中心、日志管理等。
 > - 支持企业微信、钉钉登陆和同步企业组织架构。
 > - 统一管理员工入离职，强化权限审批流程化。
-> - 打通开源软件、付费Sass软件，企业内部开发系统等，包括不限于jenkis、jira、gitlab、confluence、禅道、企业邮箱、OA、CRM、财务软件、企业Sass云服务等内外部系统，解决企业多个软件和平台账号不同步的痛点。     
+> - 打通开源软件、付费Saas软件，企业内部开发系统等，包括不限于jenkis、jira、gitlab、confluence、禅道、企业邮箱、OA、CRM、财务软件、企业Saas云服务等内外部系统，解决企业多个软件和平台账号不同步的痛点。     
 > - `打造统一开放平台生态标准，为企业引进外部系统不再困难。`
 
 更多请进入官网介绍[公牛开源战队](http://www.bullteam.cn) 以及详细的[开发文档指南](http://doc.bullteam.cn)
@@ -46,39 +46,14 @@
     - 手机验证
     - 邮箱验证
 - 增加支持企业微信、微信、Github、Gmail、QQ等登陆
-- 登陆授权（OAuth 2.0、Ldap、SAML2.0、Cas、阿里云RAM、AWS IAM、腾讯云CAM、华为云IAM等）
-- 打通Worklite、Teambition、Github、墨刀、Tapd 等Sass 服务
 - 打通jenkis、jira、gitlab、confluence、禅道等开源软件
-  
-# 架构
-<img src="./docs/images/arch.png" height=920></img>
 
-# 数据库E-R图
-<img src="./docs/images/dber.png" height=376></img>
+# 演示 Demo
+* [admin.bullteam.cn](http://admin.bullteam.cn)  账号 admin  密码  123456   （为了防止恶意使用、系统将不定时重置，请各位客官尽情享用）
+* 
+# 安装
 
-### 安装
-#### 编译golang,注意:需要golang 1.11+ 编译环境,设置git clone 权限
-````
-git clone git@github.com:bullteam/zeus.git
-cd zeus/
-export GOPROXY=https://goproxy.io
-export GO111MODULE=on
-go build -o zeus
-chmod 777 ./zeus
-./zeus start -c ./conf
-````
-#### 编译web前端UI
-````
-cd zeus/web
-npm install --registry=https://registry.npm.taobao.org
-npm run build:prod
-````
-#### 数据移值
-安装mysql 5.7+  & redis 4.0 +
-```bash
-# 执行 sql 语句
-mysql> source ./install/zeus.sql;
-```
+请参考 [安装文档](docs/install.md)
 
 ## Git 工作流
 
@@ -87,8 +62,7 @@ mysql> source ./install/zeus.sql;
 # openssl jwt 密钥生成
 [openssl jwt 密钥](docs/GenrsaKey.md)
 
-# 演示 Demo
-* [admin.bullteam.cn](http://admin.bullteam.cn)  账号 admin  密码  123456   （为了防止恶意使用、系统将不定时重置，请各位客官尽情享用）
+
   
 # 接入权限系统 client demo
 * [python-client](https://github.com/bullteam/zeusclient-python)
@@ -102,6 +76,12 @@ API 开发文档如下：
 
 [1]: https://docs.docker.com/ "Docker Documentation"
 [2]: https://github.com/yeasy/docker_practice "docker_practice"
+
+# 架构
+<img src="./docs/images/arch.png" height=920></img>
+
+# 数据库E-R图
+<img src="./docs/images/dber.png" height=376></img>
 
 ## 开发者
 
