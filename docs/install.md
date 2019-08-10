@@ -1,7 +1,13 @@
-# 安装文档
-
-##  第一步：编译golang,注意:需要golang 1.11+ 编译环境,设置git clone 权限
-````
+# 准备工作
+> 建议使用linux 环境
+- 安装 Golang 1.12+
+- 安装 Nodejs 10+ npm 6+
+- 安装 Mysql 5.7
+- 安装 Redis 4+
+- 安装 Nginx 
+# 开始安装
+##  第一步：编译golang,注意:设置git clone 权限
+```bash
 git clone git@github.com:bullteam/zeus.git
 cd zeus/
 export GOPROXY=https://goproxy.io
@@ -9,15 +15,16 @@ export GO111MODULE=on
 go build -o zeus
 chmod 777 ./zeus
 ./zeus start -c ./conf
-````
+```
 ##  第二步：编译web前端UI
-````
+```bash
 cd zeus/web
 npm install --registry=https://registry.npm.taobao.org
 npm run build:prod
-````
+```
+
 ##  第三步：安装mysql & redis 数据导入
-安装mysql 5.7+  & redis 4.0 +
+
 ```bash
 # 执行 sql 语句
 mysql> source ./install/zeus.sql;
