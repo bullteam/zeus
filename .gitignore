@@ -15,3 +15,5 @@
 cmd/api-server/zeus
 zeus
 .company_sns_access_token_file
+web/dist/
+web/node_modules/
