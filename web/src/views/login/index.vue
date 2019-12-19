@@ -170,7 +170,7 @@ export default {
       getUserCaptcha().then((json) => {
         this.loginForm.captchaid = json.data.captcha.Id
         this.captchaUrl = `//api.${location.host}/captcha/${this.loginForm.captchaid}.png`
-        // this.captchaUrl = ('http://api-auth{fix}.etcchebao.com/captcha/' + this.loginForm.captchaid + '.png').replace('{fix}', getPrefix())
+        // this.captchaUrl = ('http://api-auth{fix}.e.com/captcha/' + this.loginForm.captchaid + '.png').replace('{fix}', getPrefix())
       })
     },
     handleLogin() {
@@ -193,7 +193,7 @@ export default {
               this.showCaptcha()
               // getUserCaptcha().then((json) => {
               //   this.loginForm.captchaid = json.data.captcha.Id
-              //   this.captchaUrl = ('http://api-auth{fix}.etcchebao.com/captcha/' + this.loginForm.captchaid + '.png').replace('{fix}', getPrefix())
+              //   this.captchaUrl = ('http://api-auth{fix}.e.com/captcha/' + this.loginForm.captchaid + '.png').replace('{fix}', getPrefix())
               // })
             } else {
               this.$message.error(res.msg)
